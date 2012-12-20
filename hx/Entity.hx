@@ -7,6 +7,7 @@ import flash.utils.Dictionary;
 import flash.display.BitmapData;
 import flash.display.Bitmap;
 import flash.geom.Rectangle;
+import flash.events.Event;
 import flash.geom.Matrix;
 import Hooks;
 import Util;
@@ -89,12 +90,12 @@ class Entity extends Graphic {
 	public function disappearAfter(frames : Int) : Entity {
 		var timeLeft : Int = frames;
 		var that : Entity = this;
-		listen(function() : Void {
+		listen(function(_:Dynamic) : Void {
 			if(timeLeft-- == 0)  {
 				that.destroy();
 			}
-		}
-);
+		});
+
 		return this;
 	}
 
@@ -120,7 +121,8 @@ class Entity extends Graphic {
 		// It continues to exist in the game.
 		override public function removeChild(child : DisplayObject) : DisplayObject {
 		if(Std.is(child, Entity))
-			Util.assert(entityChildren.contains(child));
+			Util.assert(Lambda.indexOf(entityChildren, child) != -1);
+
 		entityChildren.remove(child);
 		super.removeChild(child);
 		return child;
@@ -139,7 +141,7 @@ class Entity extends Graphic {
 			entityChildren[i].removeFromFathom(true);
 			i++;
 		}
-		if(!recursing && this.parent)
+		if(!recursing && this.parent != null)
 			this.parent.removeChild(this);
 		Fathom.entities.remove(this);
 	}
@@ -168,8 +170,8 @@ class Entity extends Graphic {
 		destroyed = true;
 	}
 
-	public function addGroups() : Entity {
-		groupSet.extend(new Set(args));
+	public function addGroups(list:Array<Dynamic>) : Entity {
+		groupSet.extend(new Set(list));
 		return this;
 	}
 

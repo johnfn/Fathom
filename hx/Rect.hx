@@ -84,7 +84,7 @@ class Rect extends Vec, implements IPositionable {
 			var r : Rect = try cast(i, Rect) catch(e:Dynamic) null;
 			return x <= r.x && r.x < right && x <= r.right && r.right < right && y <= r.bottom && r.bottom < right && y <= r.y && r.y < right;
 		}
-		throw new Error("Unsupported type for contains.");
+		throw "Unsupported type for contains.";
 	}
 
 	public function makeBigger(size : Int) : Rect {

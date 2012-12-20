@@ -10,7 +10,7 @@ package {
 		private var gridWidth:int = 25;
 		private var gridHeight:int = 25;
 
-		function SpatialHash(list:EntitySet) {
+		public function SpatialHash(list:EntitySet) {
 		    grid = Util.make2DArrayFn(widthInTiles, heightInTiles, function():Array { return []; });
 
 		    for each (var e:Entity in list) {

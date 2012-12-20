@@ -22,10 +22,10 @@ class Map extends Rect {
 	var _tileSize : Int;
 	var data : Array<Dynamic>;
 	// Color data from the map.
-	public var transparency : Array<Dynamic>;
-	//TODO POST LD
-	var tiles : Array<Array<Tile>>;
+
+	var tiles : Array<Array<Entity>>;
 	// Cached array of collideable tiles.
+
 	public var collisionInfo : Array<Dynamic>;
 	var topLeftCorner : Vec;
 	var exploredMaps : Dynamic;
@@ -37,7 +37,6 @@ class Map extends Rect {
 
 	function new(widthInTiles : Int, heightInTiles : Int, tileSize : Int) {
 		data = [];
-		transparency = [];
 		tiles = [];
 		collisionInfo = [];
 		topLeftCorner = new Vec(0, 0);
@@ -55,7 +54,7 @@ class Map extends Rect {
 	}
 
 	function clearTiles() : Void {
-		tiles = Util.make2DArrayFn(widthInTiles, heightInTiles, function(x : Int, y : Int) : Tile {
+		tiles = Util.make2DArrayFn(widthInTiles, heightInTiles, function(x : Int, y : Int) : Entity {
 			return null;
 		}
 );
@@ -90,7 +89,7 @@ class Map extends Rect {
 		var bData : BitmapData = bAsset.bitmapData;
 		this.grounds = groundList;
 		this.persistentItemMapping = persistentItemMapping;
-		data = Util.make2DArray(bData.width, bData.height, undefined);
+		data = Util.make2DArray(bData.width, bData.height, null);
 		var x : Int = 0;
 		while(x < bData.width) {
 			var y : Int = 0;
@@ -263,7 +262,13 @@ class Map extends Rect {
 		}
 
 		if(!(Lambda.has(itemData, "special")))  {
-			e.loadSpritesheet(Reflect.field(itemData, "gfx"), _tileSize, Reflect.field(itemData, "spritesheet") || new Vec(0, 0));
+			var ssLoc:Vec;
+			if (Reflect.hasField(itemData, "spritesheet")) {
+				ssLoc = Reflect.field(itemData, "spritesheet");
+			} else {
+				ssLoc = new Vec(0, 0);
+			}
+			e.loadSpritesheet(Reflect.field(itemData, "gfx"), new Vec(_tileSize, _tileSize), ssLoc);
 		}
 		e.setPos(new Vec(x * tileSize, y * tileSize));
 		if(e.groups().contains("persistent"))  {
@@ -295,27 +300,22 @@ class Map extends Rect {
 
 		else  {
 			// Add all persistent items.
-			persistent.get(topLeftCorner.asKey()).map(function(e : Dynamic, i : Int, a : Array<Dynamic>) : Void {
+			Lambda.map(persistent.get(topLeftCorner.asKey()), function(e : Entity) : Void {
 				e.addToFathom();
-				if(e.groups().contains("remember-loc"))  {
-					e.resetLoc();
-				}
 			});
 		};
 
 		// Cache every persistent item in the 2D array of tiles.
 		var persistingItems : Array<Dynamic> = persistent.get(topLeftCorner.asKey());
-		var i : Int = 0;
-		while(i < persistingItems.length) {
-			var e : Entity = persistingItems[i];
+
+		for (e in persistingItems) {
 			if(e.isStatic)  {
 				var xCoord : Int = Math.floor(e.x / this.tileSize);
 				var yCoord : Int = Math.floor(e.y / this.tileSize);
 				tiles[xCoord][yCoord] = e;
 			}
-			i++;
 		}
-		exploredMaps[topLeftCorner.asKey()] = true;
+		exploredMaps.set(topLeftCorner.asKey(), true);
 	}
 
 	public function itemSwitchedMaps(leftScreen : Entity) : Void {
@@ -366,12 +366,14 @@ class Map extends Rect {
 
 	public function setVisible(val : Bool) : Bool {
 		Util.assert(false);
-		return;
+		return false;
+		/*
 		persistent.get(topLeftCorner.asKey()).map(function(e : Dynamic, i : Int, a : Array<Dynamic>) : Void {
 			e.visible = val;
 		}
 );
 		return val;
+		*/
 	}
 
 	public function collides(i : Dynamic) : Bool {
@@ -381,7 +383,7 @@ class Map extends Rect {
 		if(Std.is(i, Rect))  {
 			return collidesRect(try cast(i, Rect) catch(e:Dynamic) null);
 		}
-		throw new Error("Unsupported type for Map#collides.");
+		throw "Unsupported type for Map#collides.";
 	}
 
 	public function update() : Void {
@@ -460,7 +462,6 @@ class Map extends Rect {
 
 	public function loadNewMap(diff : Vec) : Map {
 		collisionInfo = Util.make2DArray(widthInTiles, heightInTiles, false);
-		transparency = Util.make2DArray(widthInTiles, heightInTiles, true);
 		diff.multiply(new Vec(widthInTiles, heightInTiles));
 		updatePersistentItems(diff);
 		Fathom.grid = new SpatialHash(new EntitySet());
@@ -477,7 +478,7 @@ class Map extends Rect {
 
 class BogusMapEntry extends Entity {
 
-	function new(x : Int = 0, y : Int = 0) {
+	public function new(x : Int = 0, y : Int = 0) {
 		super(x, y, 25, 25);
 	}
 

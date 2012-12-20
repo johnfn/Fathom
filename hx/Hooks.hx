@@ -66,10 +66,9 @@ class Hooks {
 		}
 	}
 
-	static public function rpgLike(speed : Int) : Void -> Void {
+	static public function rpgLike(e:MovingEntity, speed : Int) : Void -> Void {
 		return function() : Void {
-			this.vel.add(Util.movementVector().multiply(speed));
-			this.add(this.vel);
+			e.vel.add(Util.movementVector().multiply(speed));
 		}
 	}
 
@@ -84,13 +83,14 @@ class Hooks {
 			entity.vel.y = Math.min(entity.vel.y, 0);
 	}
 
+	/*
 	static public function fpsCounter() : Void -> String {
 		// With thanks to http://kaioa.com/node/83
-		var last : UInt = Math.round(haxe.Timer.getStamp() / 1000)();
+		var last : UInt = Math.round(Sys.time() / 1000)();
 		var ticks : UInt = 0;
 		var text : String = "--.- FPS";
 		return (function() : String {
-			var now : UInt = Math.round(haxe.Timer.getStamp() / 1000)();
+			var now : UInt = Math.round(Sys.time() / 1000)();
 			var delta : UInt = now - last;
 			ticks++;
 			if(delta >= 1000)  {
@@ -100,14 +100,15 @@ class Hooks {
 				last = now;
 			}
 			return text;
-		}
-);
+		});
 	}
+	*/
 
-	static public function flicker(who : Entity, duration : Int = 20, cb : Void -> Void = null) : Void -> Void {
+	static public function flicker(who : Entity, duration : Int = 20, cb : Void -> Void = null) : Dynamic -> Void {
 		var counter : Int = 0;
+		var fn: Dynamic -> Void;
 		who.isFlickering = true;
-		var fn : Function = function() : Void {
+		fn = function(_:Dynamic) : Void {
 			counter++;
 			who.visible = (Math.floor(counter / 3) % 2 == 0);
 			if(counter > duration)  {
@@ -121,23 +122,22 @@ class Hooks {
 		return fn;
 	}
 
-	static public function decel(decel : Float = 2.0) : Float -> Float {
-		var truncate : Function = function(val : Float) : Float {
+	static public function decel(e:MovingEntity, decel : Float = 2.0) : Void -> Void {
+		var truncate : Float -> Float = function(val : Float) : Float {
 			if(Math.abs(val) <= decel)
 				return 0;
 			return val;
-		}
-;
+		};
+
 		return function() : Void {
-			this.vel.map(truncate).addAwayFromZero(-decel, -decel);
-		}
-;
+			e.vel.map(truncate).addAwayFromZero(-decel, -decel);
+		};
 	}
 
-	static public function truncate() : Void -> Void {
+	static public function truncate(e:MovingEntity) : Void -> Void {
 		var cutoff : Float = 0.4;
 		var lowCutoff : Float = 20;
-		var cutoffFn : Function = function(val : Float) : Float {
+		var cutoffFn : Float -> Float = function(val : Float) : Float {
 			if(Math.abs(val) < cutoff)  {
 				return 0;
 			}
@@ -145,12 +145,11 @@ class Hooks {
 				return Util.sign(val) * lowCutoff;
 			//TODO: This hides a problem where falling velocity gets too large.
 			return val;
-		}
-;
+		};
+
 		return function() : Void {
-			this.vel.map(cutoffFn);
-		}
-;
+			e.vel.map(cutoffFn);
+		};
 	}
 
 

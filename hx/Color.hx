@@ -35,9 +35,9 @@ class Color {
 
 	public function read(s : String) : Color {
 		s = s.substring(1);
-		r = parseInt(s.substring(0, 2), 16);
-		g = parseInt(s.substring(2, 4), 16);
-		b = parseInt(s.substring(4, 6), 16);
+		r = Std.parseInt("0x" + s.substring(0, 2));
+		g = Std.parseInt("0x" + s.substring(2, 4));
+		b = Std.parseInt("0x" + s.substring(4, 6));
 		return this;
 	}
 
@@ -46,7 +46,7 @@ class Color {
 	}
 
 	public function toInt() : UInt {
-		return parseInt(toString().substring(1), 16);
+		return Std.parseInt("0x" + toString().substring(1));
 	}
 
 	public function randomizeRed(low : Int = 0, high : Int = 255) : Color {

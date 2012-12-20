@@ -18,7 +18,7 @@ class EntitySet extends Set {
 		return new EntitySet(this.toArray());
 	}
 
-	public function union() : EntitySet {
+	public function union(criteria:Array<Dynamic>) : EntitySet {
 		var eList : EntitySet = clone();
 		var resultList : EntitySet = new EntitySet([]);
 		var i : Int = 0;
@@ -33,18 +33,18 @@ class EntitySet extends Set {
 		return resultList;
 	}
 
-	public function all() : Bool {
-		return this.length == this.select.apply(this, criteria).length;
+	public function all(criteria:Array<Dynamic>) : Bool {
+		return this.length == this.select(criteria).length;
 	}
 
-	public function one() : Entity {
-		var results : EntitySet = this.select.apply(this, criteria);
+	public function one(criteria:Array<Dynamic>) : Entity {
+		var results : EntitySet = this.select(criteria);
 		if(results.length == 0)  {
-			throw new Error("EntitySet#one called with criteria " + criteria.toString() + ", but no results found.");
+			throw ("EntitySet#one called with criteria " + criteria.toString() + ", but no results found.");
 		}
 
 		else if(results.length > 1)  {
-			throw new Error("EntitySet#one called with criteria " + criteria.toString() + ", and " + results.length + " results found.");
+			throw ("EntitySet#one called with criteria " + criteria.toString() + ", and " + results.length + " results found.");
 		}
 		for(e in results/* AS3HX WARNING could not determine type for var: e exp: EIdent(results) type: EntitySet*/) {
 			return e;
@@ -55,12 +55,12 @@ class EntitySet extends Set {
 		return null;
 	}
 
-	public function any() : Bool {
-		return this.select.apply(this, criteria).length > 0;
+	public function any(criteria: Array<Dynamic>) : Bool {
+		return this.select(criteria).length > 0;
 	}
 
-	public function none() : Bool {
-		return this.select.apply(this, criteria).length == 0;
+	public function none(criteria: Array<Dynamic>) : Bool {
+		return this.select(criteria).length == 0;
 	}
 
 	// Filters a list by 1 criteria item. Returns the filtered list.
