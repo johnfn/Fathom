@@ -17,7 +17,6 @@
 
   import Hooks;
   import Util;
-  import MagicArray;
 
   public class Entity extends Graphic {
     private var events:Object = {};

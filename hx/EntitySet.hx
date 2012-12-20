@@ -1,5 +1,3 @@
-import flash.debugger.EnterDebugger;
-
 class EntitySet extends Set {
 
 	function new(entities : Array<Dynamic> = null) {

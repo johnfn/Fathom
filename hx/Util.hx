@@ -187,9 +187,6 @@ class Util {
 
 
 	public function new() {
-	}
-
-	static function __init__() {
 
 	}
 }

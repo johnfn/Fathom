@@ -10,7 +10,6 @@ import flash.geom.Rectangle;
 import flash.geom.Matrix;
 import Hooks;
 import Util;
-import MagicArray;
 
 class Graphic extends Sprite, implements IPositionable {
 	public var absX(getAbsX, never) : Float;
@@ -50,7 +49,7 @@ class Graphic extends Sprite, implements IPositionable {
 		spriteSheetHeight = -1;
 		facing = 1;
 		super();
-		if(height == -1) 
+		if(height == -1)
 			height = width;
 		this.cameraSpacePos = new Rect(0, 0, width, height);
 		this.entitySpacePos = new Rect(x, y, width, height);

@@ -1,18 +1,19 @@
+import flash.utils.TypedDictionary;
+
 // AnimationHandler takes care of animating Graphics. You add animations
 // with addAnimations(), turn one on with play(), and advance() will
 // take care of the rest.
 class AnimationHandler {
 	public var ticksPerFrame(never, setTicksPerFrame) : Int;
 
-	var animations : Dynamic;
+	var animations : TypedDictionary<String, Array<Dynamic>> = new TypedDictionary();
 	var currentAnimation : String;
 	var currentFrame : Int;
 	var currentTick : Int;
 	var _ticksPerFrame : Int;
 	var gfx : Graphic;
-	var andThenFn : Function;
+	var andThenFn: Void -> Void;
 	function new(s : Graphic) {
-		animations = { };
 		currentAnimation = "";
 		currentFrame = 0;
 		currentTick = 0;
@@ -35,7 +36,7 @@ class AnimationHandler {
 			frames.push([frameX + i, frameY]);
 			i++;
 		}
-		Reflect.setField(animations, name, frames);
+		animations.set(name, frames);
 	}
 
 	public function toString() : String {
@@ -59,19 +60,18 @@ class AnimationHandler {
 			framesWithY.push([frames[i], frameY]);
 			i++;
 		}
-		Reflect.setField(animations, name, framesWithY);
+		animations.set(name, framesWithY);
 	}
 
 	// In case you don't want to hold y constant, you can specify the x and y coordinate of
 		// each frame.
 		// addAnimationXY("walk", [[0, 0], [0, 1], [0, 2]]);
-		public function addAnimationXY(name : String, frames : Array<Dynamic>) : Void {
-		Reflect.setField(animations, name, frames);
+	public function addAnimationXY(name : String, frames : Array<Dynamic>) : Void {
+		animations.set(name, frames);
 	}
 
 	public function deleteAnimation(name : String) : Void {
-		This is an intentional compilation error. See the README for handling the delete keyword
-		delete Reflect.field(animations, name);
+		animations.delete(name);
 	}
 
 	/* Convenient function for adding many animations simultaneously.
@@ -85,16 +85,16 @@ class AnimationHandler {
 	    "numFrames" is the length of the animation.
 
 	    You can alternatively specify an array and a y value.
-	    */	public function addAnimations(animationList : Dynamic) : Void {
+	    */
+    public function addAnimations(animationList : Dynamic) : Void {
 		for(animName in Reflect.fields(animationList)) {
 			var val : Dynamic = Reflect.field(animationList, animName);
 			var frames : Array<Dynamic> = [];
 			var y : Int;
+
 			if(Reflect.field(val, "startPos"))  {
 				addAnimation(animName, Reflect.field(val, "startPos")[0], Reflect.field(val, "startPos")[1], Reflect.field(val, "numFrames"));
-			}
-
-			else  {
+			} else  {
 				addAnimationArray(animName, Reflect.field(val, "array"), Reflect.field(val, "y"));
 			}
 
@@ -107,30 +107,31 @@ class AnimationHandler {
 			return;
 		}
 		var lastFrame : Int = currentFrame;
-		var callback : Bool = false;
+		var cb : Bool = false;
+
 		// TODO: When/if I do issue #9, I should remove this.
 		++currentTick;
 		if(currentTick > _ticksPerFrame)  {
 			++currentFrame;
 			currentTick = 0;
-			if(currentFrame >= Reflect.field(animations, currentAnimation).length)  {
+			if(currentFrame >= animations.get(currentAnimation).length)  {
 				currentFrame = 0;
 				if(andThenFn != null)  {
 					andThenFn();
-					callback = true;
+					cb = true;
 					andThenFn = null;
 				}
 			}
 		}
 		// Update tile if necessary.
-		if(lastFrame != currentFrame && !callback)  {
-			this.gfx.setTile(Reflect.field(animations, currentAnimation)[currentFrame][0], Reflect.field(animations, currentAnimation)[currentFrame][1]);
+		if(lastFrame != currentFrame && !cb)  {
+			this.gfx.setTile(animations.get(currentAnimation)[currentFrame][0], animations.get(currentAnimation)[currentFrame][1]);
 		}
 ;
 	}
 
 	function hasAnyAnimations() : Bool {
-		for(i in Reflect.fields(animations)) {
+		for(i in animations) {
 			return true;
 		}
 
@@ -152,7 +153,7 @@ class AnimationHandler {
 
 	// Returns true if it's on the final frame of the animation, false otherwise.
 		public function lastFrame() : Bool {
-		return currentFrame == Reflect.field(animations, currentAnimation).length - 1 && currentTick == _ticksPerFrame - 1;
+		return currentFrame == animations.get(currentAnimation).length - 1 && currentTick == _ticksPerFrame - 1;
 	}
 
 	// Plays the animation, starting offsetInTicks ticks ahead of the
@@ -168,7 +169,8 @@ class AnimationHandler {
 
 	   animations.play("die").andThen(this.destroy);
 
- 	    */	public function andThen(f : Function) : AnimationHandler {
+ 	    */
+ 	   public function andThen(f) : AnimationHandler {
 		this.andThenFn = f;
 		return this;
 	}

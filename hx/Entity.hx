@@ -10,7 +10,6 @@ import flash.geom.Rectangle;
 import flash.geom.Matrix;
 import Hooks;
 import Util;
-import MagicArray;
 
 class Entity extends Graphic {
 	public var isStatic(getIsStatic, setIsStatic) : Bool;
@@ -53,7 +52,6 @@ class Entity extends Graphic {
 			this.rememberedParent = Fathom.container;
 			addToFathom();
 		}
-;
 	}
 
 	public function withDepth(d : Int) : Entity {
@@ -62,20 +60,21 @@ class Entity extends Graphic {
 	}
 
 	// Chainable methods.
-		//
-		// Often you'll want a lightweight custom Entity without wanting to
-		// code up an entirely new class that extends. Chainable methods are
-		// for you. If I want to make an explosion that quickly disappears,
-		// for instance, I can do something like this:
-		//
-		// new Entity().fromExternalMC("Explosion").ignoreCollisions().disappearAfter(20);
-		// TODO: These two need work.
-		public function listen(f : Function) : Entity {
+	//
+	// Often you'll want a lightweight custom Entity without wanting to
+	// code up an entirely new class that extends. Chainable methods are
+	// for you. If I want to make an explosion that quickly disappears,
+	// for instance, I can do something like this:
+	//
+	// new Entity().fromExternalMC("Explosion").ignoreCollisions().disappearAfter(20);
+	// TODO: These two need work.
+
+	public function listen(f) : Entity {
 		this.addEventListener(Event.ENTER_FRAME, f);
 		return this;
 	}
 
-	public function unlisten(f : Function) : Entity {
+	public function unlisten(f) : Entity {
 		this.removeEventListener(Event.ENTER_FRAME, f);
 		return this;
 	}
@@ -106,7 +105,7 @@ class Entity extends Graphic {
 	}
 
 	override public function addChild(child : DisplayObject) : DisplayObject {
-		if(!entityChildren) 
+		if(!entityChildren)
 			throw new Error("You need to call super() before addChild().");
 		Util.assert(!entityChildren.contains(child));
 		super.addChild(child);
@@ -119,7 +118,7 @@ class Entity extends Graphic {
 	// Remove child: The child entity does not belong to this entity as a child.
 		// It continues to exist in the game.
 		override public function removeChild(child : DisplayObject) : DisplayObject {
-		if(Std.is(child, Entity)) 
+		if(Std.is(child, Entity))
 			Util.assert(entityChildren.contains(child));
 		entityChildren.remove(child);
 		super.removeChild(child);
@@ -139,7 +138,7 @@ class Entity extends Graphic {
 			entityChildren[i].removeFromFathom(true);
 			i++;
 		}
-		if(!recursing && this.parent) 
+		if(!recursing && this.parent)
 			this.parent.removeChild(this);
 		Fathom.entities.remove(this);
 	}
@@ -148,7 +147,7 @@ class Entity extends Graphic {
        this except after a call to removeFromFathom(). */	public function addToFathom(recursing : Bool = false) : Void {
 		Util.assert(!destroyed);
 		Util.assert(!this.parent);
-		if(!recursing) 
+		if(!recursing)
 			rememberedParent.addChild(this);
 		Fathom.entities.add(this);
 		Util.assert(rememberedParent != null);

@@ -1,6 +1,4 @@
 ﻿package {
-	import flash.debugger.enterDebugger;
-
   public class EntitySet extends Set {
     function EntitySet(entities:Array = null):void {
       super(entities);

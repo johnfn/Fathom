@@ -42,13 +42,13 @@ class Hooks {
 	}
 
 	//TODO: onxxxx methods could be moved into an Events.as file.
-		static public function onLeaveMap(who : Entity, map : Map, cb : Function) : Void {
+		static public function onLeaveMap(who : Entity, map : Map, cb : Void -> Void) : Void {
 		if(who.x < 0 || who.y < 0 || who.x > map.width - who.width || who.y > map.height - who.width)  {
 			cb.call(who);
 		}
 	}
 
-	static public function loadNewMap(leftScreen : MovingEntity, map : Map) : Function {
+	static public function loadNewMap(leftScreen : MovingEntity, map : Map) : Void -> Void {
 		//TODO: This code is pretty obscure.
 		//TODO: This will only work if leftScreen.width is less than the tileSize.
 		//TODO: This should obviously be in Map, not Hooks.
@@ -57,39 +57,37 @@ class Hooks {
 			var smallerSize : Vec = map.sizeVector.clone().subtract(leftScreen.width);
 			var dir : Vec = leftScreen.vec().divide(smallerSize).map(Math.floor);
 			var toOtherSide : Vec = dir.clone().multiply(smallerSize);
-			if(toOtherSide.x > 0) 
+			if(toOtherSide.x > 0)
 				leftScreen.x = 1;
-			if(toOtherSide.x < 0) 
+			if(toOtherSide.x < 0)
 				leftScreen.x = map.sizeVector.x - map.tileSize + 1;
-			if(toOtherSide.y > 0) 
+			if(toOtherSide.y > 0)
 				leftScreen.y = 1;
-			if(toOtherSide.y < 0) 
+			if(toOtherSide.y < 0)
 				leftScreen.y = map.sizeVector.y - map.tileSize + 1;
 			map.loadNewMap(dir);
 		}
-;
 	}
 
-	static public function rpgLike(speed : Int) : Function {
+	static public function rpgLike(speed : Int) : Void -> Void {
 		return function() : Void {
 			this.vel.add(Util.movementVector().multiply(speed));
 			this.add(this.vel);
 		}
-;
 	}
 
 	static public function removeUnnecessaryVelocity(entity : MovingEntity) : Void {
-		if(entity.touchingRight) 
+		if(entity.touchingRight)
 			entity.vel.x = Math.min(entity.vel.x, 0);
-		if(entity.touchingLeft) 
+		if(entity.touchingLeft)
 			entity.vel.x = Math.max(entity.vel.x, 0);
-		if(entity.touchingTop) 
+		if(entity.touchingTop)
 			entity.vel.y = Math.max(entity.vel.y, 0);
-		if(entity.touchingBottom) 
+		if(entity.touchingBottom)
 			entity.vel.y = Math.min(entity.vel.y, 0);
 	}
 
-	static public function fpsCounter() : Function {
+	static public function fpsCounter() : Void -> String {
 		// With thanks to http://kaioa.com/node/83
 		var last : UInt = Math.round(haxe.Timer.getStamp() / 1000)();
 		var ticks : UInt = 0;
@@ -109,7 +107,7 @@ class Hooks {
 );
 	}
 
-	static public function flicker(who : Entity, duration : Int = 20, cb : Function = null) : Function {
+	static public function flicker(who : Entity, duration : Int = 20, cb : Void -> Void = null) : Void -> Void {
 		var counter : Int = 0;
 		who.isFlickering = true;
 		var fn : Function = function() : Void {
@@ -119,17 +117,16 @@ class Hooks {
 				who.isFlickering = false;
 				who.visible = true;
 				who.unlisten(fn);
-				if(cb != null) 
+				if(cb != null)
 					cb();
 			}
 		}
-;
 		return fn;
 	}
 
-	static public function decel(decel : Float = 2.0) : Function {
+	static public function decel(decel : Float = 2.0) : Float -> Float {
 		var truncate : Function = function(val : Float) : Float {
-			if(Math.abs(val) <= decel) 
+			if(Math.abs(val) <= decel)
 				return 0;
 			return val;
 		}
@@ -140,14 +137,14 @@ class Hooks {
 ;
 	}
 
-	static public function truncate() : Function {
+	static public function truncate() : Void -> Void {
 		var cutoff : Float = 0.4;
 		var lowCutoff : Float = 20;
 		var cutoffFn : Function = function(val : Float) : Float {
 			if(Math.abs(val) < cutoff)  {
 				return 0;
 			}
-			if(Math.abs(val) > lowCutoff) 
+			if(Math.abs(val) > lowCutoff)
 				return Util.sign(val) * lowCutoff;
 			//TODO: This hides a problem where falling velocity gets too large.
 			return val;

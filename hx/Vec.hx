@@ -44,8 +44,6 @@ class Vec implements IPositionable {
 	}
 
 	public function randomize() : Vec {
-    // TODO
-    /*
 		var r : Float = Util.randRange(0, 4);
 		if(r == 0)  {
 			return new Vec(0, 1);
@@ -59,7 +57,6 @@ class Vec implements IPositionable {
 		if(r == 3)  {
 			return new Vec(-1, 0);
 		}
-    */
 		return new Vec(0, 0);
 	}
 
@@ -95,9 +92,9 @@ class Vec implements IPositionable {
 	}
 
 	public function NaNsTo(val : Float) : Vec {
-		if(Math.isNaN(x)) 
+		if(Math.isNaN(x))
 			x = val;
-		if(Math.isNaN(y)) 
+		if(Math.isNaN(y))
 			y = val;
 		return this;
 	}
@@ -169,9 +166,9 @@ class Vec implements IPositionable {
 
 	// TODO: I should think about how to mark "ignore this value". Here I do it with -1.
 		public function threshold(cutoffX : Float, cutoffY : Float = -1) : Vec {
-		if(cutoffX != -1 && Math.abs(x) < Math.abs(cutoffX)) 
+		if(cutoffX != -1 && Math.abs(x) < Math.abs(cutoffX))
 			x = 0;
-		if(cutoffY != -1 && Math.abs(y) < Math.abs(cutoffY)) 
+		if(cutoffY != -1 && Math.abs(y) < Math.abs(cutoffY))
 			y = 0;
 		return this;
 	}
@@ -192,7 +189,7 @@ class Vec implements IPositionable {
 		return x < (y) ? x : y;
 	}
 
-	/* Create a unique key to store in an object. */	
+	/* Create a unique key to store in an object. */
   public function asKey() : String {
 		return x + "," + y;
 	}
