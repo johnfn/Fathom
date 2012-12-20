@@ -1,10 +1,42 @@
-import flash.utils.Proxy;
-import nme.utils.Proxy;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.KeyboardEvent;
+import flash.utils.TypedDictionary;
 
-class MagicKeyObject extends Proxy {
+class MagicKeyObject {
+	public var A(getA, never): Bool; function getA() { return getProperty("A"); }
+	public var B(getB, never): Bool; function getB() { return getProperty("B"); }
+	public var C(getC, never): Bool; function getC() { return getProperty("C"); }
+	public var D(getD, never): Bool; function getD() { return getProperty("D"); }
+	public var E(getE, never): Bool; function getE() { return getProperty("E"); }
+	public var F(getF, never): Bool; function getF() { return getProperty("F"); }
+	public var G(getG, never): Bool; function getG() { return getProperty("G"); }
+	public var H(getH, never): Bool; function getH() { return getProperty("H"); }
+	public var I(getI, never): Bool; function getI() { return getProperty("I"); }
+	public var J(getJ, never): Bool; function getJ() { return getProperty("J"); }
+	public var K(getK, never): Bool; function getK() { return getProperty("K"); }
+	public var L(getL, never): Bool; function getL() { return getProperty("L"); }
+	public var M(getM, never): Bool; function getM() { return getProperty("M"); }
+	public var N(getN, never): Bool; function getN() { return getProperty("N"); }
+	public var O(getO, never): Bool; function getO() { return getProperty("O"); }
+	public var P(getP, never): Bool; function getP() { return getProperty("P"); }
+	public var Q(getQ, never): Bool; function getQ() { return getProperty("Q"); }
+	public var R(getR, never): Bool; function getR() { return getProperty("R"); }
+	public var S(getS, never): Bool; function getS() { return getProperty("S"); }
+	public var T(getT, never): Bool; function getT() { return getProperty("T"); }
+	public var U(getU, never): Bool; function getU() { return getProperty("U"); }
+	public var V(getV, never): Bool; function getV() { return getProperty("V"); }
+	public var W(getW, never): Bool; function getW() { return getProperty("W"); }
+	public var X(getX, never): Bool; function getX() { return getProperty("X"); }
+	public var Y(getY, never): Bool; function getY() { return getProperty("Y"); }
+	public var Z(getZ, never): Bool; function getZ() { return getProperty("Z"); }
+
+  public var Enter(getEnter, never): Bool; function getEnter() { return getProperty("Enter"); }
+  public var Space(getSpace, never): Bool; function getSpace() { return getProperty("Space"); }
+  public var Left(getLeft, never): Bool;   function getLeft()  { return getProperty("Left"); }
+  public var Up(getUp, never): Bool;       function getUp()    { return getProperty("Up"); }
+  public var Right(getRight, never): Bool; function getRight() { return getProperty("Right"); }
+  public var Down(getDown, never): Bool;   function getDown()  { return getProperty("Down"); }
 
 	static var Key : Dynamic = keysToKeyCodes();
 	var type : Int;
@@ -26,23 +58,24 @@ class MagicKeyObject extends Proxy {
 
 	}
 
-	override function getProperty(which : Dynamic) : Dynamic {
+	function getProperty(which : Dynamic) : Dynamic {
 		which = Reflect.field(Key, Std.string(which));
 		return (keyStates[which].state == type || keyStates[which].state == otherType);
 	}
 
 	static function keysToKeyCodes() : Dynamic {
-		var res : Dynamic = { };
-		Reflect.setField(res, "Enter", 13);
-		Reflect.setField(res, "Space", 32);
-		Reflect.setField(res, "Left", 37);
-		Reflect.setField(res, "Up", 38);
-		Reflect.setField(res, "Right", 39);
-		Reflect.setField(res, "Down", 40);
+		var res: TypedDictionary<String, Int> = new TypedDictionary();
+		res.set("Enter", 13);
+		res.set("Space", 32);
+		res.set("Left", 37);
+		res.set("Up", 38);
+		res.set("Right", 39);
+		res.set("Down", 40);
+
 		// Add A - Z.
 		var k : Int = 65;
 		while(k <= 65 + 26) {
-			res[String.fromCharCode(k)] = k;
+			res.set(String.fromCharCode(k), k);
 			k++;
 		}
 ;

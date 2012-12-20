@@ -2,7 +2,6 @@ import flash.display.Sprite;
 import flash.geom.Point;
 import flash.utils.Dictionary;
 import flash.geom.Rectangle;
-import mx.core.BitmapAsset;
 import flash.display.BitmapData;
 import flash.display.Bitmap;
 import Color;
@@ -85,7 +84,7 @@ class Map extends Rect {
 	}
 
 	public function fromImage(mapClass : Class<Dynamic>, groundList : Array<Dynamic>, persistentItemMapping : Dynamic) : Map {
-		var bAsset : BitmapAsset = Type.createInstance(mapClass, []);
+		var bAsset = Type.createInstance(mapClass, []);
 		var bData : BitmapData = bAsset.bitmapData;
 		this.grounds = groundList;
 		this.persistentItemMapping = persistentItemMapping;

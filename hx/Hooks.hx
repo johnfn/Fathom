@@ -3,7 +3,7 @@ import flash.geom.Point;
 
 class Hooks {
 
-	static public function move(direction : Vec) : Function {
+	static public function move(direction : Vec) : Void -> Void {
 		return function() : Void {
 			this.add(direction);
 		}
@@ -11,22 +11,22 @@ class Hooks {
 	}
 
 	//TODO...
-		static public function after(time : Int, callback : Function) : Function {
+  static public function after(time : Int, cb : Void -> Dynamic) : Void -> Dynamic {
 		var timeLeft : Int = time;
 		return function() : Void {
 			if(timeLeft-- == 0)  {
-				callback();
+				cb();
 			}
 		}
 ;
 	}
 
 	//TODO...
-		static public function entityDestroyed(e : Entity, callback : Function) : Function {
+		static public function entityDestroyed(e : Entity, cb : Void -> Void) : Void -> Void {
 		var sentCallback : Bool = false;
 		return function() : Void {
 			if(!sentCallback)  {
-				callback();
+				cb();
 				sentCallback = true;
 			}
 		}
@@ -42,9 +42,9 @@ class Hooks {
 	}
 
 	//TODO: onxxxx methods could be moved into an Events.as file.
-		static public function onLeaveMap(who : Entity, map : Map, callback : Function) : Void {
+		static public function onLeaveMap(who : Entity, map : Map, cb : Function) : Void {
 		if(who.x < 0 || who.y < 0 || who.x > map.width - who.width || who.y > map.height - who.width)  {
-			callback.call(who);
+			cb.call(who);
 		}
 	}
 
@@ -109,7 +109,7 @@ class Hooks {
 );
 	}
 
-	static public function flicker(who : Entity, duration : Int = 20, callback : Function = null) : Function {
+	static public function flicker(who : Entity, duration : Int = 20, cb : Function = null) : Function {
 		var counter : Int = 0;
 		who.isFlickering = true;
 		var fn : Function = function() : Void {
@@ -119,8 +119,8 @@ class Hooks {
 				who.isFlickering = false;
 				who.visible = true;
 				who.unlisten(fn);
-				if(callback != null) 
-					callback();
+				if(cb != null) 
+					cb();
 			}
 		}
 ;

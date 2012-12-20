@@ -3,14 +3,11 @@ import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.filters.DropShadowFilter;
 import flash.geom.Point;
-import flash.debugger.EnterDebugger;
-import mx.core.BitmapAsset;
 import flash.utils.Dictionary;
 import flash.display.BitmapData;
 import flash.display.Bitmap;
 import flash.geom.Rectangle;
 import flash.geom.Matrix;
-import flash.events.*;
 import Hooks;
 import Util;
 import MagicArray;
@@ -76,7 +73,6 @@ class Graphic extends Sprite, implements IPositionable {
 		if(this.parent)  {
 			this.parent.setChildIndex(this, this.parent.numChildren - 1);
 		}
-;
 	}
 
 	public function getAbsX() : Float {
@@ -105,7 +101,7 @@ class Graphic extends Sprite, implements IPositionable {
 		public function setTile(x : Int, y : Int) : Graphic {
 		Util.assert(this.spritesheetObj != null);
 		Util.assert(entityChildren.length == 0);
-		var bAsset : BitmapAsset = spritesheetObj;
+		var bAsset = spritesheetObj;
 		//TODO: Cache this
 		var uid : String = Util.className(spritesheetObj) + x + " " + y;
 		if(!(Reflect.field(cachedAssets, uid)))  {

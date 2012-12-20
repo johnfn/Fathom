@@ -1,7 +1,6 @@
 import flash.display.Sprite;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import mx.core.BitmapAsset;
 import flash.display.BitmapData;
 import flash.display.Stage;
 

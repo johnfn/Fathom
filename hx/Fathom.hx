@@ -1,5 +1,3 @@
-import flash.utils.ClearInterval;
-import flash.utils.SetInterval;
 import flash.display.MovieClip;
 import flash.display.Stage;
 import flash.events.Event;
