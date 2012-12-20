@@ -12,6 +12,8 @@ import flash.geom.Matrix;
 import Hooks;
 import Util;
 
+using Lambda;
+
 class Entity extends Graphic {
 	public var isStatic(getIsStatic, setIsStatic) : Bool;
 
@@ -24,6 +26,8 @@ class Entity extends Graphic {
 	static var counter : Int = 0;
 	var uid : Float;
 	var rememberedParent : Graphic;
+
+	var entityChildren : Array<Entity>;
 	// Allows for a fast check to see if this entity moves.
 		var _isStatic : Bool;
 	public function getIsStatic() : Bool {
@@ -36,6 +40,7 @@ class Entity extends Graphic {
 	}
 
 	public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
+		entityChildren = [];
 		events = { };
 		isFlickering = false;
 		destroyed = false;
@@ -81,9 +86,9 @@ class Entity extends Graphic {
 	}
 
 	public function debugDraw() : Entity {
-		graphics.beginFill(0xFF0000);
-		graphics.drawRect(0, 0, this.width, this.height);
-		graphics.endFill();
+		sprite.graphics.beginFill(0xFF0000);
+		sprite.graphics.drawRect(0, 0, this.width, this.height);
+		sprite.graphics.endFill();
 		return this;
 	}
 
@@ -105,11 +110,11 @@ class Entity extends Graphic {
 		y = Fathom.stage.height / 2 - this.height / 2;
 	}
 
-	override public function addChild(child : Graphic) : Graphic {
+	public function addChild(child : Entity) : Entity {
 		if(entityChildren != null)
 			throw "You need to call super() before addChild().";
 
-		Util.assert(Lambda.indexOf(entityChildren, child) != -1);
+		Util.assert(entityChildren.has(child));
 		sprite.addChild(child.sprite);
 		if(Std.is(child, Entity))  {
 			entityChildren.push(child);
@@ -119,12 +124,12 @@ class Entity extends Graphic {
 
 	// Remove child: The child entity does not belong to this entity as a child.
 	// It continues to exist in the game.
-	override public function removeChild(child : Graphic) : Graphic {
+	public function removeChild(child : Entity) : Entity {
 		if(Std.is(child, Entity))
-			Util.assert(Lambda.indexOf(entityChildren, child) != -1);
+			Util.assert(entityChildren.has(child));
 
 		entityChildren.remove(child);
-		sprite.removeChild(child);
+		sprite.removeChild(child.sprite);
 		return child;
 	}
 
@@ -153,7 +158,7 @@ class Entity extends Graphic {
 		Util.assert(!destroyed);
 		Util.assert(this.parent == null);
 		if(!recursing)
-			rememberedParent.addChild(this);
+			rememberedParent.sprite.addChild(this.sprite);
 		Fathom.entities.add(this);
 		Util.assert(rememberedParent != null);
 	}
@@ -179,7 +184,7 @@ class Entity extends Graphic {
 	}
 
 	public function sortDepths() : Void {
-		entityChildren.sort(function(a : Entity, b : Entity) : Int {
+		entityChildren.sort(function(a : Graphic, b : Graphic) : Int {
 			return a.depth - b.depth;
 		});
 
@@ -193,7 +198,7 @@ class Entity extends Graphic {
 	//TODO: Group strings to enums with Inheritable property.
 	//TODO: There is a possible namespace collision here. assert no 2 groups have same name.
 	//TODO: Enumerations are better.
-	public function groups() : Set {
+	public function groups() : Set<String> {
 		return groupSet.concat(Util.className(this));
 	}
 
@@ -206,10 +211,11 @@ class Entity extends Graphic {
 	}
 
 	public function collidesPt(point : Point) : Bool {
-		return hitTestPoint(point.x, point.y);
+		return point.x >= this.x && point.x <= this.x + this.width &&
+		       point.y >= this.y && point.y <= this.y + this.height;
 	}
 
-	override public function update(e : EntitySet) : Void {
+	override public function update(e : Set<Entity>) : Void {
 		super.update(e);
 	}
 
@@ -218,7 +224,7 @@ class Entity extends Graphic {
 	}
 
 	// Modes for which this entity receives events.
-		public function modes() : Array<Dynamic> {
+	public function modes() : Array<Dynamic> {
 		return [0];
 	}
 

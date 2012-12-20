@@ -119,7 +119,7 @@ class Map extends Rect {
 
 	function updatePersistentItems(diff : Vec) : Void {
 		hideCurrentPersistentItems();
-		for(e in Fathom.entities.select(["!persistent"])/* AS3HX WARNING could not determine type for var: e exp: ECall(EField(EField(EIdent(Fathom),entities),select),[EConst(CString(!persistent))]) type: null*/) {
+		for(e in Fathom.entities.select(["!persistent"])) {
 			e.destroy();
 		}
 
@@ -463,7 +463,7 @@ class Map extends Rect {
 		collisionInfo = Util.make2DArray(widthInTiles, heightInTiles, false);
 		diff.multiply(new Vec(widthInTiles, heightInTiles));
 		updatePersistentItems(diff);
-		Fathom.grid = new SpatialHash(new EntitySet());
+		Fathom.grid = new SpatialHash(new Set<Entity>());
 		Fathom.grid.loadMap(this, bogusmapentry);
 		Fathom.container.sortDepths();
 		return this;
@@ -487,7 +487,7 @@ class BogusMapEntry extends Entity {
 		return true;
 	}
 
-	override public function groups() : Set {
+	override public function groups() : Set<String> {
 		return super.groups().concat("map");
 	}
 

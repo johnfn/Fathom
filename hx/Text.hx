@@ -149,13 +149,13 @@ class Text extends Entity {
 			}
 			textField.appendText(that.content.charAt(counter));
 			counter++;
-		}
-;
+		};
+
 		listen(this.typewriteTick);
 		return this;
 	}
 
-	override public function groups() : Set {
+	override public function groups() : Set<String> {
 		return super.groups().concat("no-camera", "non-blocking");
 	}
 

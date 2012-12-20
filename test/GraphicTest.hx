@@ -8,8 +8,6 @@ class GraphicTest extends haxe.unit.TestCase {
   override public function setup() {
     parentG = new Graphic(0, 0, 10, 10);
     childG  = new Graphic(0, 0, 10, 10);
-
-    parentG.addChild(childG);
   }
 
   override public function tearDown() {

@@ -99,7 +99,7 @@ class MagicKeyObject {
 	// You should never have to call this function.
 		// TODO: Move into Fathom, I guess.
 		// TODO: should there be a container...which i construct..? I'm confused.
-		static public function _initializeKeyInput(container : Sprite) : Void {
+	static public function _initializeKeyInput() : Void {
 		Fathom.stage.addEventListener(KeyboardEvent.KEY_DOWN, _keyDown, false, 0, true);
 		Fathom.stage.addEventListener(KeyboardEvent.KEY_UP, _keyUp, false, 0, true);
 		var i : Int = 0;

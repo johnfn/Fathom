@@ -8,6 +8,7 @@ import flash.display.BitmapData;
 import flash.display.Bitmap;
 import flash.geom.Rectangle;
 import flash.geom.Matrix;
+import flash.events.Event;
 import Hooks;
 import Util;
 
@@ -33,8 +34,8 @@ class Graphic implements IPositionable {
 	public var animations : AnimationHandler;
 	var pixels : Bitmap;
 	var spritesheet : Array<Dynamic>;
-	var groupSet : Set;
-	var entityChildren : Array<Dynamic>;
+	var groupSet : Set<String>;
+	// TODO: Rename
 	var _depth : Int;
 	static var cachedAssets : Dictionary = new Dictionary();
 	// Rename spritesheetObj and spritesheet
@@ -53,12 +54,15 @@ class Graphic implements IPositionable {
 	var _parent:Graphic;
 	public var parent(getParent, never): Graphic;
 
+	//TODO, obviously...
+	public function HACK_sprite():Sprite {
+		return sprite;
+	}
 
 	public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
 		pixels = new Bitmap();
 		spritesheet = [];
 		groupSet = new Set(["persistent"]);
-		entityChildren = [];
 		_depth = 0;
 		spritesheetObj = null;
 		spriteSheetWidth = -1;
@@ -70,16 +74,19 @@ class Graphic implements IPositionable {
 		sprite.width = width;
 		sprite.height = height;
 
-		if(height == -1)
+		if (height == -1)
 			height = width;
+
 		this.cameraSpacePos = new Rect(0, 0, width, height);
 		this.entitySpacePos = new Rect(x, y, width, height);
 		this.x = x;
 		this.y = y;
-		if(height != -1)  {
+
+		if (height != -1)  {
 			this.height = height;
 		}
-		if(width != -1)  {
+
+		if (width != -1)  {
 			this.width = width;
 		}
 		animations = new AnimationHandler(this);
@@ -87,10 +94,16 @@ class Graphic implements IPositionable {
 		sprite.addChild(pixels);
 	}
 
-	public function addChild(c:Graphic): Graphic {
-		sprite.addChild(c.sprite);
+	public function addEventListener(etype, f: Event -> Void) {
+		sprite.addEventListener(etype, f);
+	}
 
-		return c;
+	public function removeEventListener(etype, f: Event -> Void) {
+		sprite.removeEventListener(etype, f);
+	}
+
+	public function toString(): String {
+		return "[Graphic]";
 	}
 
 	// blabla... blame some optimizations in Map again
@@ -132,7 +145,6 @@ class Graphic implements IPositionable {
 	// Set this entities graphics to be the sprite at (x, y) on the provided spritesheet.
 		public function setTile(x : Int, y : Int) : Graphic {
 		Util.assert(this.spritesheetObj != null);
-		Util.assert(entityChildren.length == 0);
 		var bAsset = spritesheetObj;
 		//TODO: Cache this
 		var uid : String = Util.className(spritesheetObj) + x + " " + y;
@@ -149,7 +161,7 @@ class Graphic implements IPositionable {
 		if(facing == -1)  {
 			pixels.bitmapData = flipBitmapData(pixels.bitmapData);
 		}
-;
+
 		if(!animations.hasAnimation("default"))  {
 			animations.addAnimation("default", x, y, 1);
 		}
@@ -262,7 +274,7 @@ class Graphic implements IPositionable {
 	}
 
 	//TODO...
-	public function update(e : EntitySet) : Void {
+	public function update(e : Set<Entity>) : Void {
 		animations.advance();
 		Fathom.camera.translateSingleObject(this);
 	}

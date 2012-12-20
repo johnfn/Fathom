@@ -17,16 +17,16 @@ class Vec implements IPositionable {
 		return _x;
 	}
 
-	public function setX(val : Float) : Void {
-		this._x = val;
+	public function setX(val : Float) : Float {
+		return this._x = val;
 	}
 
 	public function getY() : Float {
 		return _y;
 	}
 
-	public function setY(val : Float) : Void {
-		this._y = val;
+	public function setY(val : Float) : Float {
+		return this._y = val;
 	}
 
 	public function equals(v : Vec) : Bool {

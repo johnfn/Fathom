@@ -24,12 +24,12 @@ class Rect extends Vec, implements IPositionable {
 		this.bottom = this.y + this.height;
 	}
 
-	override public function setX(val : Float) : Void {
-		_x = val;
+	override public function setX(val : Float) : Float {
+		return _x = val;
 	}
 
-	override public function setY(val : Float) : Void {
-		_y = val;
+	override public function setY(val : Float) : Float {
+		return _y = val;
 	}
 
 	public function setWidth(val : Float) : Float {

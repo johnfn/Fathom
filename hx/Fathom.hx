@@ -3,6 +3,8 @@ import flash.display.Stage;
 import flash.events.Event;
 import flash.utils.Dictionary;
 
+using Lambda;
+
 class Fathom {
 	static public var camera(getCamera, never) : Camera;
 	static public var paused(getPaused, never) : Bool;
@@ -23,7 +25,7 @@ class Fathom {
 
 	static public var mapRef : Map;
 	static public var fpsTxt : Text;
-	static public var entities : EntitySet = new EntitySet([]);
+	static public var entities : Set<Entity> = new Set<Entity>([]);
 	static public var container : Entity;
 	static public var initialized : Bool = false;
 	static public var stage : Stage;
@@ -77,7 +79,7 @@ class Fathom {
 		Fathom.initialized = true;
 		Fathom.FPS = FPS;
 		Fathom.container = new Entity();
-		Fathom.stage.addChild(Fathom.container);
+		Fathom.stage.addChild(Fathom.container.HACK_sprite());
 		Fathom._camera = new Camera(stage).scaleBy(1).setEaseSpeed(3);
 
 		/*
@@ -89,7 +91,7 @@ class Fathom {
 		//fpsTxt.visible = false;
 		*/
 
-		MagicKeyObject._initializeKeyInput(container);
+		MagicKeyObject._initializeKeyInput();
 		grid = new SpatialHash(Fathom.entities.select([]));
 	}
 
@@ -107,33 +109,35 @@ class Fathom {
 	}
 
 	// TODO: These should be static functions on MovingEntity.
-		// A fast way to find collisions is to subdivide the map into a grid and
-		// see if any individual square of the grid contains more than one item in
-		// it.
-		static function moveEverything() : Void {
-		var list : Set = movingEntities().filter(function(e : MovingEntity) : Bool {
-			return e.modes().contains(currentMode);
-		}
-);
+	// A fast way to find collisions is to subdivide the map into a grid and
+	// see if any individual square of the grid contains more than one item in
+	// it.
+	static function moveEverything() : Void {
+		var active: MovingEntity -> Bool = function(e : MovingEntity) : Bool {
+			return e.modes().has(currentMode);
+		};
+
+		var list : Set<Entity> = cast(movingEntities().filter(active), Set<Entity>);
+
 		// TODO: Optimization: You shouldn't have to recreate this
 		// hash every loop.
 		//grid = new SpatialHash(Fathom.entities.select());
 		// Move every non-static entity.
-		for(e in list/* AS3HX WARNING could not determine type for var: e exp: EIdent(list) type: Set*/) {
+		for(e in list) {
 			var oldVelX : Float = e.vel.x;
 			var oldVelY : Float = e.vel.y;
 			var onceThrough : Bool = true;
-			e.xColl = new EntitySet();
-			e.yColl = new EntitySet();
+			e.xColl = new Set<Entity>();
+			e.yColl = new Set<Entity>();
 			// Resolve 1 px in the x-direction at a time...
-						while(onceThrough || oldVelX != 0) {
+			while(onceThrough || oldVelX != 0) {
 				// Attempt to resolve as much of dy as possible on every tick.
-								while(oldVelY != 0) {
+				while(oldVelY != 0) {
 					var amtY : Float = Util.bind(oldVelY, -1, 1);
 					e.y += amtY;
 					oldVelY -= amtY;
 					if(grid.collides(e))  {
-						var yColliders : EntitySet = grid.getColliders(e);
+						var yColliders : Set<Entity> = grid.getColliders(e);
 						trace(yColliders.length);
 						e.yColl.extend(yColliders);
 						if(yColliders.any("!non-blocking"))  {
@@ -149,7 +153,7 @@ class Fathom {
 				e.x += amtX;
 				oldVelX -= amtX;
 				if(grid.collides(e))  {
-					var xColliders : EntitySet = grid.getColliders(e);
+					var xColliders : Set<Entity> = grid.getColliders(e);
 					e.xColl.extend(xColliders);
 					if(xColliders.any("!non-blocking"))  {
 						e.x -= amtX;
@@ -169,11 +173,10 @@ class Fathom {
 ;
 	}
 
-	static function movingEntities() : EntitySet {
-		return Fathom.entities.select(function(e : Entity) : Bool {
+	static function movingEntities() : Set<Entity> {
+		return Fathom.entities.select([function(e : Entity) : Bool {
 			return !e.isStatic;
-		}
-);
+		}]);
 	}
 
 	static function updateFPS() : Void {
@@ -183,7 +186,7 @@ class Fathom {
 	static function update(event : Event) : Void {
 		// We copy the entity list so that it doesn't change while we're
 		// iterating through it.
-		var list : EntitySet = entities.select([]);
+		var list : Set<Entity> = entities.select([]);
 		// Similarly, if something changes the current mode, that shouldn't
 		// be reflected until the next update cycle.
 		var cachedMode : Int = currentMode;

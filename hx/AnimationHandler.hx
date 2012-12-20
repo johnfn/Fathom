@@ -1,4 +1,5 @@
 import flash.utils.TypedDictionary;
+using Lambda;
 
 // AnimationHandler takes care of animating Graphics. You add animations
 // with addAnimations(), turn one on with play(), and advance() will
@@ -141,7 +142,7 @@ class AnimationHandler {
 	}
 
 	public function hasAnimation(name : String) : Bool {
-		return (Lambda.has(animations, name));
+		return animations.has(name);
 	}
 
 	public function play(name : String) : AnimationHandler {

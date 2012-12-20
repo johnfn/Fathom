@@ -7,22 +7,22 @@ import Util;
 class MovingEntity extends Entity {
 
 	/* Velocity of the MovingEntity. */	public var vel : Vec;
-	public var xColl : EntitySet;
-	public var yColl : EntitySet;
+	public var xColl : Set<Entity>;
+	public var yColl : Set<Entity>;
 	public var touchingLeft : Bool;
 	public var touchingRight : Bool;
 	public var touchingTop : Bool;
 	public var touchingBottom : Bool;
-	/* List of all entities that this entity collided with in this time step. */	var collisionList : EntitySet;
+	/* List of all entities that this entity collided with in this time step. */	var collisionList : Set<Entity>;
 	function new(x : Float = 0, y : Float = 0, width : Float = 20, height : Float = -1) {
 		vel = new Vec(0, 0);
-		xColl = new EntitySet();
-		yColl = new EntitySet();
+		xColl = new Set<Entity>();
+		yColl = new Set<Entity>();
 		touchingLeft = false;
 		touchingRight = false;
 		touchingTop = false;
 		touchingBottom = false;
-		collisionList = new EntitySet([]);
+		collisionList = new Set<Entity>([]);
 		super(x, y, width, height);
 		_isStatic = false;
 	}
@@ -32,8 +32,8 @@ class MovingEntity extends Entity {
 		return xColl.any(args) || yColl.any(args);
 	}
 
-	public function touchingSet(criteria: Array<Dynamic>) : EntitySet {
-		return new EntitySet(Set.merge(xColl, yColl).toArray()).select(criteria);
+	public function touchingSet(criteria: Array<Dynamic>) : Set<Entity> {
+		return new Set<Entity>(xColl.clone().extend(yColl).toArray()).select(criteria);
 	}
 
 	public function isBlocked() : Bool {

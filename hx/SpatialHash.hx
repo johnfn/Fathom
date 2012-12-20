@@ -9,7 +9,7 @@ class SpatialHash {
 	var gridWidth : Int;
 	var gridHeight : Int;
 
-	public function new(list : EntitySet) {
+	public function new(list : Set<Entity>) {
 		widthInTiles = 25;
 		heightInTiles = 25;
 		gridWidth = 25;
@@ -18,7 +18,7 @@ class SpatialHash {
 			return [];
 		});
 
-		for(e in list/* AS3HX WARNING could not determine type for var: e exp: EIdent(list) type: EntitySet*/) {
+		for(e in list/* AS3HX WARNING could not determine type for var: e exp: EIdent(list) type: Set<Entity>*/) {
 			var coords : Array<Dynamic> = getCoords(e);
 			var j : Int = 0;
 			while(j < coords.length) {
@@ -73,8 +73,8 @@ class SpatialHash {
 		return result;
 	}
 
-	/* Return the entity at x, y in the spatial hash. */	public function getAt(x : Int, y : Int) : EntitySet {
-		return new EntitySet(grid[x][y]);
+	/* Return the entity at x, y in the spatial hash. */	public function getAt(x : Int, y : Int) : Set<Entity> {
+		return new Set<Entity>(grid[x][y]);
 	}
 
 	/* Returns whether the entity e collides with any object in the hash,
@@ -101,8 +101,8 @@ class SpatialHash {
 		return false;
 	}
 
-	/* Return every entity the entity e collides with, excluding itself. */	public function getColliders(e : Entity) : EntitySet {
-		var result : EntitySet = new EntitySet();
+	/* Return every entity the entity e collides with, excluding itself. */	public function getColliders(e : Entity) : Set<Entity> {
+		var result : Set<Entity> = new Set<Entity>();
 		var coords : Array<Dynamic> = getCoords(e);
 		var i : Int = 0;
 		while(i < coords.length) {
