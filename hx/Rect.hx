@@ -24,14 +24,12 @@ class Rect extends Vec, implements IPositionable {
 		this.bottom = this.y + this.height;
 	}
 
-	override public function setX(val : Float) : Float {
+	override public function setX(val : Float) : Void {
 		_x = val;
-		return val;
 	}
 
-	override public function setY(val : Float) : Float {
+	override public function setY(val : Float) : Void {
 		_y = val;
-		return val;
 	}
 
 	public function setWidth(val : Float) : Float {
@@ -75,7 +73,8 @@ class Rect extends Vec, implements IPositionable {
 	/* Is i contained entirely within this Rect? i can be either a Rect
      * or a Point.
      *
-     * This is NOT a collision detection test. This is a contains test. */	public function contains(i : Dynamic) : Bool {
+     * This is NOT a collision detection test. This is a contains test. */
+    public function contains(i : Dynamic) : Bool {
 		if(Std.is(i, Vec))  {
 			var p : Vec = try cast(i, Vec) catch(e:Dynamic) null;
 			return x <= p.x && p.x < right && y <= p.y && p.y < bottom;

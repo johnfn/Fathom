@@ -456,8 +456,7 @@ class Map extends Rect {
 		// I have this suspicion that I don't need to keep adding the bitmapData TODO
 		// Add imgData to screen.
 		var bmp : Bitmap = new Bitmap(imgData);
-		graphics.addChild(bmp);
-		graphics.graphics.drawRect(0, 0, 25, 25);
+		graphics.addDO(bmp);
 	}
 
 	public function loadNewMap(diff : Vec) : Map {

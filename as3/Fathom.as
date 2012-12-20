@@ -32,7 +32,7 @@
     public static var MCPool:Object = {};
 
     public function Fathom() {
-      throw new Error("You can't initialize a Fathom object. Call the static methods on Fathom instead.")
+      throw ("You can't initialize a Fathom object. Call the static methods on Fathom instead.")
     }
 
     public static function get paused():Boolean { return _paused; }

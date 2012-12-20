@@ -11,7 +11,9 @@ import flash.geom.Matrix;
 import Hooks;
 import Util;
 
-class Graphic extends Sprite, implements IPositionable {
+class Graphic implements IPositionable {
+	var sprite:Sprite;
+
 	public var absX(getAbsX, never) : Float;
 	public var absY(getAbsY, never) : Float;
 	public var spriteX(getSpriteX, never) : Int;
@@ -21,6 +23,8 @@ class Graphic extends Sprite, implements IPositionable {
 	public var depth(getDepth, setDepth) : Int;
 	public var cameraSpaceX(getCameraSpaceX, setCameraSpaceX) : Float;
 	public var cameraSpaceY(getCameraSpaceY, setCameraSpaceY) : Float;
+	public var numChildren(getNumChildren, never): Int;
+	public var visible(getVisible, setVisible): Bool;
 
 	// The location of the entity, before camera transformations.
 	var entitySpacePos : Rect;
@@ -34,10 +38,20 @@ class Graphic extends Sprite, implements IPositionable {
 	var _depth : Int;
 	static var cachedAssets : Dictionary = new Dictionary();
 	// Rename spritesheetObj and spritesheet
-		// spritesheetObj isnt even necessarily a spritesheet
-		var spritesheetObj : Dynamic;
+	// spritesheetObj isnt even necessarily a spritesheet
+	var spritesheetObj : Dynamic;
 	var spriteSheetWidth : Int;
 	var spriteSheetHeight : Int;
+
+	public var height(getHeight, setHeight): Float;
+	public var width(getWidth, setWidth): Float;
+	public var x(getX, setX): Float;
+	public var y(getY, setY): Float;
+	public var scaleX(getScaleX, setScaleX): Float;
+	public var scaleY(getScaleY, setScaleY): Float;
+
+	var _parent:Graphic;
+	public var parent(getParent, never): Graphic;
 
 
 	public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
@@ -50,7 +64,12 @@ class Graphic extends Sprite, implements IPositionable {
 		spriteSheetWidth = -1;
 		spriteSheetHeight = -1;
 		facing = 1;
-		super();
+		sprite = new Sprite();
+		sprite.x = x;
+		sprite.y = y;
+		sprite.width = width;
+		sprite.height = height;
+
 		if(height == -1)
 			height = width;
 		this.cameraSpacePos = new Rect(0, 0, width, height);
@@ -65,19 +84,31 @@ class Graphic extends Sprite, implements IPositionable {
 		}
 		animations = new AnimationHandler(this);
 		// Bypass our overridden addChild method.
-		super.addChild(pixels);
+		sprite.addChild(pixels);
+	}
+
+	public function addChild(c:Graphic): Graphic {
+		sprite.addChild(c.sprite);
+
+		return c;
+	}
+
+	// blabla... blame some optimizations in Map again
+	// TODO eventually remove
+	public function addDO(d:DisplayObject): Void {
+		sprite.addChild(d);
 	}
 
 	public function raiseToTop() : Void {
 		// TODO
 		//Util.assert(this.parent != null);
-		if (this.parent != null)  {
-			this.parent.setChildIndex(this, this.parent.numChildren - 1);
+		if (sprite.parent != null)  {
+			sprite.parent.setChildIndex(sprite, sprite.parent.numChildren - 1);
 		}
 	}
 
 	public function getAbsX() : Float {
-		var p : DisplayObjectContainer = this;
+		var p : Graphic = this;
 		var result : Float = 0;
 		while(p != null) {
 			result += p.x;
@@ -88,7 +119,7 @@ class Graphic extends Sprite, implements IPositionable {
 	}
 
 	public function getAbsY() : Float {
-		var p : DisplayObjectContainer = this;
+		var p : Graphic = this;
 		var result : Float = 0;
 		while(p != null) {
 			result += p.y;
@@ -197,7 +228,7 @@ class Graphic extends Sprite, implements IPositionable {
 	}
 
 	// These two are in Camera space.
-		public function getCameraSpaceScaleX() : Float {
+	public function getCameraSpaceScaleX() : Float {
 		return scaleX;
 	}
 
@@ -231,7 +262,7 @@ class Graphic extends Sprite, implements IPositionable {
 	}
 
 	//TODO...
-		public function update(e : EntitySet) : Void {
+	public function update(e : EntitySet) : Void {
 		animations.advance();
 		Fathom.camera.translateSingleObject(this);
 	}
@@ -240,6 +271,11 @@ class Graphic extends Sprite, implements IPositionable {
 		this.x += p.x;
 		this.y += p.y;
 		return this;
+	}
+
+	// TODO visibility. this is required for Map currently
+	public function removeChildAt(idx: Int): Void {
+		sprite.removeChildAt(idx);
 	}
 
 	/*
@@ -254,10 +290,37 @@ class Graphic extends Sprite, implements IPositionable {
 	    cachedAssets = null;
 	    spritesheetObj = null;
     }
-    */	// Uninteresting getters and setters.
+    */
+    // Uninteresting getters and setters.
+
+	public function getScaleX(): Float {
+		return sprite.scaleX;
+	}
+
+	public function getScaleY(): Float {
+		return sprite.scaleY;
+	}
+
+	public function setScaleX(v: Float): Float {
+		sprite.scaleX = v;
+
+		return sprite.scaleX;
+	}
+
+	public function setScaleY(v: Float): Float {
+		sprite.scaleY = v;
+
+		return sprite.scaleY;
+	}
+
+    public function getParent(): Graphic {
+    	return _parent;
+    }
+
 	public function setX(val : Float) : Float {
 		entitySpacePos.x = val;
-		return val;
+
+		return entitySpacePos.x;
 	}
 
 	public function getX() : Float {
@@ -266,7 +329,8 @@ class Graphic extends Sprite, implements IPositionable {
 
 	public function setY(val : Float) : Float {
 		entitySpacePos.y = val;
-		return val;
+
+		return entitySpacePos.y;
 	}
 
 	public function getY() : Float {
@@ -317,6 +381,18 @@ class Graphic extends Sprite, implements IPositionable {
 
 	public function vec() : Vec {
 		return new Vec(entitySpacePos.x, entitySpacePos.y);
+	}
+
+	public function getNumChildren(): Int {
+		return sprite.numChildren;
+	}
+
+	public function getVisible(): Bool {
+		return sprite.visible;
+	}
+
+	public function setVisible(val: Bool): Bool {
+		return sprite.visible = val;
 	}
 
 }

@@ -1,7 +1,7 @@
 import flash.display.Sprite;
 
 /** Vector. Vector is a pair of 2 numbers, typically (x, y), used
-      to represent both position and direction. */
+    to represent both position and direction. */
 class Vec implements IPositionable {
 	public var x(getX, setX) : Float;
 	public var y(getY, setY) : Float;
@@ -17,18 +17,16 @@ class Vec implements IPositionable {
 		return _x;
 	}
 
-	public function setX(val : Float) : Float {
+	public function setX(val : Float) : Void {
 		this._x = val;
-		return val;
 	}
 
 	public function getY() : Float {
 		return _y;
 	}
 
-	public function setY(val : Float) : Float {
+	public function setY(val : Float) : Void {
 		this._y = val;
-		return val;
 	}
 
 	public function equals(v : Vec) : Bool {

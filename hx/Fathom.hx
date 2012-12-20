@@ -32,7 +32,7 @@ class Fathom {
 	static var _paused : Bool = false;
 	static public var MCPool : Dynamic = { };
 	public function new() {
-		throw new Error("You can't initialize a Fathom object. Call the static methods on Fathom instead.");
+		throw ("You can't initialize a Fathom object. Call the static methods on Fathom instead.");
 	}
 
 	static public function getPaused() : Bool {
@@ -79,14 +79,18 @@ class Fathom {
 		Fathom.container = new Entity();
 		Fathom.stage.addChild(Fathom.container);
 		Fathom._camera = new Camera(stage).scaleBy(1).setEaseSpeed(3);
+
+		/*
 		fpsFn = Hooks.fpsCounter();
 		fpsTxt = new Text();
 		fpsTxt.addGroups("no-camera", "non-blocking");
 		fpsTxt.setPos(new Vec(200, 20));
 		fpsTxt.width = 200;
 		//fpsTxt.visible = false;
+		*/
+
 		MagicKeyObject._initializeKeyInput(container);
-		grid = new SpatialHash(Fathom.entities.select());
+		grid = new SpatialHash(Fathom.entities.select([]));
 	}
 
 	static public function start() : Void {
@@ -179,13 +183,13 @@ class Fathom {
 	static function update(event : Event) : Void {
 		// We copy the entity list so that it doesn't change while we're
 		// iterating through it.
-		var list : EntitySet = entities.select();
+		var list : EntitySet = entities.select([]);
 		// Similarly, if something changes the current mode, that shouldn't
 		// be reflected until the next update cycle.
 		var cachedMode : Int = currentMode;
 		updateFPS();
 		moveEverything();
-		for(e in list/* AS3HX WARNING could not determine type for var: e exp: EIdent(list) type: EntitySet*/) {
+		for(e in list) {
 			if(!e.modes().contains(cachedMode))
 				continue;
 			// This acts as a pseudo garbage-collector. We separate out the
@@ -196,7 +200,7 @@ class Fathom {
 				e.clearMemory();
 				continue;
 			}
-;
+
 			e.update(entities);
 		}
 
