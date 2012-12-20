@@ -1,6 +1,6 @@
 import flash.display.Sprite;
 import flash.geom.Point;
-import flash.utils.Dictionary;
+import flash.utils.TypedDictionary;
 import flash.geom.Rectangle;
 import flash.display.BitmapData;
 import flash.display.Bitmap;
@@ -24,15 +24,17 @@ class Map extends Rect {
 	// Color data from the map.
 	public var transparency : Array<Dynamic>;
 	//TODO POST LD
-	var tiles : Array<Dynamic>;
+	var tiles : Array<Array<Tile>>;
 	// Cached array of collideable tiles.
 	public var collisionInfo : Array<Dynamic>;
 	var topLeftCorner : Vec;
 	var exploredMaps : Dynamic;
 	var graphics : Entity;
+	// Mapping between colors and items.
 	var persistentItemMapping : Dynamic;
-	var persistent : Dynamic;
+	var persistent : TypedDictionary<String, Array<Entity>>;
 	public var sizeVector : Vec;
+
 	function new(widthInTiles : Int, heightInTiles : Int, tileSize : Int) {
 		data = [];
 		transparency = [];
@@ -41,7 +43,7 @@ class Map extends Rect {
 		topLeftCorner = new Vec(0, 0);
 		exploredMaps = { };
 		persistentItemMapping = { };
-		persistent = { };
+		persistent = new TypedDictionary();
 		super(0, 0, widthInTiles * tileSize, heightInTiles * tileSize);
 		Util.assert(widthInTiles == heightInTiles);
 		this.sizeVector = new Vec(width, height);
@@ -102,8 +104,9 @@ class Map extends Rect {
 	}
 
 	function hideCurrentPersistentItems() : Void {
-		var processedItems : Array<Dynamic> = [];
-		var items : Array<Dynamic> = persistent[topLeftCorner.asKey()] || [];
+		var processedItems : Array<Entity> = [];
+		var k:String = topLeftCorner.asKey();
+		var items : Array<Dynamic> = persistent.exists(k) ? persistent.get(k) : [];
 		var i : Int = 0;
 		while(i < items.length) {
 			if(!items[i].destroyed)  {
@@ -112,12 +115,12 @@ class Map extends Rect {
 			}
 			i++;
 		}
-		persistent[topLeftCorner.asKey()] = processedItems;
+		persistent.set(topLeftCorner.asKey(), processedItems);
 	}
 
 	function updatePersistentItems(diff : Vec) : Void {
 		hideCurrentPersistentItems();
-		for(e in Fathom.entities.select("!persistent")/* AS3HX WARNING could not determine type for var: e exp: ECall(EField(EField(EIdent(Fathom),entities),select),[EConst(CString(!persistent))]) type: null*/) {
+		for(e in Fathom.entities.select(["!persistent"])/* AS3HX WARNING could not determine type for var: e exp: ECall(EField(EField(EIdent(Fathom),entities),select),[EConst(CString(!persistent))]) type: null*/) {
 			e.destroy();
 		}
 
@@ -267,7 +270,7 @@ class Map extends Rect {
 		}
 		e.setPos(new Vec(x * tileSize, y * tileSize));
 		if(e.groups().contains("persistent"))  {
-			persistent[topLeftCorner.asKey()].push(e);
+			persistent.get(topLeftCorner.asKey()).push(e);
 		}
 		if(e.groups().contains("remember-loc"))  {
 			trace("I never did this LOL");
@@ -280,7 +283,7 @@ class Map extends Rect {
 		// Scan the map, adding every object to our list of persistent items for this map.
 		if(!seenBefore)  {
 			// If we haven't seen it before, load in all the persistent items.
-			persistent[topLeftCorner.asKey()] = [];
+			persistent.set(topLeftCorner.asKey(), []);
 			var x : Int = 0;
 			while(x < widthInTiles) {
 				var y : Int = 0;
@@ -296,17 +299,16 @@ class Map extends Rect {
 
 		else  {
 			// Add all persistent items.
-			persistent[topLeftCorner.asKey()].map(function(e : Dynamic, i : Int, a : Array<Dynamic>) : Void {
+			persistent.get(topLeftCorner.asKey()).map(function(e : Dynamic, i : Int, a : Array<Dynamic>) : Void {
 				e.addToFathom();
 				if(e.groups().contains("remember-loc"))  {
 					e.resetLoc();
 				}
-			}
-);
-		}
-;
+			});
+		};
+
 		// Cache every persistent item in the 2D array of tiles.
-		var persistingItems : Array<Dynamic> = persistent[topLeftCorner.asKey()];
+		var persistingItems : Array<Dynamic> = persistent.get(topLeftCorner.asKey());
 		var i : Int = 0;
 		while(i < persistingItems.length) {
 			var e : Entity = persistingItems[i];
@@ -325,11 +327,12 @@ class Map extends Rect {
 		var dir : Vec = leftScreen.rect().divide(smallerSize).map(Math.floor);
 		var newMapLoc : Vec = topLeftCorner.clone().add(dir.clone().multiply(widthInTiles));
 		var newItemLoc : Vec = leftScreen.rect().add(dir.clone().multiply(-1).multiply(sizeVector.clone().subtract(tileSize * 2)));
-		persistent[topLeftCorner.asKey()].remove(leftScreen);
-		if(!persistent[newMapLoc.asKey()])  {
-			persistent[newMapLoc.asKey()] = [];
+
+		persistent.get(topLeftCorner.asKey()).remove(leftScreen);
+		if(!persistent.exists(newMapLoc.asKey()))  {
+			persistent.set(newMapLoc.asKey(), []);
 		}
-		persistent[newMapLoc.asKey()].push(leftScreen);
+		persistent.get(newMapLoc.asKey()).push(leftScreen);
 		leftScreen.setPos(newItemLoc);
 		leftScreen.removeFromFathom();
 	}
@@ -366,8 +369,9 @@ class Map extends Rect {
 	}
 
 	public function setVisible(val : Bool) : Bool {
+		Util.assert(false);
 		return;
-		persistent[topLeftCorner.asKey()].map(function(e : Dynamic, i : Int, a : Array<Dynamic>) : Void {
+		persistent.get(topLeftCorner.asKey()).map(function(e : Dynamic, i : Int, a : Array<Dynamic>) : Void {
 			e.visible = val;
 		}
 );
@@ -385,7 +389,7 @@ class Map extends Rect {
 	}
 
 	public function update() : Void {
-		var items : Array<Dynamic> = persistent[topLeftCorner.asKey()];
+		var items : Array<Dynamic> = persistent.get(topLeftCorner.asKey());
 		return;
 		var i : Int = 0;
 		while(i < items.length) {
@@ -411,7 +415,7 @@ class Map extends Rect {
 		return this;
 	}
 
-	static var cachedAssets : Dictionary = new Dictionary();
+	static var cachedAssets : TypedDictionary<String, Dynamic> = new TypedDictionary();
 	function dumpToGraphics() : Void {
 		graphics = new Entity();
 		while(graphics.numChildren > 0) {
@@ -420,44 +424,36 @@ class Map extends Rect {
 
 		// Write out the tiles to imgData
 		var imgData : BitmapData = new BitmapData(widthInTiles * tileSize, heightInTiles * tileSize, true, 0xFFFFFFFF);
-		var x : Int = 0;
-		while(x < widthInTiles) {
-			var y : Int = 0;
-			while(y < heightInTiles) {
+		for (x in 0...widthInTiles - 1) {
+			for (y in 0...heightInTiles - 1) {
 				var c : Color = data[topLeftCorner.x + x][topLeftCorner.y + y];
 				if(!(Lambda.has(persistentItemMapping, c.toString())))  {
 					if(c.toString() != "#ffffff")  {
 						Util.log("Color without data: " + c.toString());
-					}
-					 {
-						y++;
 						continue;
 					}
 
 				}
-				var itemData : Dynamic = persistentItemMapping[c.toString()];
-				if(!(Lambda.has(itemData, "gfx")))
-					 {
-					y++;
+				var itemData : Dynamic = persistentItemMapping.get(c.toString());
+				if(!(Lambda.has(itemData, "gfx"))) {
 					continue;
-				}
-;
+				};
+
 				var ss : Vec = fancyProcessing(itemData, c.toString(), x, y).multiply(25);
 				// Hardcore hardcoding TODO
 				var key : String = Util.className(itemData.gfx);
 				var bAsset : BitmapAsset;
-				if(!(Reflect.field(cachedAssets, key)))  {
+
+				if (!cachedAssets.exists(key)) {
 					Reflect.setField(cachedAssets, key, new itemdata.Gfx());
 				}
+
 				if(!isGround(c, ""))  {
 					collisionInfo[x][y] = true;
 				}
-				transparency[x][y] = Lambda.has(itemData, "transparent");
 				bAsset = Reflect.field(cachedAssets, key);
 				imgData.copyPixels(bAsset.bitmapData, new Rectangle(ss.x, ss.y, 25, 25), new Point(x * 25, y * 25));
-				y++;
 			}
-			x++;
 		}
 		// I have this suspicion that I don't need to keep adding the bitmapData TODO
 		// Add imgData to screen.

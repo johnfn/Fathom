@@ -1,10 +1,10 @@
 class EntitySet extends Set {
 
-	function new(entities : Array<Dynamic> = null) {
+	public function new(entities : Array<Dynamic> = null) {
 		super(entities);
 	}
 
-	public function select() : EntitySet {
+	public function select(criteria: Array<Dynamic>) : EntitySet {
 		var eList : EntitySet = clone();
 		var i : Int = 0;
 		while(i < criteria.length) {
@@ -76,7 +76,7 @@ class EntitySet extends Set {
 		function myfilter(criteria : Dynamic) : EntitySet {
 		var pass : Array<Dynamic> = [];
 		var desired : Bool = true;
-		if(Std.is(criteria, String && criteria.charAt(0) == "!"))  {
+		if(Std.is(criteria, String) && criteria.charAt(0) == "!")  {
 			desired = false;
 			criteria = criteria.substring(1);
 		}
@@ -87,14 +87,14 @@ class EntitySet extends Set {
 				}
 			}
 
-			else if(Std.is(criteria, Function))  {
+			else if(Reflect.isFunction(criteria))  {
 				if(criteria(entity))  {
 					pass.push(entity);
 				}
 			}
 
 			else  {
-				throw new Error("Unsupported Criteria type " + criteria + " " + Util.className(criteria));
+				throw "Unsupported Criteria type " + criteria + " " + Util.className(criteria);
 			}
 
 		}

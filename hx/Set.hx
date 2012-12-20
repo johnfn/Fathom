@@ -13,7 +13,7 @@ class Set {
 	public function new(init : Array<Dynamic> = null) {
 		contents = new TypedDictionary();
 		_length = 0;
-		if(init == null) 
+		if(init == null)
 			return;
 		var i : Int = 0;
 		while(i < init.length) {
@@ -123,5 +123,26 @@ class Set {
 		return result;
 	}
 
+	public function iterator() : Iterator<Dynamic> {
+		return new Set.SetIter(this);
+	}
+
 }
 
+class SetIter {
+	var contents:Array<Dynamic>;
+	var loc:Int;
+
+	public function new(s:Set) {
+		contents = s.toArray();
+		loc = 0;
+	}
+
+    public function hasNext() {
+        return loc < contents.length - 1;
+    }
+
+    public function next() {
+    	return contents[loc++];
+    }
+}

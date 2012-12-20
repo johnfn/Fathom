@@ -34,7 +34,7 @@ class Entity extends Graphic {
 		return val;
 	}
 
-	function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
+	public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
 		events = { };
 		isFlickering = false;
 		destroyed = false;
@@ -42,7 +42,7 @@ class Entity extends Graphic {
 		_isStatic = true;
 		super(x, y, width, height);
 		if(!Fathom.initialized)  {
-			throw new Error("Util.initialize() has not been called. Failing.");
+			throw "Util.initialize() has not been called. Failing.";
 		}
 		//TODO: I had this idea about how parents should bubble down events to children.
 		// All Entities are added to the container, except the container itself, which
@@ -106,7 +106,8 @@ class Entity extends Graphic {
 
 	override public function addChild(child : DisplayObject) : DisplayObject {
 		if(!entityChildren)
-			throw new Error("You need to call super() before addChild().");
+			throw "You need to call super() before addChild().";
+
 		Util.assert(!entityChildren.contains(child));
 		super.addChild(child);
 		if(Std.is(child, Entity))  {
