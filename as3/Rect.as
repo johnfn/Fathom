@@ -11,8 +11,8 @@ package {
     function Rect(x:Number, y:Number, width:Number, height:Number = -1) {
       if (height == -1) height = width;
 
-      this.x = x;
-      this.y = y;
+      super(x, y);
+
       this.width = width;
       this.height = height;
       this.right = this.x + this.width;

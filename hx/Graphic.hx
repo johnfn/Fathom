@@ -23,9 +23,9 @@ class Graphic extends Sprite, implements IPositionable {
 	public var cameraSpaceY(getCameraSpaceY, setCameraSpaceY) : Float;
 
 	// The location of the entity, before camera transformations.
-		var entitySpacePos : Rect;
+	var entitySpacePos : Rect;
 	// The location of the entity, after camera transformations.
-		public var cameraSpacePos : Rect;
+	public var cameraSpacePos : Rect;
 	public var animations : AnimationHandler;
 	var pixels : Bitmap;
 	var spritesheet : Array<Dynamic>;
@@ -38,7 +38,9 @@ class Graphic extends Sprite, implements IPositionable {
 		var spritesheetObj : Dynamic;
 	var spriteSheetWidth : Int;
 	var spriteSheetHeight : Int;
-	function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
+
+
+	public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
 		pixels = new Bitmap();
 		spritesheet = [];
 		groupSet = new Set(["persistent"]);
@@ -69,14 +71,14 @@ class Graphic extends Sprite, implements IPositionable {
 	public function raiseToTop() : Void {
 		// TODO
 		//Util.assert(this.parent != null);
-		if(this.parent)  {
+		if (this.parent != null)  {
 			this.parent.setChildIndex(this, this.parent.numChildren - 1);
 		}
 	}
 
 	public function getAbsX() : Float {
 		var p : DisplayObjectContainer = this;
-		var result : Int = 0;
+		var result : Float = 0;
 		while(p != null) {
 			result += p.x;
 			p = p.parent;
@@ -87,7 +89,7 @@ class Graphic extends Sprite, implements IPositionable {
 
 	public function getAbsY() : Float {
 		var p : DisplayObjectContainer = this;
-		var result : Int = 0;
+		var result : Float = 0;
 		while(p != null) {
 			result += p.y;
 			p = p.parent;
@@ -141,22 +143,23 @@ class Graphic extends Sprite, implements IPositionable {
 	//TODO: Maybe shouldn't even have to pass in tileDimension.
 		/* Load a spritesheet. tileDimension should be the size of the tiles; pass in null if
        there's only one tile. whichTile is the tile that this Graphic will be; pass in
-       null if you want to defer the decision by calling setTile() later. */	public function loadSpritesheet(spritesheetClass : Dynamic, tileDimension : Vec = null, whichTile : Vec = null) : Graphic {
+       null if you want to defer the decision by calling setTile() later. */
+    public function loadSpritesheet<T>(spritesheetClass : Class<T>, tileDimension : Vec = null, whichTile : Vec = null) : Graphic {
 		Util.assert(this.spritesheetObj == null);
-		this.spritesheetObj = new SpritesheetClass();
+		this.spritesheetObj = Type.createInstance(spritesheetClass, []);
 		var spritesheetSize : Vec = new Vec(spritesheetObj.width, spritesheetObj.height);
 		if(tileDimension != null)  {
-			this.spriteSheetWidth = tileDimension.x;
-			this.spriteSheetHeight = tileDimension.y;
+			this.spriteSheetWidth = Std.int(tileDimension.x);
+			this.spriteSheetHeight = Std.int(tileDimension.y);
 		}
 
 		else  {
-			this.spriteSheetWidth = spritesheetObj.width;
-			this.spriteSheetHeight = spritesheetObj.height;
+			this.spriteSheetWidth = Std.int(spritesheetObj.width);
+			this.spriteSheetHeight = Std.int(spritesheetObj.height);
 		}
 
 		if(whichTile != null)  {
-			setTile(whichTile.x, whichTile.y);
+			setTile(Std.int(whichTile.x), Std.int(whichTile.y));
 		}
 
 		else  {
@@ -252,27 +255,27 @@ class Graphic extends Sprite, implements IPositionable {
 	    spritesheetObj = null;
     }
     */	// Uninteresting getters and setters.
-		override public function setX(val : Float) : Float {
+	public function setX(val : Float) : Float {
 		entitySpacePos.x = val;
 		return val;
 	}
 
-	override public function getX() : Float {
+	public function getX() : Float {
 		return entitySpacePos.x;
 	}
 
-	override public function setY(val : Float) : Float {
+	public function setY(val : Float) : Float {
 		entitySpacePos.y = val;
 		return val;
 	}
 
-	override public function getY() : Float {
+	public function getY() : Float {
 		return entitySpacePos.y;
 	}
 
 	public function setCameraSpaceX(val : Float) : Float {
 		cameraSpacePos.x = val;
-		super.x = cameraSpacePos.x;
+		x = cameraSpacePos.x;
 		return val;
 	}
 
@@ -282,7 +285,7 @@ class Graphic extends Sprite, implements IPositionable {
 
 	public function setCameraSpaceY(val : Float) : Float {
 		cameraSpacePos.y = val;
-		super.y = cameraSpacePos.y;
+		y = cameraSpacePos.y;
 		return val;
 	}
 
@@ -290,21 +293,21 @@ class Graphic extends Sprite, implements IPositionable {
 		return cameraSpacePos.y;
 	}
 
-	override public function setWidth(val : Float) : Float {
+	public function setWidth(val : Float) : Float {
 		entitySpacePos.width = val;
 		return val;
 	}
 
-	override public function getWidth() : Float {
+	public function getWidth() : Float {
 		return entitySpacePos.width;
 	}
 
-	override public function setHeight(val : Float) : Float {
+	public function setHeight(val : Float) : Float {
 		entitySpacePos.height = val;
 		return val;
 	}
 
-	override public function getHeight() : Float {
+	public function getHeight() : Float {
 		return entitySpacePos.height;
 	}
 

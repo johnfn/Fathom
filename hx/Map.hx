@@ -22,11 +22,11 @@ class Map extends Rect {
 	var _tileSize : Int;
 	var data : Array<Dynamic>;
 	// Color data from the map.
-		public var transparency : Array<Dynamic>;
+	public var transparency : Array<Dynamic>;
 	//TODO POST LD
-		var tiles : Array<Dynamic>;
+	var tiles : Array<Dynamic>;
 	// Cached array of collideable tiles.
-		public var collisionInfo : Array<Dynamic>;
+	public var collisionInfo : Array<Dynamic>;
 	var topLeftCorner : Vec;
 	var exploredMaps : Dynamic;
 	var graphics : Entity;
@@ -72,13 +72,13 @@ class Map extends Rect {
 	}
 
 	public function outOfBoundsPt(x : Int, y : Int) : Bool {
-		if(x < 0) 
+		if(x < 0)
 			return true;
-		if(x >= width) 
+		if(x >= width)
 			return true;
-		if(y < 0) 
+		if(y < 0)
 			return true;
-		if(y >= height) 
+		if(y >= height)
 			return true;
 		return false;
 	}
@@ -250,7 +250,7 @@ class Map extends Rect {
 			return;
 		}
 		var itemData : Dynamic = persistentItemMapping[c.toString()];
-		if(!(Lambda.has(itemData, "type"))) 
+		if(!(Lambda.has(itemData, "type")))
 			return;
 		var e : Entity;
 		if(Lambda.has(itemData, "args"))  {
@@ -335,7 +335,7 @@ class Map extends Rect {
 	}
 
 	function collidesPt(other : Vec) : Bool {
-		if(!contains(other)) 
+		if(!contains(other))
 			return true;
 		var xPt : Int = Math.floor(other.x / this.tileSize);
 		var yPt : Int = Math.floor(other.y / this.tileSize);
@@ -360,7 +360,7 @@ class Map extends Rect {
 			}
 			x++;
 		}
-		if(!makeBigger(3).contains(other)) 
+		if(!makeBigger(3).contains(other))
 			return true;
 		return false;
 	}
@@ -436,7 +436,7 @@ class Map extends Rect {
 
 				}
 				var itemData : Dynamic = persistentItemMapping[c.toString()];
-				if(!(Lambda.has(itemData, "gfx"))) 
+				if(!(Lambda.has(itemData, "gfx")))
 					 {
 					y++;
 					continue;

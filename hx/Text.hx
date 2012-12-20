@@ -1,11 +1,8 @@
 import flash.filters.DropShadowFilter;
 import flash.text.TextField;
 import flash.text.TextFormat;
-import flash.utils.SetInterval;
-import flash.utils.ClearInterval;
 import Hooks;
 import Util;
-import MagicArray;
 
 class Text extends Entity {
 	public var size(never, setSize) : Float;
@@ -15,7 +12,7 @@ class Text extends Entity {
 	var textField : TextField;
 	var content : String;
 	var typewriting : Bool;
-	var typewriteTick : Function;
+	var typewriteTick : Void -> Void;
 	var normalTextFormat : TextFormat;
 	var redTextFormat : TextFormat;
 	function new(content : String = "", textName : String = null) {
@@ -25,11 +22,11 @@ class Text extends Entity {
 		redTextFormat = new TextFormat();
 		super(0, 0);
 		this.content = content;
-		if(textName != null) 
+		if(textName != null)
 			normalTextFormat.font = textName;
 		normalTextFormat.size = 16;
 		normalTextFormat.color = 0xFFFFFF;
-		if(textName != null) 
+		if(textName != null)
 			redTextFormat.font = textName;
 		redTextFormat.size = 16;
 		redTextFormat.color = 0xFF0000;

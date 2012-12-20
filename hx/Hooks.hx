@@ -3,11 +3,10 @@ import flash.geom.Point;
 
 class Hooks {
 
-	static public function move(direction : Vec) : Void -> Void {
+	static public function move(who:Rect, direction : Vec) : Void -> Void {
 		return function() : Void {
-			this.add(direction);
-		}
-;
+			who.add(direction);
+		};
 	}
 
 	//TODO...
@@ -17,8 +16,7 @@ class Hooks {
 			if(timeLeft-- == 0)  {
 				cb();
 			}
-		}
-;
+		};
 	}
 
 	//TODO...
@@ -29,8 +27,7 @@ class Hooks {
 				cb();
 				sentCallback = true;
 			}
-		}
-;
+		};
 	}
 
 	//TODO: Not a Hook.
@@ -42,9 +39,9 @@ class Hooks {
 	}
 
 	//TODO: onxxxx methods could be moved into an Events.as file.
-		static public function onLeaveMap(who : Entity, map : Map, cb : Void -> Void) : Void {
+	static public function onLeaveMap(who : Entity, map : Map, cb : Entity -> Void) : Void {
 		if(who.x < 0 || who.y < 0 || who.x > map.width - who.width || who.y > map.height - who.width)  {
-			cb.call(who);
+			cb(who);
 		}
 	}
 

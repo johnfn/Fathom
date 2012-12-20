@@ -6,14 +6,16 @@ import flash.utils.TypedDictionary;
 class AnimationHandler {
 	public var ticksPerFrame(never, setTicksPerFrame) : Int;
 
-	var animations : TypedDictionary<String, Array<Dynamic>> = new TypedDictionary();
+	var animations : TypedDictionary<String, Array<Dynamic>>;
 	var currentAnimation : String;
 	var currentFrame : Int;
 	var currentTick : Int;
 	var _ticksPerFrame : Int;
 	var gfx : Graphic;
 	var andThenFn: Void -> Void;
-	function new(s : Graphic) {
+
+	public function new(s : Graphic) {
+		animations = new TypedDictionary();
 		currentAnimation = "";
 		currentFrame = 0;
 		currentTick = 0;

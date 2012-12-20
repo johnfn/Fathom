@@ -13,7 +13,7 @@ class Fathom {
 
 	static var gameloopID : Int;
 	static var FPS : Int = 0;
-	static var fpsFn : Function;
+	static var fpsFn : Void -> String;
 	static public var _camera : Camera;
 	//TODO
 		static var _currentMode : Int = 0;
@@ -186,7 +186,7 @@ class Fathom {
 		updateFPS();
 		moveEverything();
 		for(e in list/* AS3HX WARNING could not determine type for var: e exp: EIdent(list) type: EntitySet*/) {
-			if(!e.modes().contains(cachedMode)) 
+			if(!e.modes().contains(cachedMode))
 				continue;
 			// This acts as a pseudo garbage-collector. We separate out the
 			// destroyed() call from the clearMemory() call because we sometimes

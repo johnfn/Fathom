@@ -6,16 +6,15 @@ class Rect extends Vec, implements IPositionable {
 	public var right(getRight, setRight) : Float;
 	public var bottom(getBottom, setBottom) : Float;
 
-	var _width : Float;
-	var _height : Float;
-	var _right : Float;
-	var _bottom : Float;
-	function new(x : Float, y : Float, width : Float, height : Float = -1) {
-		_width = 0;
-		_height = 0;
-		_right = 0;
-		_bottom = 0;
-		if(height == -1) 
+	var _width : Float  = 0;
+	var _height : Float = 0;
+	var _right : Float  = 0;
+	var _bottom : Float = 0;
+
+	public function new(x : Float, y : Float, width : Float, height : Float = -1) {
+		super(x, y);
+
+		if(height == -1)
 			height = width;
 		this.x = x;
 		this.y = y;
@@ -106,7 +105,7 @@ class Rect extends Vec, implements IPositionable {
 
 	override public function equals(v : Vec) : Bool {
 		// This makes inheritance work.
-		if(Util.className(v) != "Rect") 
+		if(Util.className(v) != "Rect")
 			return false;
 		var r : Rect = try cast(v, Rect) catch(e:Dynamic) null;
 		return x == r.x && y == r.y && width == r.width && right == r.right;
