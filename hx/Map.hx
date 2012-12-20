@@ -130,17 +130,19 @@ class Map extends Rect {
 	}
 
 	function isGround(c : Color, s : String) : Bool {
-		return grounds.indexOf(c.toString()) != -1 && c.toString() != s;
+		return Lambda.indexOf(grounds, c.toString) != -1 && c.toString() != s;
 	}
 
 	function fancyProcessing(itemData : Dynamic, c : String, x : Int, y : Int) : Vec {
 		var result : Vec = Reflect.field(itemData, "spritesheet").clone();
 		if(Lambda.has(itemData, "roundOutEdges"))  {
 			/*
-        var X:int = 0;
-        var Y:int = 1;
-        */var locX : Int = topLeftCorner.x + x;
-			var locY : Int = topLeftCorner.y + y;
+	        var X:int = 0;
+	        var Y:int = 1;
+	        */
+
+	        var locX : Int = Std.int(topLeftCorner.x) + x;
+			var locY : Int = Std.int(topLeftCorner.y) + y;
 			if(locY == 0 || data[locX][locY - 1].toString() != c.toString())  {
 				result.y--;
 			}
@@ -157,35 +159,31 @@ class Map extends Rect {
 				result.y--;
 			}
 		}
-		if(Lambda.has(itemData && Util.randRange(0, 5) == 3, "randoEdges"))  {
+		if(Lambda.has(itemData, "randoEdges") && Util.randRange(0, 5) == 3)  {
 			result.x += Util.randRange(-1, 2);
 			result.y += Util.randRange(-1, 2);
 		}
 		if(Lambda.has(itemData, "fancyEdges"))  {
 			var cstr : String = c.toString();
 			var empty : String = (new Color(255, 255, 255).toString());
-			var locX : Int = topLeftCorner.x + x;
-			var locY : Int = topLeftCorner.y + y;
+			var locX : Int = Std.int(topLeftCorner.x) + x;
+			var locY : Int = Std.int(topLeftCorner.y) + y;
 			// Horizontal wall, ground below.
 			if(!isGround(data[locX - 1][locY], cstr) && !isGround(data[locX + 1][locY], cstr) && isGround(data[locX][locY + 1], cstr))  {
 				result.y += 2;
 			}
-;
 			// Horizontal wall, ground above.
 			if(data[locX - 1][locY].toString() == cstr && data[locX + 1][locY].toString() == cstr && isGround(data[locX][locY - 1], cstr))  {
 				result.y -= 2;
 			}
-;
 			// Vertical wall, ground to the left.
 			if(data[locX][locY - 1].toString() == cstr && data[locX][locY + 1].toString() == cstr && isGround(data[locX - 1][locY], cstr))  {
 				result.x -= 2;
 			}
-;
 			// Vertical wall, ground to the right.
 			if(!isGround(data[locX][locY - 1], cstr) && !isGround(data[locX][locY + 1], cstr) && isGround(data[locX + 1][locY], cstr))  {
 				result.x += 2;
 			}
-;
 			// - - -
 			// - x x
 			// - x -
@@ -252,21 +250,20 @@ class Map extends Rect {
 			}
 			return;
 		}
-		var itemData : Dynamic = persistentItemMapping[c.toString()];
+		var itemData : Dynamic = persistentItemMapping.get(c.toString());
 		if(!(Lambda.has(itemData, "type")))
 			return;
+
 		var e : Entity;
 		if(Lambda.has(itemData, "args"))  {
 			// TODO: new ItemData["type"].call(args)
-			e = new ItemData()["type"](itemData.args);
-		}
-
-		else  {
-			e = new ItemData()["type"]();
+			e = Type.createInstance(itemData, [itemData.args]);
+		} else  {
+			e = Type.createInstance(itemData, []);
 		}
 
 		if(!(Lambda.has(itemData, "special")))  {
-			e.loadSpritesheet(Reflect.field(itemData, "gfx"), C.dim, Reflect.field(itemData, "spritesheet") || new Vec(0, 0));
+			e.loadSpritesheet(Reflect.field(itemData, "gfx"), _tileSize, Reflect.field(itemData, "spritesheet") || new Vec(0, 0));
 		}
 		e.setPos(new Vec(x * tileSize, y * tileSize));
 		if(e.groups().contains("persistent"))  {
@@ -278,7 +275,7 @@ class Map extends Rect {
 	}
 
 	function addNewPersistentItems() : Void {
-		var seenBefore : Bool = exploredMaps[topLeftCorner.asKey()];
+		var seenBefore : Bool = exploredMaps.get(topLeftCorner.asKey());
 		this.clearTiles();
 		// Scan the map, adding every object to our list of persistent items for this map.
 		if(!seenBefore)  {
@@ -288,8 +285,7 @@ class Map extends Rect {
 			while(x < widthInTiles) {
 				var y : Int = 0;
 				while(y < heightInTiles) {
-					trace(topLeftCorner);
-					var dataColor : Color = data[topLeftCorner.x + x][topLeftCorner.y + y];
+					var dataColor : Color = data[Std.int(topLeftCorner.x + x)][Std.int(topLeftCorner.y + y)];
 					addPersistentItem(dataColor, x, y);
 					y++;
 				}
@@ -426,7 +422,7 @@ class Map extends Rect {
 		var imgData : BitmapData = new BitmapData(widthInTiles * tileSize, heightInTiles * tileSize, true, 0xFFFFFFFF);
 		for (x in 0...widthInTiles - 1) {
 			for (y in 0...heightInTiles - 1) {
-				var c : Color = data[topLeftCorner.x + x][topLeftCorner.y + y];
+				var c : Color = data[Std.int(topLeftCorner.x + x)][Std.int(topLeftCorner.y + y)];
 				if(!(Lambda.has(persistentItemMapping, c.toString())))  {
 					if(c.toString() != "#ffffff")  {
 						Util.log("Color without data: " + c.toString());
@@ -442,16 +438,16 @@ class Map extends Rect {
 				var ss : Vec = fancyProcessing(itemData, c.toString(), x, y).multiply(25);
 				// Hardcore hardcoding TODO
 				var key : String = Util.className(itemData.gfx);
-				var bAsset : BitmapAsset;
+				var bAsset;
 
 				if (!cachedAssets.exists(key)) {
-					Reflect.setField(cachedAssets, key, new itemdata.Gfx());
+					cachedAssets.set(key, Type.createInstance(itemData.Gfx, []));
 				}
 
 				if(!isGround(c, ""))  {
 					collisionInfo[x][y] = true;
 				}
-				bAsset = Reflect.field(cachedAssets, key);
+				bAsset = cachedAssets.get(key);
 				imgData.copyPixels(bAsset.bitmapData, new Rectangle(ss.x, ss.y, 25, 25), new Point(x * 25, y * 25));
 			}
 		}

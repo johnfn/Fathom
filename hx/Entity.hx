@@ -48,7 +48,7 @@ class Entity extends Graphic {
 		// All Entities are added to the container, except the container itself, which
 		// has to be bootstrapped onto the Stage. If Fathom.container does not exist, `this`
 		// must be the container.
-		if(Fathom.container)  {
+		if(Fathom.container != null)  {
 			this.rememberedParent = Fathom.container;
 			addToFathom();
 		}
@@ -105,10 +105,10 @@ class Entity extends Graphic {
 	}
 
 	override public function addChild(child : DisplayObject) : DisplayObject {
-		if(!entityChildren)
+		if(entityChildren != null)
 			throw "You need to call super() before addChild().";
 
-		Util.assert(!entityChildren.contains(child));
+		Util.assert(Lambda.indexOf(entityChildren, child) != -1);
 		super.addChild(child);
 		if(Std.is(child, Entity))  {
 			entityChildren.push(child);
@@ -147,7 +147,7 @@ class Entity extends Graphic {
 	/* This causes the Entity to exist in the game. There is no need to call
        this except after a call to removeFromFathom(). */	public function addToFathom(recursing : Bool = false) : Void {
 		Util.assert(!destroyed);
-		Util.assert(!this.parent);
+		Util.assert(this.parent == null);
 		if(!recursing)
 			rememberedParent.addChild(this);
 		Fathom.entities.add(this);

@@ -130,11 +130,11 @@ class Util {
 		//public static function make2DArrayVal(width:int, height:int, val:*):Array {
 		//  return make2DArrayFn(width, height, function():* { return val; });
 		//}
-	static public function make2DArrayFn(width : Int, height : Int, fn : Int -> Int -> Dynamic) : Array<Dynamic> {
-		var result : Array<Array<Dynamic>> = new Array<Array<Dynamic>>();
+	static public function make2DArrayFn<T>(width : Int, height : Int, fn : Int -> Int -> T) : Array<Array<T>> {
+		var result : Array<Array<T>> = new Array<Array<T>>();
 
 		for (i in 0...width - 1) {
-			result.push(new Array<Dynamic>());
+			result.push(new Array<T>());
 
 			for (j in 0...height - 1) {
 				result[i].push(fn(i, j));
@@ -164,7 +164,7 @@ class Util {
 		return degrees;
 	}
 
-	static public function make2DArray(width : Int, height : Int, defaultValue : Dynamic) : Array<Dynamic> {
+	static public function make2DArray(width : Int, height : Int, defaultValue : Dynamic) : Array<Array<Dynamic>> {
 		return make2DArrayFn(width, height, function(x : Int, y : Int) : Dynamic {
 			return defaultValue;
 		}

@@ -6,7 +6,8 @@ class Color {
 	public var g : Int;
 	public var b : Int;
 	public var a : Int;
-	function new(r : Int = 0, g : Int = 0, b : Int = 0, a : Int = 255) {
+
+	public function new(r : Int = 0, g : Int = 0, b : Int = 0, a : Int = 255) {
 		this.r = r;
 		this.g = g;
 		this.b = b;
@@ -22,7 +23,7 @@ class Color {
 	}
 
 	public function toString() : String {
-		return "#" + zeroPad(r.toString(16)) + zeroPad(g.toString(16)) + zeroPad(b.toString(16));
+		return "#" + zeroPad(StringTools.hex(r)) + zeroPad(StringTools.hex(g)) + zeroPad(StringTools.hex(b));
 	}
 
 	static public function fromInt(hex : Int) : Color {
