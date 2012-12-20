@@ -1,0 +1,5 @@
+-cp hx/
+-cp test/
+-swf test.swf
+-main AllTests
+-debug

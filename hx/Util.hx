@@ -1,7 +1,8 @@
-import flash.system.Fscommand;
 import flash.events.KeyboardEvent;
 import flash.display.DisplayObject;
 import flash.display.Sprite;
+import flash.system.FSCommand;
+import haxe.Stack;
 
 class Util {
 
@@ -12,8 +13,8 @@ class Util {
 	static public var KeyJustUp : MagicKeyObject;
 	//TODO: Should move Array.prototype stuff into separate ArrayExtensions class.
 		/* Ties each element e in the array to a value k(e) and sorts the array
-       how you'd sort the values from low to high. */	
-  
+       how you'd sort the values from low to high. */
+
     // Array::indexOf only works with String values.
 		// Remove all occurances of item from array.
 		static public function id(x : Dynamic) : Dynamic {
@@ -27,33 +28,32 @@ class Util {
 	}
 
 	static public function sign(x : Float) : Float {
-		if(x > 0) 
+		if(x > 0)
 			return 1;
-		if(x < 0) 
+		if(x < 0)
 			return -1;
 		return 0;
 	}
 
 	// TODO: Rename -> clamp
 		static public function bind(x : Float, low : Float, high : Float) : Float {
-		if(x < low) 
+		if(x < low)
 			return low;
-		if(x > high) 
+		if(x > high)
 			return high;
 		return x;
 	}
 
 	static public function className(c : Dynamic) : String {
 		var qualifiedName : String = Type.getClassName(c);
-		if(qualifiedName.indexOf(":") == -1) 
+		if(qualifiedName.indexOf(":") == -1)
 			return qualifiedName;
 		var split : Array<Dynamic> = qualifiedName.split(":");
 		return split[split.length - 1];
 	}
 
 	static public function printStackTrace() : Void {
-		var e : Error = new Error("[stack trace requested - no error]");
-		Util.log(e.getStackTrace());
+		Util.log(haxe.Stack.toString(haxe.Stack.exceptionStack()));
 	}
 
 	/* The reason for this wrapper method is to separate debugging messages
@@ -63,8 +63,9 @@ class Util {
 
        We separate them so that it's easy to search for "trace" with a following "("
        to find debugging messages you need to remove.
-       */	static public function log() : Void {
-		trace.apply(null, args);
+       */
+    static public function log(s:String) : Void {
+    	trace(s);
 	}
 
 	// Short for print (like in Ruby). Attempts to print a human readable representation
@@ -77,18 +78,17 @@ class Util {
 		static function pHelper(o : Dynamic) : String {
 		var result : String;
 		if(Util.className(o) == "Object")  {
-			var object : Dynamic = try cast(o, Dynamic) catch(e:Dynamic) null;
 			result = "{ ";
-			for(k in Reflect.fields(object)) {
-				result += k + ": " + pHelper(Reflect.field(object, k)) + ", ";
+			for(k in Reflect.fields(o)) {
+				result += k + ": " + pHelper(Reflect.field(o, k)) + ", ";
 			}
 
-			result = result.slice(0, -2) + " ";
+			// result = result.slice(0, -2) + " ";
 			result += "}";
 		}
 
 		else if(Util.className(o) == "Array")  {
-			var arr : Array<Dynamic> = try cast(o, Array) catch(e:Dynamic) null;
+			var arr : Array<Dynamic> = try cast(o, Array<Dynamic>) catch(e:Dynamic) null;
 			result = "[";
 			var i : Int = 0;
 			while(i < arr.length) {
@@ -111,10 +111,9 @@ class Util {
 
 	static public function assert(b : Bool) : Void {
 		if(!b)  {
-			var e : Error = new Error("Assertion failed.");
-			Util.log(e.getStackTrace());
-			fscommand("quit");
-			throw e;
+			Util.log("Assertion failed");
+			Util.printStackTrace();
+			throw "Assertion failed!";
 		}
 	}
 
@@ -131,22 +130,20 @@ class Util {
 		//public static function make2DArrayVal(width:int, height:int, val:*):Array {
 		//  return make2DArrayFn(width, height, function():* { return val; });
 		//}
-		static public function make2DArrayFn(width : Int, height : Int, fn : Function) : Array<Dynamic> {
-		var result : Array<Dynamic> = new Array<Dynamic>(width);
-		var i : Int = 0;
-		while(i < width) {
-			result[i] = new Array<Dynamic>(height);
-			var j : Int = 0;
-			while(j < height) {
-				result[i][j] = fn(i, j);
-				j++;
+	static public function make2DArrayFn(width : Int, height : Int, fn : Int -> Int -> Dynamic) : Array<Dynamic> {
+		var result : Array<Array<Dynamic>> = new Array<Array<Dynamic>>();
+
+		for (i in 0...width - 1) {
+			result.push(new Array<Dynamic>());
+
+			for (j in 0...height - 1) {
+				result[i].push(fn(i, j));
 			}
-			i++;
 		}
 		return result;
 	}
 
-	static public function foreach2D(a : Array<Dynamic>, fn : Function) : Void {
+	static public function foreach2D(a : Array<Dynamic>, fn : Int -> Int -> Dynamic -> Void) : Void {
 		var i : Int = 0;
 		while(i < a.length) {
 			var j : Int = 0;
@@ -193,53 +190,7 @@ class Util {
 	}
 
 	static function __init__() {
-		Array.prototype.sortBy = function(k : Function) : Void {
-			// TODO: Calls k O(n^2) times; can reduce to O(n) with little trouble.
-			this.sort(function(a : Dynamic, b : Dynamic) : Int {
-				return k(a) - k(b);
-			}
-);
-		}
-;
-		Array.prototype.contains = function(val : Dynamic) : Bool {
-			return this.getIndex(val) != -1;
-		}
-;
-		Array.prototype.getIndex = function(val : Dynamic) : Int {
-			var i : Int = 0;
-			while(i < this.length) {
-				if(this[i] == val) 
-					return i;
-				i++;
-			}
-			return -1;
-		}
-;
-		Array.prototype.remove = function(item : Dynamic) : Void {
-			var i : Int = 0;
-			while(i < this.length) {
-				if(this[i] == item)  {
-					this.splice(i, 1);
-					i--;
-				}
-				i++;
-			}
-		}
-;
-		Array.prototype.extend = function(a : Array<Dynamic>) : Void {
-			var i : Int = 0;
-			while(i < a.length) {
-				this.push(a[i]);
-				i++;
-			}
-		}
-;
-		Array.prototype.setPropertyIsEnumerable("sortBy", false);
-		Array.prototype.setPropertyIsEnumerable("contains", false);
-		Array.prototype.setPropertyIsEnumerable("collect", false);
-		Array.prototype.setPropertyIsEnumerable("getIndex", false);
-		Array.prototype.setPropertyIsEnumerable("remove", false);
-		Array.prototype.setPropertyIsEnumerable("extend", false);
+
 	}
 }
 
