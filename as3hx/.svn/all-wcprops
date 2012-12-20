@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/!svn/ver/726/trunk/projects/as3hx
+END
+build
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/668/trunk/projects/as3hx/build
+END
+as3hx.hxproj
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/668/trunk/projects/as3hx/as3hx.hxproj
+END
+package_as3hx
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/668/trunk/projects/as3hx/package_as3hx
+END
+clean
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/668/trunk/projects/as3hx/clean
+END
+Run.hx
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/703/trunk/projects/as3hx/Run.hx
+END
+build_debug
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/668/trunk/projects/as3hx/build_debug
+END
+CHANGES
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/669/trunk/projects/as3hx/CHANGES
+END
+FastXMLList.hx
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/710/trunk/projects/as3hx/FastXMLList.hx
+END
+FastXML.hx
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/710/trunk/projects/as3hx/FastXML.hx
+END
+as3hx.hxml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/668/trunk/projects/as3hx/as3hx.hxml
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/723/trunk/projects/as3hx/README
+END
