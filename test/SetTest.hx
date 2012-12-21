@@ -27,6 +27,24 @@ class SetTest extends haxe.unit.TestCase {
     assertEquals(s.length, 0);
   }
 
+  public function testEquals() {
+    var s1:Set<Int> = new Set([1,2,3]);
+    var s2:Set<Int> = new Set([1,2,3]);
+    var s3:Set<Int> = new Set([1,2,4]);
+
+    var s4:Set<Int> = new Set([]);
+    var s5:Set<Int> = new Set([]);
+
+    assertTrue(s1.equals(s2));
+    assertTrue(s2.equals(s1));
+
+    assertFalse(s1.equals(s3));
+    assertFalse(s2.equals(s3));
+
+    assertTrue(s4.equals(s5));
+    assertTrue(s5.equals(s4));
+  }
+
   public function testIter() {
     var start:Set<Int> = new Set<Int>([1,2,3,4,5]);
     var num:Int = 0;
@@ -99,4 +117,41 @@ class SetTest extends haxe.unit.TestCase {
     assertTrue(s.length == 5);
   }
 
+  public function testPredicates() {
+    var s:Set<Int> = new Set([2,4,6,8,10]);
+
+    assertTrue(s.all([function(i:Int) return i % 2 == 0]));
+    assertTrue(!s.all([function(i:Int) return i % 2 == 1]));
+    assertTrue(s.any([function(i:Int) return i % 2 == 0]));
+    assertTrue(s.any([function(i:Int) return i == 8]));
+    assertTrue(s.any([function(i:Int) return i == 8]));
+    assertTrue(s.none([function(i:Int) return i % 2 == 1]));
+  }
+
+  public function testOne() {
+    var s:Set<Int> = new Set([1,2,3,5,6]);
+
+    assertEquals(s.one([function(i) return i == 1]), 1);
+    assertEquals(s.one([function(i) return i == 5]), 5);
+
+    var didThrow:Bool = false;
+
+    try {
+      s.one([function(i) return i == 9]);
+    } catch (msg: String) {
+      didThrow = true;
+    }
+
+    assertTrue(didThrow);
+
+    didThrow = false;
+
+    try {
+      s.one([function(i) return i == 9]);
+    } catch (msg: String) {
+      didThrow = true;
+    }
+
+    assertTrue(didThrow);
+  }
 }

@@ -22,6 +22,16 @@ class Set<T> {
 		}
 	}
 
+	public function equals(other: Set<T>): Bool {
+		if (length != other.length) return false;
+
+		for (x in this) {
+			if (!other.contains(x)) return false;
+		}
+
+		return true;
+	}
+
 	public function add(item : T) : Void {
 		//if(startedIterating && !iterationList.contains(item))  {
 		//	iterationList.push(item);
@@ -147,7 +157,7 @@ class Set<T> {
 		var eList : Set<T> = clone();
 		var i : Int = 0;
 		while(i < criteria.length) {
-			eList = eList.myfilter(criteria[i]);
+			eList = eList.filter(criteria[i]);
 			i++;
 		}
 		return eList;
@@ -161,16 +171,12 @@ class Set<T> {
 		var eList : Set<T> = clone();
 		var resultList : Set<T> = new Set<T>([]);
 		for (crit in criteria) {
-			var filteredList : Set<T> = eList.myfilter(crit);
-			for(e in filteredList/* AS3HX WARNING could not determine type for var: e exp: EIdent(filteredList) type: Set<Entity>*/) {
+			var filteredList : Set<T> = eList.filter(crit);
+			for(e in filteredList) {
 				resultList.add(e);
 			}
 		}
 		return resultList;
-	}
-
-	public function all(criteria:Array<T -> Bool>) : Bool {
-		return this.length == this.select(criteria).length;
 	}
 
 	public function one(criteria:Array<T -> Bool>) : T {
@@ -190,34 +196,16 @@ class Set<T> {
 		return null;
 	}
 
+	public function all(criteria:Array<T -> Bool>) : Bool {
+		return this.length == this.select(criteria).length;
+	}
+
 	public function any(criteria: Array<T -> Bool>) : Bool {
 		return this.select(criteria).length > 0;
 	}
 
 	public function none(criteria: Array<T -> Bool>) : Bool {
 		return this.select(criteria).length == 0;
-	}
-
-	// Filters a list by 1 criteria item. Returns the filtered list.
-	//
-	// Criteria types:
-	//
-	// * String   -> match all entities with that group
-	//
-	// * !String  -> in the case that the string starts with "!",
-	//              perform the inverse of the above.
-	//
-	// * Function -> match all entities e such that f(e) == true.
-	function myfilter(criteria : T -> Bool) : Set<T> {
-		var pass : Array<T> = [];
-
-		for(entity in this) {
-			if (criteria(entity)) {
-				pass.push(entity);
-			}
-		}
-
-		return new Set<T>(pass);
 	}
 
 	public static function hasGroup(g: String) : Entity -> Bool {
