@@ -32,7 +32,7 @@ class Graphic implements IPositionable {
 	// The location of the entity, after camera transformations.
 	public var cameraSpacePos : Rect;
 	public var animations : AnimationHandler;
-	var pixels : Bitmap;
+	public var pixels(getPixels, setPixels) : Bitmap;
 	var spritesheet : Array<Dynamic>;
 	var groupSet : Set<String>;
 	// TODO: Rename
@@ -191,9 +191,11 @@ class Graphic implements IPositionable {
    null if you want to defer the decision by calling setTile() later. */
     public function loadSpritesheet<T>(spritesheetClass : Class<T>, tileDimension : Vec = null, whichTile : Vec = null) : Graphic {
 		Util.assert(this.spritesheetObj == null);
+		Util.assert(!tileDimension.equals(new Vec(0, 0)));
 		this.spritesheetObj = Type.createInstance(spritesheetClass, [0, 0]);
+
 		var spritesheetSize : Vec = new Vec(spritesheetObj.width, spritesheetObj.height);
-		if(tileDimension != null)  {
+		if (tileDimension != null)  {
 			this.spriteSheetWidth = Std.int(tileDimension.x);
 			this.spriteSheetHeight = Std.int(tileDimension.y);
 		} else  {
@@ -201,7 +203,7 @@ class Graphic implements IPositionable {
 			this.spriteSheetHeight = Std.int(spritesheetObj.height);
 		}
 
-		if(whichTile != null)  {
+		if (whichTile != null)  {
 			setTile(Std.int(whichTile.x), Std.int(whichTile.y));
 		} else  {
 			setTile(0, 0);
@@ -216,8 +218,9 @@ class Graphic implements IPositionable {
 		return this;
 	}
 
-	public function flipBitmapData(original : BitmapData, axis : String = "x") : BitmapData {
-		var flipped : BitmapData = new BitmapData(original.width, original.height, true, 0);
+	private function flipBitmapData(original : BitmapData, axis : String = "x") : BitmapData {
+		var flipped : BitmapData = new BitmapData(pixels.bitmapData.width, pixels.bitmapData.height, true, 0);
+
 		var matrix : Matrix;
 		if(axis == "x")  {
 			matrix = new Matrix(-1, 0, 0, 1, original.width, 0);
@@ -235,6 +238,14 @@ class Graphic implements IPositionable {
 		return this;
 	}
 
+	public function getPixels(): Bitmap {
+		return pixels;
+	}
+
+	public function setPixels(p: Bitmap): Bitmap {
+		return pixels = p;
+	}
+
 	// These two are in Camera space.
 	public function getCameraSpaceScaleX() : Float {
 		return scaleX;
@@ -244,10 +255,14 @@ class Graphic implements IPositionable {
 		return scaleY;
 	}
 
+	public function getPixel(x:Int, y:Int) {
+		return this.pixels.bitmapData.getPixel(x, y);
+	}
+
 	var facing : Int;
 	// Pass in the x-coordinate of your velocity, and this'll orient
 	// the Graphic in that direction.
-	function face(dir : Int) : Void {
+	public function face(dir : Int) : Void {
 		if(dir > 0 && facing < 0)  {
 			pixels.bitmapData = flipBitmapData(pixels.bitmapData);
 			facing = dir;
@@ -278,6 +293,7 @@ class Graphic implements IPositionable {
 	public function add(p : IPositionable) : Graphic {
 		this.x += p.x;
 		this.y += p.y;
+
 		return this;
 	}
 
