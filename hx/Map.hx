@@ -377,11 +377,15 @@ class Map extends Rect {
 	}
 
 	public function collides(i : Dynamic) : Bool {
-		if(Std.is(i, Vec))  {
-			return collidesPt(try cast(i, Vec) catch(e:Dynamic) null);
+		if(Std.is(i, Vec)) {
+			untyped {
+				return collidesPt(i);
+			}
 		}
 		if(Std.is(i, Rect))  {
-			return collidesRect(try cast(i, Rect) catch(e:Dynamic) null);
+			untyped {
+				return collidesRect(i);
+			}
 		}
 		throw "Unsupported type for Map#collides.";
 	}

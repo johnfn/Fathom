@@ -12,7 +12,7 @@ class Text extends Entity {
 	var textField : TextField;
 	var content : String;
 	var typewriting : Bool;
-	var typewriteTick : Void -> Void;
+	var typewriteTick : Dynamic -> Void;
 	var normalTextFormat : TextFormat;
 	var redTextFormat : TextFormat;
 	function new(content : String = "", textName : String = null) {
@@ -40,7 +40,7 @@ class Text extends Entity {
 		textField.sharpness = 100;
 		textField.thickness = 0;
 		text = content;
-		addChild(textField);
+		sprite.addChild(textField);
 		// You need to set the width after you add the TextField - otherwise, it'll
 		// be reset to 0.
 		width = 200;
@@ -140,7 +140,7 @@ class Text extends Entity {
 		var that : Text = this;
 		typewriting = true;
 		textField.text = "";
-		this.typewriteTick = function() : Void {
+		this.typewriteTick = function(e:Dynamic) : Void {
 			if(counter > that.content.length)  {
 				textField.text = content;
 				typewriting = false;

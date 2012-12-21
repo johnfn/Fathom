@@ -1,15 +1,18 @@
 import flash.display.Sprite;
-import flash.utils.Dictionary;
+import flash.utils.TypedDictionary;
+
+
+typedef ParticleData = {life: Int, totalLife: Int, vel: Vec, x: Int, y: Int};
 
 class Particles {
 
 	static var particleEffects : Array<Dynamic> = [];
 	// Recycling particles within ALL particle effects.
-		static var recycledParticles : Array<Dynamic> = [];
+	static var recycledParticles : Array<Dynamic> = [];
 	// Recycling particles within this particle effect.
-		var deadParticles : Array<Dynamic>;
+	var deadParticles : Array<Dynamic>;
 	// Number from 0 to 1 - % chance of spawning the particle on a single frame.
-		var spawnRate : Float;
+	var spawnRate : Float;
 	var lifetimeLow : Int;
 	var lifetimeHigh : Int;
 	var flickerOnDeath : Bool;
@@ -24,12 +27,14 @@ class Particles {
 	var velYLow : Float;
 	var velYHigh : Float;
 	var stopParticleGen : Int;
-	var particleData : Dictionary;
+	var particleData : TypedDictionary<Entity, ParticleData>;
 	var animated : Bool;
 	var animationFrames : Array<Dynamic>;
+
 	// dimensions of the particle. currently only defined if thie particle is animated, TODO.
-		var particleDim : Vec;
+	var particleDim : Vec;
 	var baseMC : Class<Dynamic>;
+
 	public function new(baseMC : Class<Dynamic>, width : Int = -1) {
 		deadParticles = [];
 		spawnRate = 1;
@@ -47,7 +52,7 @@ class Particles {
 		velYLow = 1;
 		velYHigh = 4;
 		stopParticleGen = -1;
-		particleData = new Dictionary();
+		particleData = new TypedDictionary();
 		animated = false;
 		this.baseMC = baseMC;
 		particleEffects.push(this);
@@ -172,32 +177,32 @@ class Particles {
 	}
 
 	public function spawnParticle() : Particles {
-		var newParticle : Graphic;
-		var newData : Dynamic = { };
+		var newParticle : Entity;
+		Util.assert(false);
+
 		if(deadParticles.length > 0)  {
 			newParticle = deadParticles.pop();
-		}
-
-		else  {
-			newParticle = new Graphic();
+		} else {
+			newParticle = new Entity();
 			if(animated)  {
 				newParticle.loadSpritesheet(baseMC, particleDim, new Vec(animationFrames[0][0], animationFrames[0][1]));
 				newParticle.animations.addAnimationXY("particle", animationFrames);
 				newParticle.animations.playWithOffset("particle", Util.randRange(0, 12));
-			}
-
-			else  {
+			} else  {
 				newParticle.loadImage(baseMC);
 			}
-
 		}
 
-		newData.life = Util.randRange(lifetimeLow, lifetimeHigh);
-		newData.totalLife = newData.life;
-		newData.vel = new Vec(Util.randNum(velXLow, velXHigh), Util.randNum(velYLow, velYHigh));
-		newData.x = Util.randRange(spawnLoc.x, spawnLoc.right);
-		newData.y = Util.randRange(spawnLoc.y, spawnLoc.bottom);
-		Reflect.setField(particleData, Std.string(newParticle), newData);
+		var l:Int = Util.randRange(lifetimeLow, lifetimeHigh);
+
+		var newData : ParticleData =
+			{ life : l
+	    	, totalLife : l
+	    	, vel : new Vec(Util.randNum(velXLow, velXHigh), Util.randNum(velYLow, velYHigh))
+	    	, x : Util.randRange(Std.int(spawnLoc.x), Std.int(spawnLoc.right))
+	    	, y : Util.randRange(Std.int(spawnLoc.y), Std.int(spawnLoc.bottom))
+	    };
+		particleData.set(newParticle, newData);
 		newParticle.scaleX = scaleX;
 		newParticle.scaleY = scaleY;
 		Fathom.container.addChild(newParticle);
@@ -223,11 +228,10 @@ class Particles {
 		if(Math.random() < spawnRate)  {
 			spawnParticle();
 		}
-;
+
 		// Update each particle.
-		for(pObj in Reflect.fields(particleData)) {
-			var p : Graphic = try cast(pObj, Graphic) catch(e:Dynamic) null;
-			var data : Dynamic = Reflect.field(particleData, Std.string(p));
+		for(pObj in particleData) {
+			var data : Dynamic = particleData.get(pObj);
 			particlesLeft = true;
 			data.x += data.vel.x;
 			data.y += data.vel.y;
@@ -239,21 +243,20 @@ class Particles {
 			var lifeLeft : Int = data.get("life");
 			// Kill the particle, if necessary.
 			if(lifeLeft == 0 || (animated && pObj.animations.lastFrame()))  {
-				untyped __delete(particleData, Std.string(p));
-				deadParticles.push(p);
-				p.parent.removeChild(p);
+				untyped __delete__(particleData, pObj);
+				deadParticles.push(pObj);
 				if(animated)  {
-					p.animations.stop();
+					pObj.animations.stop();
 				}
 			}
 
 			// Flicker if necessary
 			if(flickerOnDeath && lifeLeft < 10)  {
-				p.visible = (lifeLeft / 3) % 2 == 0;
+				pObj.visible = (lifeLeft / 3) % 2 == 0;
 			}
 
 			if(fadeOut)  {
-				p.alpha = lifeLeft / data.totalLife;
+				pObj.alpha = lifeLeft / data.totalLife;
 			}
 		}
 ;

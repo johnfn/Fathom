@@ -43,11 +43,11 @@ class Camera extends Rect {
 	var FOLLOW_MODE_SLIDE : Int;
 	var followMode : Int;
 	// This just helps us fix a bug we may encounter.
-		var isFocused : Bool;
+	var isFocused : Bool;
 	// The Rect we extend from is the area from the game the camera displays.
 		// TODO: This camera does not at all take into consideration non-square
 		// dimensions. That would make life a bit harder.
-		public function new(stage : Stage) {
+	public function new(stage : Stage) {
 		CAM_LAG = 90;
 		camBoundingRect = null;
 		events = new TypedDictionary();
@@ -112,7 +112,7 @@ class Camera extends Rect {
 
 	// We have to ensure that setting these properties does not cause the camera to
 		// exceed its bounding box.
-		override public function setX(val : Float) : Float {
+	override public function setX(val : Float) : Float {
 		_x = (isBound()) ? bind(val, camBoundingRect.x, camBoundingRect.right) : val;
 		return val;
 	}
@@ -168,28 +168,32 @@ class Camera extends Rect {
 
 	/* Force the camera to go snap to the desired focal point, ignoring any
      * lag. This is expected for example when a new map is loaded.
-     */	public function snapTo(e : Entity) : Void {
+     */
+    public function snapTo(e : Entity) : Void {
 		focalX = e.x;
 		focalY = e.y;
 	}
 
 	/* Shake the camera for duration ticks, up to range pixels
-     * away from where it started. Pass -1 as a duration to shake indefinitely. */	public function shake(duration : Int = 30, range : Int = 5) : Void {
+     * away from where it started. Pass -1 as a duration to shake indefinitely. */
+    public function shake(duration : Int = 30, range : Int = 5) : Void {
 		var that : Camera = this;
-		var fn : Function = function() : Void {
+		var fn : Void -> Void = null;
+
+		fn = function() : Void {
 			that.focalX = that._focalX + Util.randRange(-range, range);
 			that.focalY = that._focalY + Util.randRange(-range, range);
 			if(duration == 0)  {
 				that.events.remove(fn);
 			}
 			duration--;
-		}
-;
+		};
+
 		Reflect.setField(events, EVENT_TYPE_SHAKE, fn);
 	}
 
 	public function stopAllEvents() : Void {
-		event = new TypedDictionary();
+		events = new TypedDictionary();
 	}
 
 	function easeXY() : Void {
@@ -226,7 +230,7 @@ class Camera extends Rect {
 	}
 
 	/* Adjust camera to follow the focus, and have the other points
-       all also be visible. */	public function follow(focus : Vec) : Void {
+       all also be visible. */	public function follow(focus : Vec, points:Array<Vec>) : Void {
 		points.push(new Vec(focus.x - scaledWidth / 2, focus.y - scaledHeight / 2));
 		points.push(new Vec(focus.x - scaledWidth / 2, focus.y + scaledHeight / 2));
 		points.push(new Vec(focus.x + scaledWidth / 2, focus.y - scaledHeight / 2));

@@ -50,6 +50,8 @@ class Graphic implements IPositionable {
 	public var y(getY, setY): Float;
 	public var scaleX(getScaleX, setScaleX): Float;
 	public var scaleY(getScaleY, setScaleY): Float;
+	public var alpha(getAlpha, setAlpha): Float;
+
 
 	var _parent:Graphic;
 	public var parent(getParent, never): Graphic;
@@ -385,6 +387,15 @@ class Graphic implements IPositionable {
 
 	public function getHeight() : Float {
 		return entitySpacePos.height;
+	}
+
+	public function setAlpha(val : Float) : Float {
+		sprite.alpha = val;
+		return val;
+	}
+
+	public function getAlpha() : Float {
+		return sprite.alpha;
 	}
 
 	public function rect() : Rect {

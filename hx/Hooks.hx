@@ -106,7 +106,8 @@ class Hooks {
 
 	static public function flicker(who : Entity, duration : Int = 20, cb : Void -> Void = null) : Dynamic -> Void {
 		var counter : Int = 0;
-		var fn: Dynamic -> Void;
+		var fn: Dynamic -> Void = null;
+
 		who.isFlickering = true;
 		fn = function(_:Dynamic) : Void {
 			counter++;
