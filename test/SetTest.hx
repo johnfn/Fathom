@@ -10,7 +10,7 @@ class SetTest extends haxe.unit.TestCase {
 
     assertEquals(s.contains(1), true);
     assertEquals(s.contains(5), true);
-    assertEquals(s.length, 3);
+    assertEquals(s.length, 2);
   }
 
   public function testRemove() {
@@ -25,6 +25,17 @@ class SetTest extends haxe.unit.TestCase {
     s.remove(3);
 
     assertEquals(s.length, 0);
+  }
+
+  public function testIter() {
+    var start:Set<Int> = new Set<Int>([1,2,3,4,5]);
+    var num:Int = 0;
+
+    for (x in start) {
+      num += x;
+    }
+
+    assertEquals(num, 15);
   }
 
   public function testConcat() {

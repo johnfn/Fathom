@@ -259,7 +259,7 @@ class Particles {
 				pObj.alpha = lifeLeft / data.totalLife;
 			}
 		}
-;
+
 		if(!particlesLeft)  {
 			killThisParticleEffect();
 		}

@@ -252,7 +252,7 @@ class SetIter<T> {
 	}
 
     public function hasNext() {
-        return loc < contents.length - 1;
+        return loc < contents.length;
     }
 
     public function next() {
