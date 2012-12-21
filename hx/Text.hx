@@ -36,7 +36,7 @@ class Text extends Entity {
 		textField.filters = [new DropShadowFilter(2.0, 45, 0, 1, 0, 0, 1)];
 		textField.embedFonts = true;
 		textField.defaultTextFormat = normalTextFormat;
-		textField.antiAliasType = "advanced";
+		//textField.antiAliasType = "advanced";
 		textField.sharpness = 100;
 		textField.thickness = 0;
 		text = content;
@@ -55,13 +55,13 @@ class Text extends Entity {
 
 	override public function setWidth(val : Float) : Float {
 		textField.width = val;
-		super.width = val;
+		sprite.width = val;
 		return val;
 	}
 
 	override public function setHeight(val : Float) : Float {
 		textField.height = val;
-		super.height = val;
+		sprite.height = val;
 		return val;
 	}
 

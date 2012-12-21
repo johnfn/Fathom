@@ -3,39 +3,41 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.display.BitmapData;
 import flash.display.Stage;
+import flash.utils.TypedDictionary;
 
 /*
 
    * Entity Space: the coordinates you use 99% of the time.
    * Camera Space: the coordinates of the sprite, post camera transformations.
-  */class Camera extends Rect {
+  */
+class Camera extends Rect {
 	public var focalX(getFocalX, setFocalX) : Float;
 	public var focalY(getFocalY, setFocalY) : Float;
 	public var focalBoundingRect(getFocalBoundingRect, setFocalBoundingRect) : Rect;
 
 	// The larger this number, the longer the camera takes to catch up.
-		var CAM_LAG : Int;
+	var CAM_LAG : Int;
 	// This is the rect that the camera will always stay inside.
-		var camBoundingRect : Rect;
+	var camBoundingRect : Rect;
 	static var EVENT_TYPE_SHAKE : String = "Shake";
 	// This is a list of all events currently happening to this camera.
-		// There can only ever be 1 event of each type.
-		var events : Dynamic;
+	// There can only ever be 1 event of each type.
+	var events : TypedDictionary<Int, Void -> Void>;
 	// These two variables are the focal points of the camera.
-		var _focalX : Float;
+	var _focalX : Float;
 	var _focalY : Float;
 	// If our camera lags behing the player, this is where it will eventually want to be.
-		var goalFocalX : Float;
+	var goalFocalX : Float;
 	var goalFocalY : Float;
 	// If the camera is normalWidth by normalHeight, then no MovieClips will have to be scaled.
-		var normalWidth : Float;
+	var normalWidth : Float;
 	var normalHeight : Float;
 	// Rate at which the camera eases. Larger values -> faster easing.
-		var easeRate : Int;
+	var easeRate : Int;
 	// These dimensions are the default scaled width of the camera. The camera may temporarily adjust
-		// itself out of these dimensions, if, say, it's told to keepInScene() an Entity
-		// that wandered out of the Camera bounds.
-		var scaledWidth : Float;
+	// itself out of these dimensions, if, say, it's told to keepInScene() an Entity
+	// that wandered out of the Camera bounds.
+	var scaledWidth : Float;
 	var scaledHeight : Float;
 	var FOLLOW_MODE_NONE : Int;
 	var FOLLOW_MODE_SLIDE : Int;
@@ -48,7 +50,7 @@ import flash.display.Stage;
 		public function new(stage : Stage) {
 		CAM_LAG = 90;
 		camBoundingRect = null;
-		events = { };
+		events = new TypedDictionary();
 		easeRate = 1;
 		FOLLOW_MODE_NONE = 0;
 		FOLLOW_MODE_SLIDE = 1;
@@ -76,9 +78,9 @@ import flash.display.Stage;
 	}
 
 	public function bind(val : Float, low : Float, high : Float) : Float {
-		if(val < low) 
+		if(val < low)
 			return low;
-		if(val > high) 
+		if(val > high)
 			return high;
 		return val;
 	}
@@ -187,7 +189,7 @@ import flash.display.Stage;
 	}
 
 	public function stopAllEvents() : Void {
-		events = { };
+		event = new TypedDictionary();
 	}
 
 	function easeXY() : Void {
@@ -215,7 +217,7 @@ import flash.display.Stage;
 			focalY = goalFocalY;
 			return;
 		}
-		throw new Error("Invalid Camera mode: " + followMode);
+		throw ("Invalid Camera mode: " + followMode);
 	}
 
 	public function setEaseSpeed(ease : Int) : Camera {
@@ -236,28 +238,28 @@ import flash.display.Stage;
 		var bottom : Float = -VERY_BIG;
 		var i : Int = 0;
 		while(i < points.length) {
-			if(points[i].x < left) 
+			if(points[i].x < left)
 				left = points[i].x;
-			if(points[i].x > right) 
+			if(points[i].x > right)
 				right = points[i].x;
-			if(points[i].y < top) 
+			if(points[i].y < top)
 				top = points[i].y;
-			if(points[i].y > bottom) 
+			if(points[i].y > bottom)
 				bottom = points[i].y;
 			i++;
 		}
 		// This implies we were passed in bad data, but it can't hurt to check.
-		if(left < camBoundingRect.x) 
+		if(left < camBoundingRect.x)
 			left = camBoundingRect.x;
-		if(right > camBoundingRect.right) 
+		if(right > camBoundingRect.right)
 			right = camBoundingRect.right;
-		if(top < camBoundingRect.y) 
+		if(top < camBoundingRect.y)
 			top = camBoundingRect.y;
-		if(bottom > camBoundingRect.bottom) 
+		if(bottom > camBoundingRect.bottom)
 			bottom = camBoundingRect.bottom;
 		// Calculate the new w/h of the square camera.
 		var newDimension : Float = Math.max(right - left, bottom - top);
-		if(newDimension < scaledWidth) 
+		if(newDimension < scaledWidth)
 			newDimension = scaledWidth;
 		// Recalculate the camera's bounds.
 		// At this point, a Rect with top left coords (top, left) and width
@@ -272,7 +274,7 @@ import flash.display.Stage;
 	}
 
 	// TODO: Remove this whole thing and thereby decouple Camera and Graphic (woo!)
-		public function update() : Void {
+	public function update() : Void {
 		//TODO: If this isn't here, bad times.
 		//if (Fathom.currentMode == C.MODE_TITLE) return;
 		var e : Entity;
@@ -281,19 +283,20 @@ import flash.display.Stage;
 		if(!this.isFocused)  {
 			Util.log("WARNING: Camera has no focus, so you probably won't see anything.");
 		}
-		for(event in events/* AS3HX WARNING could not determine type for var: event exp: EIdent(events) type: Dynamic*/) {
-			event();
+
+		for(ev in events) {
+			events.get(ev)();
 		}
 
 		easeXY();
-		for(e in Fathom.entities.select("!no-camera")/* AS3HX WARNING could not determine type for var: e exp: ECall(EField(EField(EIdent(Fathom),entities),select),[EConst(CString(!no-camera))]) type: null*/) {
+		for(e in Fathom.entities.select(["!no-camera"])) {
 			e.cameraSpaceX = (e.x - this.x) * camScaleX;
 			e.cameraSpaceY = (e.y - this.y) * camScaleY;
 			e.scaleX = e.cameraSpaceScaleX * camScaleX;
 			e.scaleY = e.cameraSpaceScaleY * camScaleY;
 		}
 
-		for(e in Fathom.entities.select("no-camera")/* AS3HX WARNING could not determine type for var: e exp: ECall(EField(EField(EIdent(Fathom),entities),select),[EConst(CString(no-camera))]) type: null*/) {
+		for(e in Fathom.entities.select(["no-camera"])) {
 			e.cameraSpaceX = e.x;
 			e.cameraSpaceY = e.y;
 		}

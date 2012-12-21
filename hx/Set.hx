@@ -106,6 +106,16 @@ class Set<T> {
 		return result;
 	}
 
+	public function map<T2>(f: T -> T2) : Set<T2> {
+		var result: Set<T2> = new Set<T2>();
+
+		for (k in contents) {
+			result.add(f(k));
+		}
+
+		return result;
+	}
+
 	public function getLength() : Int {
 		return _length;
 	}
@@ -162,7 +172,7 @@ class Set<T> {
 		return resultList;
 	}
 
-	public function all(criteria:Array<T>) : Bool {
+	public function all(criteria:Array<Dynamic>) : Bool {
 		return this.length == this.select(criteria).length;
 	}
 
@@ -192,15 +202,15 @@ class Set<T> {
 	}
 
 	// Filters a list by 1 criteria item. Returns the filtered list.
-		//
-		// Criteria types:
-		//
-		// * String   -> match all entities with that group
-		//
-		// * !String  -> in the case that the string starts with "!",
-		//              perform the inverse of the above.
-		//
-		// * Function -> match all entities e such that f(e) == true.
+	//
+	// Criteria types:
+	//
+	// * String   -> match all entities with that group
+	//
+	// * !String  -> in the case that the string starts with "!",
+	//              perform the inverse of the above.
+	//
+	// * Function -> match all entities e such that f(e) == true.
 	function myfilter(criteria : Dynamic) : Set<T> {
 		var pass : Array<T> = [];
 		var desired : Bool = true;

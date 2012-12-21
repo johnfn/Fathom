@@ -1,5 +1,4 @@
 import flash.display.Sprite;
-import mx.core.BitmapAsset;
 import flash.utils.Dictionary;
 
 class Particles {
@@ -75,7 +74,7 @@ class Particles {
 		public function animateFromSpritesheet() : Particles {
 		var width : Int;
 		var height : Int;
-		var asset : BitmapAsset = Type.createInstance(baseMC, []);
+		var asset = Type.createInstance(baseMC, []);
 		var animationFrames : Array<Dynamic> = [];
 		animated = true;
 		// Initialize the baseMC just to get its width and height.
@@ -157,8 +156,7 @@ class Particles {
 	}
 
 	function killParticle(p : Sprite) : Void {
-		This is an intentional compilation error. See the README for handling the delete keyword
-		delete Reflect.field(particleData, Std.string(p));
+		untyped __delete__(particleData, p);
 	}
 
 	static public function removeParticleEffect(p : Particles) : Void {
@@ -237,23 +235,23 @@ class Particles {
 			pObj.y = data.y;
 			// TODO: Graphics should just update themselves.
 			pObj.update(null);
-			var lifeLeft : Int = Reflect.field(data, "life")--;
+			data.set("life", data.get("life") - 1);
+			var lifeLeft : Int = data.get("life");
 			// Kill the particle, if necessary.
 			if(lifeLeft == 0 || (animated && pObj.animations.lastFrame()))  {
-				This is an intentional compilation error. See the README for handling the delete keyword
-				delete Reflect.field(particleData, Std.string(p));
+				untyped __delete(particleData, Std.string(p));
 				deadParticles.push(p);
 				p.parent.removeChild(p);
 				if(animated)  {
 					p.animations.stop();
 				}
 			}
-;
+
 			// Flicker if necessary
 			if(flickerOnDeath && lifeLeft < 10)  {
 				p.visible = (lifeLeft / 3) % 2 == 0;
 			}
-;
+
 			if(fadeOut)  {
 				p.alpha = lifeLeft / data.totalLife;
 			}

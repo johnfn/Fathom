@@ -105,7 +105,7 @@ class Fathom {
 	}
 
 	static public function anythingAt(x : Int, y : Int) : Bool {
-		return grid.getAt(x, y).all("transparent");
+		return grid.getAt(x, y).all(["transparent"]);
 	}
 
 	// TODO: These should be static functions on MovingEntity.
@@ -113,11 +113,11 @@ class Fathom {
 	// see if any individual square of the grid contains more than one item in
 	// it.
 	static function moveEverything() : Void {
-		var active: MovingEntity -> Bool = function(e : MovingEntity) : Bool {
+		var active: Entity -> Bool = function(e : Entity) : Bool {
 			return e.modes().has(currentMode);
 		};
 
-		var list : Set<Entity> = cast(movingEntities().filter(active), Set<Entity>);
+		var list : Set<MovingEntity> = movingEntities().filter(active);
 
 		// TODO: Optimization: You shouldn't have to recreate this
 		// hash every loop.
@@ -138,16 +138,15 @@ class Fathom {
 					oldVelY -= amtY;
 					if(grid.collides(e))  {
 						var yColliders : Set<Entity> = grid.getColliders(e);
-						trace(yColliders.length);
 						e.yColl.extend(yColliders);
-						if(yColliders.any("!non-blocking"))  {
+						if(yColliders.any(["!non-blocking"]))  {
 							e.y -= amtY;
 							oldVelY += amtY;
 							break;
 						}
 					}
 				}
-;
+
 				onceThrough = false;
 				var amtX : Float = Util.bind(oldVelX, -1, 1);
 				e.x += amtX;
@@ -155,28 +154,30 @@ class Fathom {
 				if(grid.collides(e))  {
 					var xColliders : Set<Entity> = grid.getColliders(e);
 					e.xColl.extend(xColliders);
-					if(xColliders.any("!non-blocking"))  {
+					if(xColliders.any(["!non-blocking"]))  {
 						e.x -= amtX;
 					}
 				}
 			}
-;
+
 			e.x = Math.floor(e.x);
 			e.y = Math.floor(e.y);
 			e.xColl.extend(grid.getColliders(e));
 			e.yColl.extend(grid.getColliders(e));
-			e.touchingBottom = (e.yColl.any("!non-blocking") && e.vel.y > 0);
-			e.touchingTop = (e.yColl.any("!non-blocking") && e.vel.y < 0);
-			e.touchingLeft = (e.xColl.any("!non-blocking") && e.vel.x < 0);
-			e.touchingRight = (e.xColl.any("!non-blocking") && e.vel.x > 0);
+			e.touchingBottom = (e.yColl.any(["!non-blocking"]) && e.vel.y > 0);
+			e.touchingTop    = (e.yColl.any(["!non-blocking"]) && e.vel.y < 0);
+			e.touchingLeft   = (e.xColl.any(["!non-blocking"]) && e.vel.x < 0);
+			e.touchingRight  = (e.xColl.any(["!non-blocking"]) && e.vel.x > 0);
 		}
 ;
 	}
 
-	static function movingEntities() : Set<Entity> {
+	static function movingEntities() : Set<MovingEntity> {
 		return Fathom.entities.select([function(e : Entity) : Bool {
 			return !e.isStatic;
-		}]);
+		}]).map(function(e: Entity): MovingEntity {
+			return cast(e, MovingEntity);
+		});
 	}
 
 	static function updateFPS() : Void {
@@ -193,7 +194,7 @@ class Fathom {
 		updateFPS();
 		moveEverything();
 		for(e in list) {
-			if(!e.modes().contains(cachedMode))
+			if(!e.modes().has(cachedMode))
 				continue;
 			// This acts as a pseudo garbage-collector. We separate out the
 			// destroyed() call from the clearMemory() call because we sometimes
@@ -208,7 +209,7 @@ class Fathom {
 		}
 
 		Particles.updateAll();
-		if(mapRef.modes().contains(cachedMode))  {
+		if(mapRef.modes().has(cachedMode))  {
 			mapRef.update();
 		}
 		camera.update();
