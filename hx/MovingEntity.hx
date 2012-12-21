@@ -28,16 +28,16 @@ class MovingEntity extends Entity {
 	}
 
 	// TODO. This won't return anything you aren't obstructed by.
-	public function isTouching(args: Array<Dynamic>) : Bool {
+	public function isTouching(args: Array<Entity -> Bool>) : Bool {
 		return xColl.any(args) || yColl.any(args);
 	}
 
-	public function touchingSet(criteria: Array<Dynamic>) : Set<Entity> {
+	public function touchingSet(criteria: Array<Entity -> Bool>) : Set<Entity> {
 		return new Set<Entity>(xColl.clone().extend(yColl).toArray()).select(criteria);
 	}
 
 	public function isBlocked() : Bool {
-		return isTouching(["!non-blocking"]);
+		return isTouching([Set.doesntHaveGroup("non-blocking")]);
 	}
 
 }

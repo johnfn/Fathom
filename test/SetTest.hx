@@ -63,6 +63,17 @@ class SetTest extends haxe.unit.TestCase {
   }
   */
 
+  public function testExtend() {
+    var s1:Set<Int> = new Set([1,2,3]);
+    var s2:Set<Int> = new Set([4,5,6]);
+
+    s1.extend(s2);
+
+    for (x in 1...6) {
+      assertTrue(s1.contains(x));
+    }
+  }
+
   public function testFilter() {
     var s:Set<Int> = new Set<Int>([0,1,2,3,4,5,6,7,8]);
 

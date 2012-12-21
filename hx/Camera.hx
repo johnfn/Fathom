@@ -293,14 +293,14 @@ class Camera extends Rect {
 		}
 
 		easeXY();
-		for(e in Fathom.entities.select(["!no-camera"])) {
+		for(e in Fathom.entities.select([Set.doesntHaveGroup("no-camera")])) {
 			e.cameraSpaceX = (e.x - this.x) * camScaleX;
 			e.cameraSpaceY = (e.y - this.y) * camScaleY;
 			e.scaleX = e.cameraSpaceScaleX * camScaleX;
 			e.scaleY = e.cameraSpaceScaleY * camScaleY;
 		}
 
-		for(e in Fathom.entities.select(["no-camera"])) {
+		for(e in Fathom.entities.select([Set.hasGroup("no-camera")])) {
 			e.cameraSpaceX = e.x;
 			e.cameraSpaceY = e.y;
 		}

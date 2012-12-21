@@ -143,7 +143,7 @@ class Set<T> {
 		return new Set.SetIter(this);
 	}
 
-	public function select(criteria: Array<Dynamic>) : Set<T> {
+	public function select(criteria: Array<T -> Bool>) : Set<T> {
 		var eList : Set<T> = clone();
 		var i : Int = 0;
 		while(i < criteria.length) {
@@ -157,26 +157,23 @@ class Set<T> {
 		return new Set<T>(this.toArray());
 	}
 
-	public function union(criteria:Array<T>) : Set<T> {
+	public function union(criteria:Array<T -> Bool>) : Set<T> {
 		var eList : Set<T> = clone();
 		var resultList : Set<T> = new Set<T>([]);
-		var i : Int = 0;
-		while(i < criteria.length) {
-			var filteredList : Set<T> = eList.myfilter(criteria[i]);
+		for (crit in criteria) {
+			var filteredList : Set<T> = eList.myfilter(crit);
 			for(e in filteredList/* AS3HX WARNING could not determine type for var: e exp: EIdent(filteredList) type: Set<Entity>*/) {
 				resultList.add(e);
 			}
-
-			i++;
 		}
 		return resultList;
 	}
 
-	public function all(criteria:Array<Dynamic>) : Bool {
+	public function all(criteria:Array<T -> Bool>) : Bool {
 		return this.length == this.select(criteria).length;
 	}
 
-	public function one(criteria:Array<T>) : T {
+	public function one(criteria:Array<T -> Bool>) : T {
 		var results : Set<T> = this.select(criteria);
 		if(results.length == 0)  {
 			throw ("Set<Entity>#one called with criteria " + criteria.toString() + ", but no results found.");
@@ -193,11 +190,11 @@ class Set<T> {
 		return null;
 	}
 
-	public function any(criteria: Array<Dynamic>) : Bool {
+	public function any(criteria: Array<T -> Bool>) : Bool {
 		return this.select(criteria).length > 0;
 	}
 
-	public function none(criteria: Array<Dynamic>) : Bool {
+	public function none(criteria: Array<T -> Bool>) : Bool {
 		return this.select(criteria).length == 0;
 	}
 
@@ -211,35 +208,30 @@ class Set<T> {
 	//              perform the inverse of the above.
 	//
 	// * Function -> match all entities e such that f(e) == true.
-	function myfilter(criteria : Dynamic) : Set<T> {
+	function myfilter(criteria : T -> Bool) : Set<T> {
 		var pass : Array<T> = [];
-		var desired : Bool = true;
-		if (Std.is(criteria, String) && criteria.charAt(0) == "!")  {
-			desired = false;
-			criteria = criteria.substring(1);
-		}
+
 		for(entity in this) {
-			// TODO: Some way to remove cast
-			if(Std.is(criteria, String))  {
-				if((cast(entity, Entity).groups().contains(criteria)) == desired)  {
-					pass.push(entity);
-				}
+			if (criteria(entity)) {
+				pass.push(entity);
 			}
-
-			else if(Reflect.isFunction(criteria))  {
-				if(criteria(entity))  {
-					pass.push(entity);
-				}
-			}
-
-			else  {
-				throw "Unsupported Criteria type " + criteria + " " + Util.className(criteria);
-			}
-
 		}
 
 		return new Set<T>(pass);
 	}
+
+	public static function hasGroup(g: String) : Entity -> Bool {
+		return function(e:Entity): Bool {
+			return e.groups().contains(g);
+		}
+	}
+
+	public static function doesntHaveGroup(g: String) : Entity -> Bool {
+		return function(e:Entity): Bool {
+			return e.groups().contains(g);
+		}
+	}
+
 }
 
 class SetIter<T> {

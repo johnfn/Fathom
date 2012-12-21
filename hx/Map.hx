@@ -119,7 +119,7 @@ class Map extends Rect {
 
 	function updatePersistentItems(diff : Vec) : Void {
 		hideCurrentPersistentItems();
-		for(e in Fathom.entities.select(["!persistent"])) {
+		for(e in Fathom.entities.select([Set.doesntHaveGroup("persistent")])) {
 			e.destroy();
 		}
 

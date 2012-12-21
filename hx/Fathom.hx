@@ -105,7 +105,7 @@ class Fathom {
 	}
 
 	static public function anythingAt(x : Int, y : Int) : Bool {
-		return grid.getAt(x, y).all(["transparent"]);
+		return grid.getAt(x, y).all([Set.hasGroup("transparent")]);
 	}
 
 	// TODO: These should be static functions on MovingEntity.
@@ -139,7 +139,7 @@ class Fathom {
 					if(grid.collides(e))  {
 						var yColliders : Set<Entity> = grid.getColliders(e);
 						e.yColl.extend(yColliders);
-						if(yColliders.any(["!non-blocking"]))  {
+						if(yColliders.any([Set.doesntHaveGroup("non-blocking")]))  {
 							e.y -= amtY;
 							oldVelY += amtY;
 							break;
@@ -154,7 +154,7 @@ class Fathom {
 				if(grid.collides(e))  {
 					var xColliders : Set<Entity> = grid.getColliders(e);
 					e.xColl.extend(xColliders);
-					if(xColliders.any(["!non-blocking"]))  {
+					if(xColliders.any([Set.doesntHaveGroup("non-blocking")]))  {
 						e.x -= amtX;
 					}
 				}
@@ -164,10 +164,10 @@ class Fathom {
 			e.y = Math.floor(e.y);
 			e.xColl.extend(grid.getColliders(e));
 			e.yColl.extend(grid.getColliders(e));
-			e.touchingBottom = (e.yColl.any(["!non-blocking"]) && e.vel.y > 0);
-			e.touchingTop    = (e.yColl.any(["!non-blocking"]) && e.vel.y < 0);
-			e.touchingLeft   = (e.xColl.any(["!non-blocking"]) && e.vel.x < 0);
-			e.touchingRight  = (e.xColl.any(["!non-blocking"]) && e.vel.x > 0);
+			e.touchingBottom = (e.yColl.any([Set.doesntHaveGroup("non-blocking")]) && e.vel.y > 0);
+			e.touchingTop    = (e.yColl.any([Set.doesntHaveGroup("non-blocking")]) && e.vel.y < 0);
+			e.touchingLeft   = (e.xColl.any([Set.doesntHaveGroup("non-blocking")]) && e.vel.x < 0);
+			e.touchingRight  = (e.xColl.any([Set.doesntHaveGroup("non-blocking")]) && e.vel.x > 0);
 		}
 ;
 	}
