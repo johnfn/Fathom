@@ -12,12 +12,12 @@ class Util {
 	static public var KeyUp : MagicKeyObject;
 	static public var KeyJustUp : MagicKeyObject;
 	//TODO: Should move Array.prototype stuff into separate ArrayExtensions class.
-		/* Ties each element e in the array to a value k(e) and sorts the array
-       how you'd sort the values from low to high. */
+	/* Ties each element e in the array to a value k(e) and sorts the array
+   how you'd sort the values from low to high. */
 
     // Array::indexOf only works with String values.
-		// Remove all occurances of item from array.
-		static public function id(x : Dynamic) : Dynamic {
+	// Remove all occurances of item from array.
+	static public function id(x : Dynamic) : Dynamic {
 		return x;
 	}
 
@@ -36,7 +36,7 @@ class Util {
 	}
 
 	// TODO: Rename -> clamp
-		static public function bind(x : Float, low : Float, high : Float) : Float {
+	static public function bind(x : Float, low : Float, high : Float) : Float {
 		if(x < low)
 			return low;
 		if(x > high)
@@ -44,12 +44,8 @@ class Util {
 		return x;
 	}
 
-	static public function className(c : Dynamic) : String {
-		var qualifiedName : String = Type.getClassName(c);
-		if(qualifiedName.indexOf(":") == -1)
-			return qualifiedName;
-		var split : Array<Dynamic> = qualifiedName.split(":");
-		return split[split.length - 1];
+	static public function className<T>(c : T) : String {
+		return Type.getClassName(Type.getClass(c));
 	}
 
 	static public function printStackTrace() : Void {
@@ -69,8 +65,8 @@ class Util {
 	}
 
 	// Short for print (like in Ruby). Attempts to print a human readable representation
-		// of the given object, for any object type.
-		static public function p(o : Dynamic) : Void {
+	// of the given object, for any object type.
+	static public function p(o : Dynamic) : Void {
 		Util.log(Util.pHelper(o));
 	}
 

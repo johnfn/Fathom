@@ -84,11 +84,11 @@ class Graphic implements IPositionable {
 		this.x = x;
 		this.y = y;
 
-		if (height != -1)  {
+		if (height != -1) {
 			this.height = height;
 		}
 
-		if (width != -1)  {
+		if (width != -1) {
 			this.width = width;
 		}
 		animations = new AnimationHandler(this);
@@ -145,15 +145,15 @@ class Graphic implements IPositionable {
 	}
 
 	// Set this entities graphics to be the sprite at (x, y) on the provided spritesheet.
-		public function setTile(x : Int, y : Int) : Graphic {
+	public function setTile(x : Int, y : Int) : Graphic {
 		Util.assert(this.spritesheetObj != null);
-		var bAsset = spritesheetObj;
+		var bData: BitmapData = spritesheetObj;
 		//TODO: Cache this
 		var uid : String = Util.className(spritesheetObj) + x + " " + y;
 		if(!(Reflect.field(cachedAssets, uid)))  {
 			var bd : BitmapData = new BitmapData(spriteSheetWidth, spriteSheetHeight, true, 0);
 			var source : Rectangle = new Rectangle(x * spriteSheetWidth, y * spriteSheetHeight, spriteSheetWidth, spriteSheetHeight);
-			bd.copyPixels(bAsset.bitmapData, source, new Point(0, 0), null, null, true);
+			bd.copyPixels(bData, source, new Point(0, 0), null, null, true);
 			Reflect.setField(cachedAssets, uid, bd);
 		}
 		this.spritesheet = [x, y];
@@ -179,35 +179,31 @@ class Graphic implements IPositionable {
 	}
 
 	// TODO: This could eventually be called setOrigin.
-		public function setRotationOrigin(x : Float, y : Float) : Graphic {
+	public function setRotationOrigin(x : Float, y : Float) : Graphic {
 		pixels.x -= x;
 		pixels.y -= y;
 		return this;
 	}
 
 	//TODO: Maybe shouldn't even have to pass in tileDimension.
-		/* Load a spritesheet. tileDimension should be the size of the tiles; pass in null if
-       there's only one tile. whichTile is the tile that this Graphic will be; pass in
-       null if you want to defer the decision by calling setTile() later. */
+	/* Load a spritesheet. tileDimension should be the size of the tiles; pass in null if
+   there's only one tile. whichTile is the tile that this Graphic will be; pass in
+   null if you want to defer the decision by calling setTile() later. */
     public function loadSpritesheet<T>(spritesheetClass : Class<T>, tileDimension : Vec = null, whichTile : Vec = null) : Graphic {
 		Util.assert(this.spritesheetObj == null);
-		this.spritesheetObj = Type.createInstance(spritesheetClass, []);
+		this.spritesheetObj = Type.createInstance(spritesheetClass, [0, 0]);
 		var spritesheetSize : Vec = new Vec(spritesheetObj.width, spritesheetObj.height);
 		if(tileDimension != null)  {
 			this.spriteSheetWidth = Std.int(tileDimension.x);
 			this.spriteSheetHeight = Std.int(tileDimension.y);
-		}
-
-		else  {
+		} else  {
 			this.spriteSheetWidth = Std.int(spritesheetObj.width);
 			this.spriteSheetHeight = Std.int(spritesheetObj.height);
 		}
 
 		if(whichTile != null)  {
 			setTile(Std.int(whichTile.x), Std.int(whichTile.y));
-		}
-
-		else  {
+		} else  {
 			setTile(0, 0);
 		}
 
@@ -215,7 +211,7 @@ class Graphic implements IPositionable {
 	}
 
 	// In the case that your Graphic is just one big static image, you can use loadImage().
-		public function loadImage(imgClass : Dynamic) : Graphic {
+	public function loadImage(imgClass : Dynamic) : Graphic {
 		loadSpritesheet(imgClass);
 		return this;
 	}
@@ -225,9 +221,7 @@ class Graphic implements IPositionable {
 		var matrix : Matrix;
 		if(axis == "x")  {
 			matrix = new Matrix(-1, 0, 0, 1, original.width, 0);
-		}
-
-		else  {
+		} else  {
 			matrix = new Matrix(1, 0, 0, -1, 0, original.height);
 		}
 
@@ -252,8 +246,8 @@ class Graphic implements IPositionable {
 
 	var facing : Int;
 	// Pass in the x-coordinate of your velocity, and this'll orient
-		// the Graphic in that direction.
-		function face(dir : Int) : Void {
+	// the Graphic in that direction.
+	function face(dir : Int) : Void {
 		if(dir > 0 && facing < 0)  {
 			pixels.bitmapData = flipBitmapData(pixels.bitmapData);
 			facing = dir;
@@ -417,6 +411,5 @@ class Graphic implements IPositionable {
 	public function setVisible(val: Bool): Bool {
 		return sprite.visible = val;
 	}
-
 }
 

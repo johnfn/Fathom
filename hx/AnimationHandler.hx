@@ -32,7 +32,7 @@ class AnimationHandler {
 	}
 
 	// We assume that you hold y is constant, with numFrames frames starting at x.
-		public function addAnimation(name : String, frameX : Int, frameY : Int, numFrames : Int) : Void {
+	public function addAnimation(name : String, frameX : Int, frameY : Int, numFrames : Int) : Void {
 		var frames : Array<Dynamic> = [];
 		var i : Int = 0;
 		while(i < numFrames) {
@@ -47,7 +47,7 @@ class AnimationHandler {
 	}
 
 	// Stops all animations and resets all counters.
-		public function stop() : Void {
+	public function stop() : Void {
 		currentAnimation = "";
 		currentFrame = 0;
 		currentTick = 0;
@@ -55,8 +55,8 @@ class AnimationHandler {
 	}
 
 	// In case addAnimation() isn't good enough, you can just use an array
-		// to specify x positions of frames.
-		public function addAnimationArray(name : String, frames : Array<Dynamic>, frameY : Int) : Void {
+	// to specify x positions of frames.
+	public function addAnimationArray(name : String, frames : Array<Dynamic>, frameY : Int) : Void {
 		var framesWithY : Array<Dynamic> = [];
 		var i : Int = 0;
 		while(i < frames.length) {
@@ -67,8 +67,8 @@ class AnimationHandler {
 	}
 
 	// In case you don't want to hold y constant, you can specify the x and y coordinate of
-		// each frame.
-		// addAnimationXY("walk", [[0, 0], [0, 1], [0, 2]]);
+	// each frame.
+	// addAnimationXY("walk", [[0, 0], [0, 1], [0, 2]]);
 	public function addAnimationXY(name : String, frames : Array<Dynamic>) : Void {
 		animations.set(name, frames);
 	}
@@ -88,7 +88,7 @@ class AnimationHandler {
 	    "numFrames" is the length of the animation.
 
 	    You can alternatively specify an array and a y value.
-	    */
+    */
     public function addAnimations(animationList : Dynamic) : Void {
 		for(animName in Reflect.fields(animationList)) {
 			var val : Dynamic = Reflect.field(animationList, animName);
@@ -130,7 +130,6 @@ class AnimationHandler {
 		if(lastFrame != currentFrame && !cb)  {
 			this.gfx.setTile(animations.get(currentAnimation)[currentFrame][0], animations.get(currentAnimation)[currentFrame][1]);
 		}
-;
 	}
 
 	function hasAnyAnimations() : Bool {
@@ -155,13 +154,13 @@ class AnimationHandler {
 	}
 
 	// Returns true if it's on the final frame of the animation, false otherwise.
-		public function lastFrame() : Bool {
+	public function lastFrame() : Bool {
 		return currentFrame == animations.get(currentAnimation).length - 1 && currentTick == _ticksPerFrame - 1;
 	}
 
 	// Plays the animation, starting offsetInTicks ticks ahead of the
 		// beginning of the animation.
-		public function playWithOffset(name : String, offsetInTicks : Int) : AnimationHandler {
+	public function playWithOffset(name : String, offsetInTicks : Int) : AnimationHandler {
 		play(name);
 		currentFrame = Math.floor(offsetInTicks / _ticksPerFrame);
 		currentTick = offsetInTicks % _ticksPerFrame;
@@ -173,7 +172,7 @@ class AnimationHandler {
 	   animations.play("die").andThen(this.destroy);
 
  	    */
- 	   public function andThen(f) : AnimationHandler {
+    public function andThen(f) : AnimationHandler {
 		this.andThenFn = f;
 		return this;
 	}

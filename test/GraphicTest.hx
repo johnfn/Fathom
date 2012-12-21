@@ -1,6 +1,8 @@
 
 import Graphic;
 
+@:bitmap("testsprite.png") class MyBitmapData extends flash.display.BitmapData {}
+
 class GraphicTest extends haxe.unit.TestCase {
   var parentG:Graphic;
   var childG:Graphic;
@@ -19,6 +21,12 @@ class GraphicTest extends haxe.unit.TestCase {
     assertEquals(childG.y, 0);
     assertEquals(parentG.x, 0);
     assertEquals(parentG.y, 0);
+  }
+
+  public function testImageLoading() {
+    parentG.loadSpritesheet(MyBitmapData, new Vec(25, 25), new Vec(0, 0));
+
+    assertTrue(true);
   }
 }
 
