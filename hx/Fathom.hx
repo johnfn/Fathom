@@ -78,7 +78,7 @@ class Fathom {
 		Fathom.stage = stage;
 		Fathom.initialized = true;
 		Fathom.FPS = FPS;
-		Fathom.container = new Entity();
+		Fathom.container = new Entity().addGroup("container");
 		Fathom.stage.addChild(Fathom.container.HACK_sprite());
 		Fathom._camera = new Camera(stage).scaleBy(1).setEaseSpeed(3);
 
@@ -101,6 +101,7 @@ class Fathom {
 
 	static public function destroyAll(): Void {
 		Fathom.entities = new Set();
+		Fathom.container = null;
 	}
 
 	/* This stops everything. The only conceivable use would be

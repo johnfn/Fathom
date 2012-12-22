@@ -28,11 +28,14 @@ class Entity extends Graphic {
 	// These are purely for debugging purposes.
 	static var counter : Int = 0;
 	var uid : Float;
-	var rememberedParent : Graphic;
+	var rememberedParent : Entity;
 	var groupSet : Set<String>;
 	var entityChildren : Array<Entity>;
 	// Allows for a fast check to see if this entity moves.
 	var _isStatic : Bool;
+	var _currentlyInFathom: Bool = false;
+
+	public var parent(getParent, never): Entity;
 
 	public function getIsStatic() : Bool {
 		return _isStatic;
@@ -118,14 +121,13 @@ class Entity extends Graphic {
 	}
 
 	public function addChild(child : Entity) : Entity {
-		if(entityChildren != null)
+		if(entityChildren == null)
 			throw "You need to call super() before addChild().";
 
-		Util.assert(entityChildren.has(child));
+		Util.assert(!entityChildren.has(child), "Already has that child.");
 		sprite.addChild(child.sprite);
-		if(Std.is(child, Entity))  {
-			entityChildren.push(child);
-		}
+		entityChildren.push(child);
+		child.rememberedParent = this;
 		return child;
 	}
 
@@ -133,7 +135,7 @@ class Entity extends Graphic {
 	// It continues to exist in the game.
 	public function removeChild(child : Entity) : Entity {
 		if(Std.is(child, Entity))
-			Util.assert(entityChildren.has(child));
+			Util.assert(entityChildren.has(child), "Doesn't have that child.");
 
 		entityChildren.remove(child);
 		sprite.removeChild(child.sprite);
@@ -143,36 +145,35 @@ class Entity extends Graphic {
 	/* This causes the Entity to cease existing in-game. The only way to
        bring it back is to call addToFathom(). */
     public function removeFromFathom(recursing : Bool = false) : Void {
-		Util.assert(this.parent != null);
-		if(!Fathom.entities.contains(this))  {
-			trace(this, " removed but not in Fathom.");
-			Util.assert(false);
-		}
+		Util.assert(this.parent != null, "Doesn't have a parent.");
+		Util.assert(Fathom.entities.contains(this), "Removed but not in Fathom.");
+
 		this.rememberedParent = this.parent;
-		var i : Int = 0;
-		while(i < entityChildren.length) {
-			entityChildren[i].removeFromFathom(true);
-			i++;
+
+		for (ch in entityChildren) {
+			ch.removeFromFathom(true);
 		}
+
 		if(!recursing && this.parent != null)
 			sprite.parent.removeChild(this.sprite);
 		Fathom.entities.remove(this);
+		_currentlyInFathom = false;
 	}
 
 	/* This causes the Entity to exist in the game. There is no need to call
        this except after a call to removeFromFathom(). */
-    public function addToFathom(recursing : Bool = false) : Void {
-		Util.assert(!destroyed);
-		Util.assert(this.parent == null);
-		if(!recursing)
-			rememberedParent.sprite.addChild(this.sprite);
+    public function addToFathom() : Void {
+		Util.assert(!destroyed, "Entity was destroyed.");
+		Util.assert(this.sprite.parent == null, "Entity already has a parent.");
+		Util.assert(rememberedParent != null, "Entity doesn't remember its parent.");
+		rememberedParent.addChild(this);
 		Fathom.entities.add(this);
-		Util.assert(rememberedParent != null);
+		_currentlyInFathom = true;
 	}
 
 	/* This flags an Entity to be removed permanently. It can't be add()ed back. */
 	public function destroy() : Void {
-		Util.assert(Fathom.entities.contains(this));
+		Util.assert(Fathom.entities.contains(this), "That entity is not in Fathom.");
 		destroyed = true;
 	}
 
@@ -187,6 +188,11 @@ class Entity extends Graphic {
 
 	public function addGroups(list:Array<String>) : Entity {
 		groupSet.extend(new Set(list));
+		return this;
+	}
+
+	public function addGroup(s: String): Entity {
+		groupSet.add(s);
 		return this;
 	}
 
@@ -236,7 +242,7 @@ class Entity extends Graphic {
 	}
 
 	public function getAbsX() : Float {
-		var p : Graphic = this;
+		var p : Entity = this;
 		var result : Float = 0;
 		while(p != null) {
 			result += p.x;
@@ -247,7 +253,7 @@ class Entity extends Graphic {
 	}
 
 	public function getAbsY() : Float {
-		var p : Graphic = this;
+		var p : Entity = this;
 		var result : Float = 0;
 		while(p != null) {
 			result += p.y;
@@ -257,6 +263,17 @@ class Entity extends Graphic {
 		return result;
 	}
 
+	public function raiseToTop() : Void {
+		Util.assert(this.parent != null, "raiseToTop called with no parent.");
+		sprite.parent.setChildIndex(sprite, sprite.parent.numChildren - 1);
+	}
 
+    public function getParent(): Entity {
+    	if (_currentlyInFathom) {
+	    	return rememberedParent;
+    	} else {
+    		return null;
+    	}
+    }
 }
 

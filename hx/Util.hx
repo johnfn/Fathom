@@ -105,9 +105,9 @@ class Util {
 		return result;
 	}
 
-	static public function assert(b : Bool) : Void {
+	static public function assert(b : Bool, ?s: String) : Void {
 		if(!b)  {
-			Util.log("Assertion failed");
+			Util.log("Assertion failed" + s);
 			Util.printStackTrace();
 			throw "Assertion failed!";
 		}

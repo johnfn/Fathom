@@ -49,10 +49,6 @@ class Graphic implements IPositionable {
 	public var scaleY(getScaleY, setScaleY): Float;
 	public var alpha(getAlpha, setAlpha): Float;
 
-
-	var _parent:Graphic;
-	public var parent(getParent, never): Graphic;
-
 	//TODO, obviously...
 	public function HACK_sprite():Sprite {
 		return sprite;
@@ -110,17 +106,9 @@ class Graphic implements IPositionable {
 		sprite.addChild(d);
 	}
 
-	public function raiseToTop() : Void {
-		// TODO
-		//Util.assert(this.parent != null);
-		if (sprite.parent != null)  {
-			sprite.parent.setChildIndex(sprite, sprite.parent.numChildren - 1);
-		}
-	}
-
 	// Set this entities graphics to be the sprite at (x, y) on the provided spritesheet.
 	public function setTile(x : Int, y : Int) : Graphic {
-		Util.assert(this.spritesheetObj != null);
+		Util.assert(this.spritesheetObj != null, "The spritesheet is null.");
 		var bData: BitmapData = spritesheetObj;
 		//TODO: Cache this
 		var uid : String = Util.className(spritesheetObj) + x + " " + y;
@@ -310,10 +298,6 @@ class Graphic implements IPositionable {
 
 		return sprite.scaleY;
 	}
-
-    public function getParent(): Graphic {
-    	return _parent;
-    }
 
 	public function setX(val : Float) : Float {
 		entitySpacePos.x = val;
