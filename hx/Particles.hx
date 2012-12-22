@@ -238,7 +238,7 @@ class Particles {
 			pObj.x = data.x;
 			pObj.y = data.y;
 			// TODO: Graphics should just update themselves.
-			pObj.update(null);
+			pObj.update();
 			data.set("life", data.get("life") - 1);
 			var lifeLeft : Int = data.get("life");
 			// Kill the particle, if necessary.

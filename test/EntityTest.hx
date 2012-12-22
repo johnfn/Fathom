@@ -35,7 +35,6 @@ class EntityTest extends haxe.unit.TestCase {
     assertEquals(Fathom.entities.one([Set.hasGroup("b")]), e2);
   }
 
-  /*
   public function testOnStage() {
     var p = e1.HACK_sprite().parent;
 
@@ -45,7 +44,6 @@ class EntityTest extends haxe.unit.TestCase {
 
     assertEquals(p, flash.Lib.current.stage);
   }
-  */
 
   public function testAddRemove() {
     e2.addChild(e3);
@@ -67,6 +65,27 @@ class EntityTest extends haxe.unit.TestCase {
     assertEquals(e1.HACK_sprite().parent, null);
     assertEquals(e2.HACK_sprite().parent, e1.HACK_sprite());
     assertEquals(e3.HACK_sprite().parent, e2.HACK_sprite());
+  }
+
+  public function testListenUnlisten() {
+    var test1:Int = 0;
+    var test2:Int = 0;
+
+    var fn1:Void -> Void = function() test1++;
+    var fn2:Void -> Void = function() test2 += 2;
+
+    e1.listen(fn1);
+    e1.listen(fn2);
+    e1.listen(fn2);
+    e1.listen(fn2);
+    e1.unlisten(fn2);
+    e1.unlisten(fn2);
+
+    e1.update();
+    e1.update();
+
+    assertEquals(test1, 2);
+    assertEquals(test2, 4);
   }
 }
 

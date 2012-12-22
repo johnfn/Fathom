@@ -210,7 +210,7 @@ class Fathom {
 				continue;
 			}
 
-			e.update(entities);
+			e.update();
 		}
 
 		Particles.updateAll();

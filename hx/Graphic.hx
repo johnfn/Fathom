@@ -247,7 +247,7 @@ class Graphic implements IPositionable {
 	}
 
 	//TODO...
-	public function update(e : Set<Entity>) : Void {
+	public function update() : Void {
 		animations.advance();
 		Fathom.camera.translateSingleObject(this);
 	}

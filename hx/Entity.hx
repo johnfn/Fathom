@@ -20,7 +20,6 @@ class Entity extends Graphic {
 	public var absX(getAbsX, never) : Float;
 	public var absY(getAbsY, never) : Float;
 
-	var events : Dynamic;
 	public var isFlickering : Bool;
 	// This indicates that the object should be destroyed.
 	// The update loop in Fathom will eventually destroy it.
@@ -31,6 +30,8 @@ class Entity extends Graphic {
 	var rememberedParent : Entity;
 	var groupSet : Set<String>;
 	var entityChildren : Array<Entity>;
+	var events: Array<Void -> Void>;
+
 	// Allows for a fast check to see if this entity moves.
 	var _isStatic : Bool;
 	var _currentlyInFathom: Bool = false;
@@ -48,7 +49,7 @@ class Entity extends Graphic {
 
 	public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
 		entityChildren = [];
-		events = { };
+		events = [];
 		isFlickering = false;
 		destroyed = false;
 		uid = ++counter;
@@ -84,13 +85,13 @@ class Entity extends Graphic {
 	// new Entity().fromExternalMC("Explosion").ignoreCollisions().disappearAfter(20);
 	// TODO: These two need work.
 
-	public function listen(f) : Entity {
-		sprite.addEventListener(Event.ENTER_FRAME, f);
+	public function listen(f: Void -> Void) : Entity {
+		events.push(f);
 		return this;
 	}
 
 	public function unlisten(f) : Entity {
-		sprite.removeEventListener(Event.ENTER_FRAME, f);
+		Util.assert(events.remove(f), "In Entity#unlisten, event not found!");
 		return this;
 	}
 
@@ -104,7 +105,7 @@ class Entity extends Graphic {
 	public function disappearAfter(frames : Int) : Entity {
 		var timeLeft : Int = frames;
 		var that : Entity = this;
-		listen(function(_:Dynamic) : Void {
+		listen(function() : Void {
 			if(timeLeft-- == 0)  {
 				that.destroy();
 			}
@@ -228,8 +229,15 @@ class Entity extends Graphic {
 		       point.y >= this.y && point.y <= this.y + this.height;
 	}
 
-	override public function update(e : Set<Entity>) : Void {
-		super.update(e);
+	// The reason that we use our own event handlers is that it allows us to
+	// selectively update entities - to make them move faster, for instance -
+	// just by calling someEntity.update() a lot.
+	override public function update() : Void {
+		for (e in events) {
+			e();
+		}
+
+		super.update();
 	}
 
 	override public function toString() : String {

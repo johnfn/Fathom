@@ -12,7 +12,7 @@ class Text extends Entity {
 	var textField : TextField;
 	var content : String;
 	var typewriting : Bool;
-	var typewriteTick : Dynamic -> Void;
+	var typewriteTick : Void -> Void;
 	var normalTextFormat : TextFormat;
 	var redTextFormat : TextFormat;
 	function new(content : String = "", textName : String = null) {
@@ -140,7 +140,7 @@ class Text extends Entity {
 		var that : Text = this;
 		typewriting = true;
 		textField.text = "";
-		this.typewriteTick = function(e:Dynamic) : Void {
+		this.typewriteTick = function() : Void {
 			if(counter > that.content.length)  {
 				textField.text = content;
 				typewriting = false;

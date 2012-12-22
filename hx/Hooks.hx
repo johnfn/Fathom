@@ -104,12 +104,12 @@ class Hooks {
 	}
 	*/
 
-	static public function flicker(who : Entity, duration : Int = 20, cb : Void -> Void = null) : Dynamic -> Void {
+	static public function flicker(who : Entity, duration : Int = 20, cb : Void -> Void = null) : Void -> Void {
 		var counter : Int = 0;
-		var fn: Dynamic -> Void = null;
+		var fn: Void -> Void = null;
 
 		who.isFlickering = true;
-		fn = function(_:Dynamic) : Void {
+		fn = function() : Void {
 			counter++;
 			who.visible = (Math.floor(counter / 3) % 2 == 0);
 			if(counter > duration)  {
