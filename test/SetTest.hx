@@ -13,6 +13,21 @@ class SetTest extends haxe.unit.TestCase {
     assertEquals(s.length, 2);
   }
 
+  /*
+  public function testEquality() {
+    var o:Dynamic = {};
+    var s:Set<Dynamic> = new Set();
+
+    s.add(o);
+    s.add(o);
+
+    s = s.filter(function(o) return true);
+    s = s.filter(function(o) return true);
+
+    trace(s);
+  }
+  */
+
   public function testRemove() {
     var s:Set<Int> = new Set<Int>();
 
@@ -147,7 +162,7 @@ class SetTest extends haxe.unit.TestCase {
     didThrow = false;
 
     try {
-      s.one([function(i) return i == 9]);
+      s.one([function(i) return i > 3]);
     } catch (msg: String) {
       didThrow = true;
     }

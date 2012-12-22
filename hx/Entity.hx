@@ -17,6 +17,9 @@ using Lambda;
 class Entity extends Graphic {
 	public var isStatic(getIsStatic, setIsStatic) : Bool;
 
+	public var absX(getAbsX, never) : Float;
+	public var absY(getAbsY, never) : Float;
+
 	var events : Dynamic;
 	public var isFlickering : Bool;
 	// This indicates that the object should be destroyed.
@@ -26,10 +29,11 @@ class Entity extends Graphic {
 	static var counter : Int = 0;
 	var uid : Float;
 	var rememberedParent : Graphic;
-
+	var groupSet : Set<String>;
 	var entityChildren : Array<Entity>;
 	// Allows for a fast check to see if this entity moves.
-		var _isStatic : Bool;
+	var _isStatic : Bool;
+
 	public function getIsStatic() : Bool {
 		return _isStatic;
 	}
@@ -46,10 +50,12 @@ class Entity extends Graphic {
 		destroyed = false;
 		uid = ++counter;
 		_isStatic = true;
+		groupSet = new Set(["persistent"]);
 		super(x, y, width, height);
 		if(!Fathom.initialized)  {
 			throw "Util.initialize() has not been called. Failing.";
 		}
+
 		//TODO: I had this idea about how parents should bubble down events to children.
 		// All Entities are added to the container, except the container itself, which
 		// has to be bootstrapped onto the Stage. If Fathom.container does not exist, `this`
@@ -105,7 +111,8 @@ class Entity extends Graphic {
 	}
 
 	/* Put this entity in the middle of the screen. Useful for dialogs,
-       inventory screens, etc. */	public function centerOnScreen() : Void {
+       inventory screens, etc. */
+    public function centerOnScreen() : Void {
 		x = Fathom.stage.width / 2 - this.width / 2;
 		y = Fathom.stage.height / 2 - this.height / 2;
 	}
@@ -178,7 +185,7 @@ class Entity extends Graphic {
 		destroyed = true;
 	}
 
-	public function addGroups(list:Array<Dynamic>) : Entity {
+	public function addGroups(list:Array<String>) : Entity {
 		groupSet.extend(new Set(list));
 		return this;
 	}
@@ -227,6 +234,29 @@ class Entity extends Graphic {
 	public function modes() : Array<Dynamic> {
 		return [0];
 	}
+
+	public function getAbsX() : Float {
+		var p : Graphic = this;
+		var result : Float = 0;
+		while(p != null) {
+			result += p.x;
+			p = p.parent;
+		}
+
+		return result;
+	}
+
+	public function getAbsY() : Float {
+		var p : Graphic = this;
+		var result : Float = 0;
+		while(p != null) {
+			result += p.y;
+			p = p.parent;
+		}
+
+		return result;
+	}
+
 
 }
 

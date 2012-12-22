@@ -15,8 +15,6 @@ import Util;
 class Graphic implements IPositionable {
 	var sprite:Sprite;
 
-	public var absX(getAbsX, never) : Float;
-	public var absY(getAbsY, never) : Float;
 	public var spriteX(getSpriteX, never) : Int;
 	public var spriteY(getSpriteY, never) : Int;
 	public var cameraSpaceScaleX(getCameraSpaceScaleX, never) : Float;
@@ -34,7 +32,6 @@ class Graphic implements IPositionable {
 	public var animations : AnimationHandler;
 	public var pixels(getPixels, setPixels) : Bitmap;
 	var spritesheet : Array<Dynamic>;
-	var groupSet : Set<String>;
 	// TODO: Rename
 	var _depth : Int;
 	static var cachedAssets : Dictionary = new Dictionary();
@@ -64,7 +61,6 @@ class Graphic implements IPositionable {
 	public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
 		pixels = new Bitmap();
 		spritesheet = [];
-		groupSet = new Set(["persistent"]);
 		_depth = 0;
 		spritesheetObj = null;
 		spriteSheetWidth = -1;
@@ -120,28 +116,6 @@ class Graphic implements IPositionable {
 		if (sprite.parent != null)  {
 			sprite.parent.setChildIndex(sprite, sprite.parent.numChildren - 1);
 		}
-	}
-
-	public function getAbsX() : Float {
-		var p : Graphic = this;
-		var result : Float = 0;
-		while(p != null) {
-			result += p.x;
-			p = p.parent;
-		}
-
-		return result;
-	}
-
-	public function getAbsY() : Float {
-		var p : Graphic = this;
-		var result : Float = 0;
-		while(p != null) {
-			result += p.y;
-			p = p.parent;
-		}
-
-		return result;
 	}
 
 	// Set this entities graphics to be the sprite at (x, y) on the provided spritesheet.

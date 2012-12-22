@@ -25,7 +25,7 @@ class Fathom {
 
 	static public var mapRef : Map;
 	static public var fpsTxt : Text;
-	static public var entities : Set<Entity> = new Set<Entity>([]);
+	static public var entities : Set<Entity> = new Set([]);
 	static public var container : Entity;
 	static public var initialized : Bool = false;
 	static public var stage : Stage;
@@ -72,7 +72,7 @@ class Fathom {
 	}
 
 	//TODO: Eventually main class should extend this or something...
-		static public function initialize(stage : Stage, FPS : Int = 30) : Void {
+	static public function initialize(stage : Stage, FPS : Int = 30) : Void {
 		// Inside of the Entity constructor, we assert Fathom.initialized, because all
 		// MCs must be added to the container MC.
 		Fathom.stage = stage;
@@ -97,6 +97,10 @@ class Fathom {
 
 	static public function start() : Void {
 		container.addEventListener(Event.ENTER_FRAME, update);
+	}
+
+	static public function destroyAll(): Void {
+		Fathom.entities = new Set();
 	}
 
 	/* This stops everything. The only conceivable use would be

@@ -1,14 +1,12 @@
 import flash.display.BitmapData;
 import Graphic;
 
-@:bitmap("testsprite.png") class MyBitmapData extends flash.display.BitmapData {}
-
 class GraphicTest extends haxe.unit.TestCase {
   var g:Graphic;
 
   override public function setup() {
     g = new Graphic(0, 0, 10, 10);
-    g.loadSpritesheet(MyBitmapData, new Vec(2, 2));
+    g.loadSpritesheet(AllTests.MyBitmapData, new Vec(2, 2));
   }
 
   override public function tearDown() {

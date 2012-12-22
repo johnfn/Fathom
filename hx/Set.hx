@@ -15,10 +15,9 @@ class Set<T> {
 		_length = 0;
 		if(init == null)
 			return;
-		var i : Int = 0;
-		while(i < init.length) {
-			add(init[i]);
-			i++;
+
+		for (item in init) {
+			add(item);
 		}
 	}
 
@@ -36,7 +35,7 @@ class Set<T> {
 		//if(startedIterating && !iterationList.contains(item))  {
 		//	iterationList.push(item);
 		//}
-	    if (!contents.exists(item)) {
+	    if (!contains(item)) {
 	      _length++;
 	    }
 
@@ -44,7 +43,7 @@ class Set<T> {
 	}
 
 	public function remove(item : T) : Void {
-		if(!Reflect.field(contents, Std.string(item)))  {
+		if(!contains(item))  {
 			throw "Set#remove called on non-existant item";
 		}
 
@@ -141,8 +140,10 @@ class Set<T> {
 
 	public function toString() : String {
 		var result : String = "{ ";
-		for(k in Reflect.fields(contents)) {
-			result += k.toString() + ", ";
+		for(k in this) {
+			untyped {
+				result += k.toString() + ", ";
+			}
 		}
 
 		result += " }";
@@ -155,10 +156,9 @@ class Set<T> {
 
 	public function select(criteria: Array<T -> Bool>) : Set<T> {
 		var eList : Set<T> = clone();
-		var i : Int = 0;
-		while(i < criteria.length) {
-			eList = eList.filter(criteria[i]);
-			i++;
+
+		for (crit in criteria) {
+			eList = eList.filter(crit);
 		}
 		return eList;
 	}
@@ -180,11 +180,15 @@ class Set<T> {
 	}
 
 	public function one(criteria:Array<T -> Bool>) : T {
-		var results : Set<T> = this.select(criteria);
+		var results : Set<T> = select(criteria);
 		if(results.length == 0)  {
 			throw ("Set<Entity>#one called with criteria " + criteria.toString() + ", but no results found.");
 		} else if(results.length > 1)  {
-			throw ("Set<Entity>#one called with criteria " + criteria.toString() + ", and " + results.length + " results found.");
+			for (r in results) {
+				trace(r);
+			}
+
+			throw ("Set<Entity>#one called with criteria " + criteria.toString() + ", and " + results.toString() + "(" + results.length + ")" + " results found.");
 		}
 
 		for(e in results) {
