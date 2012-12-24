@@ -1,4 +1,5 @@
 @:bitmap("testsprite.png") class MyBitmapData extends flash.display.BitmapData {}
+@:bitmap("testmap.png") class TestMap extends flash.display.BitmapData {}
 
 class AllTests {
   static function main() {

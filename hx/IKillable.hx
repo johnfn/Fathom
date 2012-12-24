@@ -1,5 +1,5 @@
 interface IKillable {
 
-	function die(type : Int) : Void;
+    function die(type : Int) : Void;
 }
 

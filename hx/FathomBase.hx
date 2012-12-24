@@ -1,8 +1,8 @@
 class FathomBase {
 
-	function new() {
-		Fathom.initialize(this);
-	}
+    function new() {
+        Fathom.initialize(this);
+    }
 
 }
 

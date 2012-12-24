@@ -13,377 +13,377 @@ import Hooks;
 import Util;
 
 class Graphic implements IPositionable {
-	var sprite:Sprite;
+    var sprite:Sprite;
 
-	public var spriteX(getSpriteX, never) : Int;
-	public var spriteY(getSpriteY, never) : Int;
-	public var cameraSpaceScaleX(getCameraSpaceScaleX, never) : Float;
-	public var cameraSpaceScaleY(getCameraSpaceScaleY, never) : Float;
-	public var depth(getDepth, setDepth) : Int;
-	public var cameraSpaceX(getCameraSpaceX, setCameraSpaceX) : Float;
-	public var cameraSpaceY(getCameraSpaceY, setCameraSpaceY) : Float;
-	public var numChildren(getNumChildren, never): Int;
-	public var visible(getVisible, setVisible): Bool;
+    public var spriteX(getSpriteX, never) : Int;
+    public var spriteY(getSpriteY, never) : Int;
+    public var cameraSpaceScaleX(getCameraSpaceScaleX, never) : Float;
+    public var cameraSpaceScaleY(getCameraSpaceScaleY, never) : Float;
+    public var depth(getDepth, setDepth) : Int;
+    public var cameraSpaceX(getCameraSpaceX, setCameraSpaceX) : Float;
+    public var cameraSpaceY(getCameraSpaceY, setCameraSpaceY) : Float;
+    public var numChildren(getNumChildren, never): Int;
+    public var visible(getVisible, setVisible): Bool;
 
-	// The location of the entity, before camera transformations.
-	var entitySpacePos : Rect;
-	// The location of the entity, after camera transformations.
-	public var cameraSpacePos : Rect;
-	public var animations : AnimationHandler;
-	public var pixels(getPixels, setPixels) : Bitmap;
-	var spritesheet : Array<Dynamic>;
-	// TODO: Rename
-	var _depth : Int;
-	static var cachedAssets : Dictionary = new Dictionary();
-	// Rename spritesheetObj and spritesheet
-	// spritesheetObj isnt even necessarily a spritesheet
-	var spritesheetObj : Dynamic;
-	var spriteSheetWidth : Int;
-	var spriteSheetHeight : Int;
+    // The location of the entity, before camera transformations.
+    var entitySpacePos : Rect;
+    // The location of the entity, after camera transformations.
+    public var cameraSpacePos : Rect;
+    public var animations : AnimationHandler;
+    public var pixels(getPixels, setPixels) : Bitmap;
+    var spritesheet : Array<Dynamic>;
+    // TODO: Rename
+    var _depth : Int;
+    static var cachedAssets : Dictionary = new Dictionary();
+    // Rename spritesheetObj and spritesheet
+    // spritesheetObj isnt even necessarily a spritesheet
+    var spritesheetObj : Dynamic;
+    var spriteSheetWidth : Int;
+    var spriteSheetHeight : Int;
 
-	public var height(getHeight, setHeight): Float;
-	public var width(getWidth, setWidth): Float;
-	public var x(getX, setX): Float;
-	public var y(getY, setY): Float;
-	public var scaleX(getScaleX, setScaleX): Float;
-	public var scaleY(getScaleY, setScaleY): Float;
-	public var alpha(getAlpha, setAlpha): Float;
+    public var height(getHeight, setHeight): Float;
+    public var width(getWidth, setWidth): Float;
+    public var x(getX, setX): Float;
+    public var y(getY, setY): Float;
+    public var scaleX(getScaleX, setScaleX): Float;
+    public var scaleY(getScaleY, setScaleY): Float;
+    public var alpha(getAlpha, setAlpha): Float;
 
-	//TODO, obviously...
-	public function HACK_sprite():Sprite {
-		return sprite;
-	}
+    //TODO, obviously...
+    public function HACK_sprite():Sprite {
+        return sprite;
+    }
 
-	public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
-		pixels = new Bitmap();
-		spritesheet = [];
-		_depth = 0;
-		spritesheetObj = null;
-		spriteSheetWidth = -1;
-		spriteSheetHeight = -1;
-		facing = 1;
-		sprite = new Sprite();
-		sprite.x = x;
-		sprite.y = y;
-		sprite.width = width;
-		sprite.height = height;
+    public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
+        pixels = new Bitmap();
+        spritesheet = [];
+        _depth = 0;
+        spritesheetObj = null;
+        spriteSheetWidth = -1;
+        spriteSheetHeight = -1;
+        facing = 1;
+        sprite = new Sprite();
+        sprite.x = x;
+        sprite.y = y;
+        sprite.width = width;
+        sprite.height = height;
 
-		if (height == -1)
-			height = width;
+        if (height == -1)
+            height = width;
 
-		this.cameraSpacePos = new Rect(0, 0, width, height);
-		this.entitySpacePos = new Rect(x, y, width, height);
-		this.x = x;
-		this.y = y;
+        this.cameraSpacePos = new Rect(0, 0, width, height);
+        this.entitySpacePos = new Rect(x, y, width, height);
+        this.x = x;
+        this.y = y;
 
-		if (height != -1) {
-			this.height = height;
-		}
+        if (height != -1) {
+            this.height = height;
+        }
 
-		if (width != -1) {
-			this.width = width;
-		}
-		animations = new AnimationHandler(this);
-		// Bypass our overridden addChild method.
-		sprite.addChild(pixels);
-	}
+        if (width != -1) {
+            this.width = width;
+        }
+        animations = new AnimationHandler(this);
+        // Bypass our overridden addChild method.
+        sprite.addChild(pixels);
+    }
 
-	public function addEventListener(etype, f: Event -> Void) {
-		sprite.addEventListener(etype, f);
-	}
+    public function addEventListener(etype, f: Event -> Void) {
+        sprite.addEventListener(etype, f);
+    }
 
-	public function removeEventListener(etype, f: Event -> Void) {
-		sprite.removeEventListener(etype, f);
-	}
+    public function removeEventListener(etype, f: Event -> Void) {
+        sprite.removeEventListener(etype, f);
+    }
 
-	public function toString(): String {
-		return "[Graphic]";
-	}
+    public function toString(): String {
+        return "[Graphic]";
+    }
 
-	// blabla... blame some optimizations in Map again
-	// TODO eventually remove
-	public function addDO(d:DisplayObject): Void {
-		sprite.addChild(d);
-	}
+    // blabla... blame some optimizations in Map again
+    // TODO eventually remove
+    public function addDO(d:DisplayObject): Void {
+        sprite.addChild(d);
+    }
 
-	// Set this entities graphics to be the sprite at (x, y) on the provided spritesheet.
-	public function setTile(x : Int, y : Int) : Graphic {
-		Util.assert(this.spritesheetObj != null, "The spritesheet is null.");
-		var bData: BitmapData = spritesheetObj;
-		//TODO: Cache this
-		var uid : String = Util.className(spritesheetObj) + x + " " + y;
-		if(!(Reflect.field(cachedAssets, uid)))  {
-			var bd : BitmapData = new BitmapData(spriteSheetWidth, spriteSheetHeight, true, 0);
-			var source : Rectangle = new Rectangle(x * spriteSheetWidth, y * spriteSheetHeight, spriteSheetWidth, spriteSheetHeight);
-			bd.copyPixels(bData, source, new Point(0, 0), null, null, true);
-			Reflect.setField(cachedAssets, uid, bd);
-		}
-		this.spritesheet = [x, y];
-		pixels.bitmapData = Reflect.field(cachedAssets, uid);
-		// TODO: Implicit assumption that bitmap faces right.
-		// TODO: Caching?
-		if(facing == -1)  {
-			pixels.bitmapData = flipBitmapData(pixels.bitmapData);
-		}
+    // Set this entities graphics to be the sprite at (x, y) on the provided spritesheet.
+    public function setTile(x : Int, y : Int) : Graphic {
+        Util.assert(this.spritesheetObj != null, "The spritesheet is null.");
+        var bData: BitmapData = spritesheetObj;
+        //TODO: Cache this
+        var uid : String = Util.className(spritesheetObj) + x + " " + y;
+        if(!(Reflect.field(cachedAssets, uid)))  {
+            var bd : BitmapData = new BitmapData(spriteSheetWidth, spriteSheetHeight, true, 0);
+            var source : Rectangle = new Rectangle(x * spriteSheetWidth, y * spriteSheetHeight, spriteSheetWidth, spriteSheetHeight);
+            bd.copyPixels(bData, source, new Point(0, 0), null, null, true);
+            Reflect.setField(cachedAssets, uid, bd);
+        }
+        this.spritesheet = [x, y];
+        pixels.bitmapData = Reflect.field(cachedAssets, uid);
+        // TODO: Implicit assumption that bitmap faces right.
+        // TODO: Caching?
+        if(facing == -1)  {
+            pixels.bitmapData = flipBitmapData(pixels.bitmapData);
+        }
 
-		if(!animations.hasAnimation("default"))  {
-			animations.addAnimation("default", x, y, 1);
-		}
-		return this;
-	}
+        if(!animations.hasAnimation("default"))  {
+            animations.addAnimation("default", x, y, 1);
+        }
+        return this;
+    }
 
-	public function getSpriteX() : Int {
-		return this.spritesheet[0];
-	}
+    public function getSpriteX() : Int {
+        return this.spritesheet[0];
+    }
 
-	public function getSpriteY() : Int {
-		return this.spritesheet[1];
-	}
+    public function getSpriteY() : Int {
+        return this.spritesheet[1];
+    }
 
-	// TODO: This could eventually be called setOrigin.
-	public function setRotationOrigin(x : Float, y : Float) : Graphic {
-		pixels.x -= x;
-		pixels.y -= y;
-		return this;
-	}
+    // TODO: This could eventually be called setOrigin.
+    public function setRotationOrigin(x : Float, y : Float) : Graphic {
+        pixels.x -= x;
+        pixels.y -= y;
+        return this;
+    }
 
-	//TODO: Maybe shouldn't even have to pass in tileDimension.
-	/* Load a spritesheet. tileDimension should be the size of the tiles; pass in null if
+    //TODO: Maybe shouldn't even have to pass in tileDimension.
+    /* Load a spritesheet. tileDimension should be the size of the tiles; pass in null if
    there's only one tile. whichTile is the tile that this Graphic will be; pass in
    null if you want to defer the decision by calling setTile() later. */
     public function loadSpritesheet<T>(spritesheetClass : Class<T>, tileDimension : Vec = null, whichTile : Vec = null) : Graphic {
-		Util.assert(this.spritesheetObj == null);
-		Util.assert(!tileDimension.equals(new Vec(0, 0)));
-		this.spritesheetObj = Type.createInstance(spritesheetClass, [0, 0]);
+        Util.assert(this.spritesheetObj == null);
+        Util.assert(!tileDimension.equals(new Vec(0, 0)));
+        this.spritesheetObj = Type.createInstance(spritesheetClass, [0, 0]);
 
-		var spritesheetSize : Vec = new Vec(spritesheetObj.width, spritesheetObj.height);
-		if (tileDimension != null)  {
-			this.spriteSheetWidth = Std.int(tileDimension.x);
-			this.spriteSheetHeight = Std.int(tileDimension.y);
-		} else  {
-			this.spriteSheetWidth = Std.int(spritesheetObj.width);
-			this.spriteSheetHeight = Std.int(spritesheetObj.height);
-		}
+        var spritesheetSize : Vec = new Vec(spritesheetObj.width, spritesheetObj.height);
+        if (tileDimension != null)  {
+            this.spriteSheetWidth = Std.int(tileDimension.x);
+            this.spriteSheetHeight = Std.int(tileDimension.y);
+        } else  {
+            this.spriteSheetWidth = Std.int(spritesheetObj.width);
+            this.spriteSheetHeight = Std.int(spritesheetObj.height);
+        }
 
-		if (whichTile != null)  {
-			setTile(Std.int(whichTile.x), Std.int(whichTile.y));
-		} else  {
-			setTile(0, 0);
-		}
+        if (whichTile != null)  {
+            setTile(Std.int(whichTile.x), Std.int(whichTile.y));
+        } else  {
+            setTile(0, 0);
+        }
 
-		return this;
-	}
+        return this;
+    }
 
-	// In the case that your Graphic is just one big static image, you can use loadImage().
-	public function loadImage(imgClass : Dynamic) : Graphic {
-		loadSpritesheet(imgClass);
-		return this;
-	}
+    // In the case that your Graphic is just one big static image, you can use loadImage().
+    public function loadImage(imgClass : Dynamic) : Graphic {
+        loadSpritesheet(imgClass);
+        return this;
+    }
 
-	private function flipBitmapData(original : BitmapData, axis : String = "x") : BitmapData {
-		var flipped : BitmapData = new BitmapData(pixels.bitmapData.width, pixels.bitmapData.height, true, 0);
+    private function flipBitmapData(original : BitmapData, axis : String = "x") : BitmapData {
+        var flipped : BitmapData = new BitmapData(pixels.bitmapData.width, pixels.bitmapData.height, true, 0);
 
-		var matrix : Matrix;
-		if(axis == "x")  {
-			matrix = new Matrix(-1, 0, 0, 1, original.width, 0);
-		} else  {
-			matrix = new Matrix(1, 0, 0, -1, 0, original.height);
-		}
+        var matrix : Matrix;
+        if(axis == "x")  {
+            matrix = new Matrix(-1, 0, 0, 1, original.width, 0);
+        } else  {
+            matrix = new Matrix(1, 0, 0, -1, 0, original.height);
+        }
 
-		flipped.draw(original, matrix, null, null, null, true);
-		return flipped;
-	}
+        flipped.draw(original, matrix, null, null, null, true);
+        return flipped;
+    }
 
-	public function setPos(v : IPositionable) : Graphic {
-		x = v.x;
-		y = v.y;
-		return this;
-	}
+    public function setPos(v : IPositionable) : Graphic {
+        x = v.x;
+        y = v.y;
+        return this;
+    }
 
-	public function getPixels(): Bitmap {
-		return pixels;
-	}
+    public function getPixels(): Bitmap {
+        return pixels;
+    }
 
-	public function setPixels(p: Bitmap): Bitmap {
-		return pixels = p;
-	}
+    public function setPixels(p: Bitmap): Bitmap {
+        return pixels = p;
+    }
 
-	// These two are in Camera space.
-	public function getCameraSpaceScaleX() : Float {
-		return scaleX;
-	}
+    // These two are in Camera space.
+    public function getCameraSpaceScaleX() : Float {
+        return scaleX;
+    }
 
-	public function getCameraSpaceScaleY() : Float {
-		return scaleY;
-	}
+    public function getCameraSpaceScaleY() : Float {
+        return scaleY;
+    }
 
-	public function getPixel(x:Int, y:Int) {
-		return this.pixels.bitmapData.getPixel(x, y);
-	}
+    public function getPixel(x:Int, y:Int) {
+        return this.pixels.bitmapData.getPixel(x, y);
+    }
 
-	var facing : Int;
-	// Pass in the x-coordinate of your velocity, and this'll orient
-	// the Graphic in that direction.
-	public function face(dir : Int) : Void {
-		if(dir > 0 && facing < 0)  {
-			pixels.bitmapData = flipBitmapData(pixels.bitmapData);
-			facing = dir;
-			return;
-		}
-		if(dir < 0 && facing > 0)  {
-			pixels.bitmapData = flipBitmapData(pixels.bitmapData);
-			facing = dir;
-			return;
-		}
-	}
+    var facing : Int;
+    // Pass in the x-coordinate of your velocity, and this'll orient
+    // the Graphic in that direction.
+    public function face(dir : Int) : Void {
+        if(dir > 0 && facing < 0)  {
+            pixels.bitmapData = flipBitmapData(pixels.bitmapData);
+            facing = dir;
+            return;
+        }
+        if(dir < 0 && facing > 0)  {
+            pixels.bitmapData = flipBitmapData(pixels.bitmapData);
+            facing = dir;
+            return;
+        }
+    }
 
-	public function setDepth(v : Int) : Int {
-		_depth = v;
-		return v;
-	}
+    public function setDepth(v : Int) : Int {
+        _depth = v;
+        return v;
+    }
 
-	public function getDepth() : Int {
-		return _depth;
-	}
+    public function getDepth() : Int {
+        return _depth;
+    }
 
-	//TODO...
-	public function update() : Void {
-		animations.advance();
-		Fathom.camera.translateSingleObject(this);
-	}
+    //TODO...
+    public function update() : Void {
+        animations.advance();
+        Fathom.camera.translateSingleObject(this);
+    }
 
-	public function add(p : IPositionable) : Graphic {
-		this.x += p.x;
-		this.y += p.y;
+    public function add(p : IPositionable) : Graphic {
+        this.x += p.x;
+        this.y += p.y;
 
-		return this;
-	}
+        return this;
+    }
 
-	// TODO visibility. this is required for Map currently
-	public function removeChildAt(idx: Int): Void {
-		sprite.removeChildAt(idx);
-	}
+    // TODO visibility. this is required for Map currently
+    public function removeChildAt(idx: Int): Void {
+        sprite.removeChildAt(idx);
+    }
 
-	/*
+    /*
     public function destroy():void {
-	    entitySpacePos = null;
-	    cameraSpacePos = null;
-	    animations = null;
-	    pixels = null;
-	    spritesheet = null;
-	    groupSet = null;
-	    entityChildren = null;
-	    cachedAssets = null;
-	    spritesheetObj = null;
+        entitySpacePos = null;
+        cameraSpacePos = null;
+        animations = null;
+        pixels = null;
+        spritesheet = null;
+        groupSet = null;
+        entityChildren = null;
+        cachedAssets = null;
+        spritesheetObj = null;
     }
     */
     // Uninteresting getters and setters.
 
-	public function getScaleX(): Float {
-		return sprite.scaleX;
-	}
+    public function getScaleX(): Float {
+        return sprite.scaleX;
+    }
 
-	public function getScaleY(): Float {
-		return sprite.scaleY;
-	}
+    public function getScaleY(): Float {
+        return sprite.scaleY;
+    }
 
-	public function setScaleX(v: Float): Float {
-		sprite.scaleX = v;
+    public function setScaleX(v: Float): Float {
+        sprite.scaleX = v;
 
-		return sprite.scaleX;
-	}
+        return sprite.scaleX;
+    }
 
-	public function setScaleY(v: Float): Float {
-		sprite.scaleY = v;
+    public function setScaleY(v: Float): Float {
+        sprite.scaleY = v;
 
-		return sprite.scaleY;
-	}
+        return sprite.scaleY;
+    }
 
-	public function setX(val : Float) : Float {
-		entitySpacePos.x = val;
+    public function setX(val : Float) : Float {
+        entitySpacePos.x = val;
 
-		return entitySpacePos.x;
-	}
+        return entitySpacePos.x;
+    }
 
-	public function getX() : Float {
-		return entitySpacePos.x;
-	}
+    public function getX() : Float {
+        return entitySpacePos.x;
+    }
 
-	public function setY(val : Float) : Float {
-		entitySpacePos.y = val;
+    public function setY(val : Float) : Float {
+        entitySpacePos.y = val;
 
-		return entitySpacePos.y;
-	}
+        return entitySpacePos.y;
+    }
 
-	public function getY() : Float {
-		return entitySpacePos.y;
-	}
+    public function getY() : Float {
+        return entitySpacePos.y;
+    }
 
-	public function setCameraSpaceX(val : Float) : Float {
-		cameraSpacePos.x = val;
-		x = cameraSpacePos.x;
-		return val;
-	}
+    public function setCameraSpaceX(val : Float) : Float {
+        cameraSpacePos.x = val;
+        x = cameraSpacePos.x;
+        return val;
+    }
 
-	public function getCameraSpaceX() : Float {
-		return cameraSpacePos.x;
-	}
+    public function getCameraSpaceX() : Float {
+        return cameraSpacePos.x;
+    }
 
-	public function setCameraSpaceY(val : Float) : Float {
-		cameraSpacePos.y = val;
-		y = cameraSpacePos.y;
-		return val;
-	}
+    public function setCameraSpaceY(val : Float) : Float {
+        cameraSpacePos.y = val;
+        y = cameraSpacePos.y;
+        return val;
+    }
 
-	public function getCameraSpaceY() : Float {
-		return cameraSpacePos.y;
-	}
+    public function getCameraSpaceY() : Float {
+        return cameraSpacePos.y;
+    }
 
-	public function setWidth(val : Float) : Float {
-		entitySpacePos.width = val;
-		return val;
-	}
+    public function setWidth(val : Float) : Float {
+        entitySpacePos.width = val;
+        return val;
+    }
 
-	public function getWidth() : Float {
-		return entitySpacePos.width;
-	}
+    public function getWidth() : Float {
+        return entitySpacePos.width;
+    }
 
-	public function setHeight(val : Float) : Float {
-		entitySpacePos.height = val;
-		return val;
-	}
+    public function setHeight(val : Float) : Float {
+        entitySpacePos.height = val;
+        return val;
+    }
 
-	public function getHeight() : Float {
-		return entitySpacePos.height;
-	}
+    public function getHeight() : Float {
+        return entitySpacePos.height;
+    }
 
-	public function setAlpha(val : Float) : Float {
-		sprite.alpha = val;
-		return val;
-	}
+    public function setAlpha(val : Float) : Float {
+        sprite.alpha = val;
+        return val;
+    }
 
-	public function getAlpha() : Float {
-		return sprite.alpha;
-	}
+    public function getAlpha() : Float {
+        return sprite.alpha;
+    }
 
-	public function rect() : Rect {
-		return new Rect(entitySpacePos.x, entitySpacePos.y, width, height);
-	}
+    public function rect() : Rect {
+        return new Rect(entitySpacePos.x, entitySpacePos.y, width, height);
+    }
 
-	public function vec() : Vec {
-		return new Vec(entitySpacePos.x, entitySpacePos.y);
-	}
+    public function vec() : Vec {
+        return new Vec(entitySpacePos.x, entitySpacePos.y);
+    }
 
-	public function getNumChildren(): Int {
-		return sprite.numChildren;
-	}
+    public function getNumChildren(): Int {
+        return sprite.numChildren;
+    }
 
-	public function getVisible(): Bool {
-		return sprite.visible;
-	}
+    public function getVisible(): Bool {
+        return sprite.visible;
+    }
 
-	public function setVisible(val: Bool): Bool {
-		return sprite.visible = val;
-	}
+    public function setVisible(val: Bool): Bool {
+        return sprite.visible = val;
+    }
 }
 

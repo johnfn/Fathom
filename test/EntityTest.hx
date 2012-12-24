@@ -87,5 +87,17 @@ class EntityTest extends haxe.unit.TestCase {
     assertEquals(test1, 2);
     assertEquals(test2, 4);
   }
+
+  public function testDestroyAfter() {
+    e1.destroyAfter(5);
+    for (x in 0...5) {
+      e1.update();
+    }
+
+    assertTrue(e1.destroyed);
+
+    e2.destroy();
+    assertTrue(e2.destroyed);
+  }
 }
 

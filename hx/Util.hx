@@ -129,10 +129,9 @@ class Util {
 	static public function make2DArrayFn<T>(width : Int, height : Int, fn : Int -> Int -> T) : Array<Array<T>> {
 		var result : Array<Array<T>> = new Array<Array<T>>();
 
-		for (i in 0...width - 1) {
+		for (i in 0...width) {
 			result.push(new Array<T>());
-
-			for (j in 0...height - 1) {
+			for (j in 0...height) {
 				result[i].push(fn(i, j));
 			}
 		}
