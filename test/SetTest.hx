@@ -149,24 +149,7 @@ class SetTest extends haxe.unit.TestCase {
     assertEquals(s.one([function(i) return i == 1]), 1);
     assertEquals(s.one([function(i) return i == 5]), 5);
 
-    var didThrow:Bool = false;
-
-    try {
-      s.one([function(i) return i == 9]);
-    } catch (msg: String) {
-      didThrow = true;
-    }
-
-    assertTrue(didThrow);
-
-    didThrow = false;
-
-    try {
-      s.one([function(i) return i > 3]);
-    } catch (msg: String) {
-      didThrow = true;
-    }
-
-    assertTrue(didThrow);
+    this.assertThrows(function() s.one([function(i) return i == 9]));
+    this.assertThrows(function() s.one([function(i) return i > 3]));
   }
 }

@@ -62,6 +62,7 @@ class Map extends Rect {
     public function new(widthInTiles : Int, heightInTiles : Int, tileSize : Int) {
         data = [];
         tiles = [];
+        _graphics = new Entity();
         collisionInfo = [];
         topLeftCorner = new Vec(0, 0);
         exploredMaps = new TypedDictionary();
@@ -415,11 +416,6 @@ class Map extends Rect {
     static var cachedAssets : TypedDictionary<String, Dynamic> = new TypedDictionary();
 
     function dumpToGraphics() : Void {
-        graphics = new Entity();
-        while(graphics.numChildren > 0) {
-            graphics.removeChildAt(0);
-        }
-
         // Write out the tiles to imgData
         var imgData : BitmapData = new BitmapData(widthInTiles * tileSize, heightInTiles * tileSize, true, 0xFFFFFFFF);
         for (x in 0...widthInTiles) {

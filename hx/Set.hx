@@ -184,10 +184,6 @@ class Set<T> {
         if(results.length == 0)  {
             throw ("Set<Entity>#one called with criteria " + criteria.toString() + ", but no results found.");
         } else if(results.length > 1)  {
-            for (r in results) {
-                trace(r);
-            }
-
             throw ("Set<Entity>#one called with criteria " + criteria.toString() + ", and " + results.toString() + "(" + results.length + ")" + " results found.");
         }
 
