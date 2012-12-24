@@ -204,7 +204,9 @@ class Entity extends Graphic {
         });
 
         for (e in entityChildren) {
-            e.raiseToTop();
+            if (e._currentlyInFathom) {
+                e.raiseToTop();
+            }
         }
     }
 

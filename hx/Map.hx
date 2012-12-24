@@ -15,11 +15,15 @@ typedef ItemDetail = {
     var spritesheet: Vec;
     var gfx: Class<Dynamic>;
 
+    // Optional settings
+
     @:optional var type: Class<Dynamic>;
-    @:optional var args: Array<Dynamic>;
     @:optional var roundOutEdges: Bool;
     @:optional var fancyEdges: Bool;
     @:optional var randoEdges: Bool;
+
+    // Private use by Map
+    @:optional var special:Bool;
 }
 
 //TODO: Map should extend Entity. Will need to change update loop.
@@ -246,6 +250,11 @@ class Map extends Rect {
         return result;
     }
 
+    function isSpecial(itemData: ItemDetail): Bool {
+        var gfxName: String = Type.getClassName(Type.getSuperClass(itemData.gfx));
+        return gfxName.indexOf("BitmapData") == -1;
+    }
+
     function addPersistentItem(c : Color, x : Int, y : Int) : Void {
         if(!persistentItemMapping.has(c.toString()))  {
             if(c.toString() != "#ffffff")  {
@@ -253,17 +262,17 @@ class Map extends Rect {
             }
             return;
         }
-        var itemData : ItemDetail = persistentItemMapping.get(c.toString());
-        if(itemData.type == null)
-            return;
 
-        var e : Entity;
-        if(itemData.args != null)  {
-            // TODO: new ItemData["type"].call(args)
-            e = Type.createInstance(itemData.type, [itemData.args]);
-        } else  {
-            e = Type.createInstance(itemData.type, []);
-        }
+        var itemData : ItemDetail = persistentItemMapping.get(c.toString());
+
+        // If the provided graphics are BitmapData, this is a static object.
+        // We won't treat it specially in that case.
+
+        if(!isSpecial(itemData)) return;
+
+        // Otherwise, we create it.
+
+        var e : Entity = Type.createInstance(itemData.gfx, []);
 
         var ssLoc:Vec;
         if (itemData.spritesheet != null) {
@@ -272,7 +281,6 @@ class Map extends Rect {
             ssLoc = new Vec(0, 0);
         }
 
-        e.loadSpritesheet(Reflect.field(itemData, "gfx"), new Vec(_tileSize, _tileSize), ssLoc);
         e.setPos(new Vec(x * tileSize, y * tileSize));
         if(e.groups().contains("persistent"))  {
             persistent.get(topLeftCorner.asKey()).push(e);
@@ -289,15 +297,11 @@ class Map extends Rect {
         if(!seenBefore)  {
             // If we haven't seen it before, load in all the persistent items.
             persistent.set(topLeftCorner.asKey(), []);
-            var x : Int = 0;
-            while(x < widthInTiles) {
-                var y : Int = 0;
-                while(y < heightInTiles) {
+            for (x in 0...widthInTiles) {
+                for (y in 0...heightInTiles) {
                     var dataColor : Color = data[Std.int(topLeftCorner.x + x)][Std.int(topLeftCorner.y + y)];
                     addPersistentItem(dataColor, x, y);
-                    y++;
                 }
-                x++;
             }
         } else  {
             // Add all persistent items.
@@ -431,12 +435,12 @@ class Map extends Rect {
 
                 var itemData : ItemDetail = persistentItemMapping.get(c);
 
-                Util.assert(itemData != null, "IT WAS NULL!");
-
                 var ss: Vec = fancyProcessing(itemData, c, x, y).multiply(_tileSize);
-                // Hardcore hardcoding TODO
-                var key : String = Util.className(itemData.gfx);
+                var key : String = Type.getClassName(itemData.gfx);
+
                 var bAsset;
+
+                if (isSpecial(itemData)) continue;
 
                 if (!cachedAssets.exists(key)) {
                     cachedAssets.set(key, Type.createInstance(itemData.gfx, []));
