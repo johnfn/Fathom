@@ -8,6 +8,20 @@ import Color;
 import Util;
 import Entity;
 
+using Lambda;
+
+typedef ItemDetail = {
+    var color: String;
+    var spritesheet: Vec;
+    var gfx: Class<Dynamic>;
+
+    @:optional var type: Class<Dynamic>;
+    @:optional var args: Array<Dynamic>;
+    @:optional var roundOutEdges: Bool;
+    @:optional var fancyEdges: Bool;
+    @:optional var randoEdges: Bool;
+}
+
 //TODO: Map should extend Entity. Will need to change update loop.
 class Map extends Rect {
     public var tileSize(getTileSize, never) : Int;
@@ -18,20 +32,20 @@ class Map extends Rect {
     var _widthInTiles : Int;
     var _heightInTiles : Int;
     var bogusmapentry : Entity;
-    var grounds : Array<Dynamic>;
+    var grounds : Array<String>;
     var _tileSize : Int;
-    var data : Array<Dynamic>;
+    var data : Array<Array<Color>>;
     // Color data from the map.
 
     var tiles : Array<Array<Entity>>;
     // Cached array of collideable tiles.
 
-    public var collisionInfo : Array<Dynamic>;
+    public var collisionInfo : Array<Array<Bool>>;
     var topLeftCorner : Vec;
-    var exploredMaps : Dynamic;
+    var exploredMaps : TypedDictionary<String, Bool>;
     var _graphics : Entity;
     // Mapping between colors and items.
-    var persistentItemMapping : Dynamic;
+    var persistentItemMapping : TypedDictionary<String, ItemDetail>;
     var persistent : TypedDictionary<String, Array<Entity>>;
     public var sizeVector : Vec;
 
@@ -45,13 +59,13 @@ class Map extends Rect {
         return _graphics = e;
     }
 
-    function new(widthInTiles : Int, heightInTiles : Int, tileSize : Int) {
+    public function new(widthInTiles : Int, heightInTiles : Int, tileSize : Int) {
         data = [];
         tiles = [];
         collisionInfo = [];
         topLeftCorner = new Vec(0, 0);
-        exploredMaps = { };
-        persistentItemMapping = { };
+        exploredMaps = new TypedDictionary();
+        persistentItemMapping = new TypedDictionary();
         persistent = new TypedDictionary();
         super(0, 0, widthInTiles * tileSize, heightInTiles * tileSize);
         Util.assert(widthInTiles == heightInTiles);
@@ -60,7 +74,7 @@ class Map extends Rect {
         this._heightInTiles = heightInTiles;
         this._tileSize = tileSize;
         this.clearTiles();
-        bogusmapentry = new BogusMapEntry();
+        bogusmapentry = new BogusMapEntry(tileSize);
     }
 
     function clearTiles() : Void {
@@ -85,11 +99,17 @@ class Map extends Rect {
         return (x < 0 || x >= width || y < 0 || y >= height);
     }
 
-    public function fromImage(mapClass : Class<Dynamic>, groundList : Array<Dynamic>, persistentItemMapping : Dynamic) : Map {
-        var bAsset = Type.createInstance(mapClass, []);
-        var bData : BitmapData = bAsset.bitmapData;
+    public function fromImage(mapClass : Class<Dynamic>, groundList : Array<String>, mappings : Array<ItemDetail>) : Map {
+        // Load ground list
         this.grounds = groundList;
-        this.persistentItemMapping = persistentItemMapping;
+
+        // Load item mapping
+        for (s in mappings) {
+            this.persistentItemMapping.set(s.color, s);
+        }
+
+        // Load data from image.
+        var bData = Type.createInstance(mapClass, []);
         data = Util.make2DArray(bData.width, bData.height, null);
 
         for (x in 0...bData.width) {
@@ -127,67 +147,64 @@ class Map extends Rect {
         addNewPersistentItems();
     }
 
-    function isGround(c : Color, s : String) : Bool {
-        return Lambda.indexOf(grounds, c.toString) != -1 && c.toString() != s;
+    function isGround(c : String, s : String) : Bool {
+        return grounds.has(c) && c.toString() != s;
     }
 
-    function fancyProcessing(itemData : Dynamic, c : String, x : Int, y : Int) : Vec {
-        var result : Vec = Reflect.field(itemData, "spritesheet").clone();
-        if(Lambda.has(itemData, "roundOutEdges"))  {
+    function fancyProcessing(itemData : ItemDetail, c : String, x : Int, y : Int) : Vec {
+        var result : Vec = itemData.spritesheet.clone();
+        if(itemData.roundOutEdges) {
             var locX : Int = Std.int(topLeftCorner.x) + x;
             var locY : Int = Std.int(topLeftCorner.y) + y;
             if(locY == 0 || data[locX][locY - 1].toString() != c.toString())  {
                 result.y--;
             }
-            if(locX == 0 || data[locX - 1][locY].toString() != c.toString())  {
+            if(locX == 0 || data[locX - 1][locY].toString() != c)  {
                 result.x--;
             }
-            if(locY != heightInTiles - 1 && data[locX][locY + 1].toString() != c.toString())  {
+            if(locY != heightInTiles - 1 && data[locX][locY + 1].toString() != c)  {
                 result.y++;
             }
-            if(locX == widthInTiles - 1 || data[locX + 1][locY].toString() != c.toString())  {
+            if(locX == widthInTiles - 1 || data[locX + 1][locY].toString() != c)  {
                 result.x++;
             }
-            if(locY != 0 && data[locX][locY - 1].toString() != c.toString() && locY != heightInTiles - 1 && data[locX][locY + 1].toString() != c.toString())  {
+            if(locY != 0 && data[locX][locY - 1].toString() != c && locY != heightInTiles - 1 && data[locX][locY + 1].toString() != c)  {
                 result.y--;
             }
         }
 
-        if(Lambda.has(itemData, "randoEdges") && Util.randRange(0, 5) == 3)  {
+        if(itemData.randoEdges && Util.randRange(0, 5) == 3)  {
             result.x += Util.randRange(-1, 2);
             result.y += Util.randRange(-1, 2);
         }
 
-        if(Lambda.has(itemData, "fancyEdges"))  {
-            var cstr : String = c.toString();
+        if(itemData.fancyEdges)  {
             var empty : String = (new Color(255, 255, 255).toString());
             var locX : Int = Std.int(topLeftCorner.x) + x;
             var locY : Int = Std.int(topLeftCorner.y) + y;
             // Horizontal wall, ground below.
-            if(!isGround(data[locX - 1][locY], cstr) && !isGround(data[locX + 1][locY], cstr) && isGround(data[locX][locY + 1], cstr))  {
+            if(!isGround(data[locX - 1][locY].toString(), c) && !isGround(data[locX + 1][locY].toString(), c) && isGround(data[locX][locY + 1].toString(), c))  {
                 result.y += 2;
             }
             // Horizontal wall, ground above.
-            if(data[locX - 1][locY].toString() == cstr && data[locX + 1][locY].toString() == cstr && isGround(data[locX][locY - 1], cstr))  {
+            if(data[locX - 1][locY].toString() == c && data[locX + 1][locY].toString() == c && isGround(data[locX][locY - 1].toString(), c))  {
                 result.y -= 2;
             }
             // Vertical wall, ground to the left.
-            if(data[locX][locY - 1].toString() == cstr && data[locX][locY + 1].toString() == cstr && isGround(data[locX - 1][locY], cstr))  {
+            if(data[locX][locY - 1].toString() == c && data[locX][locY + 1].toString() == c && isGround(data[locX - 1][locY].toString(), c))  {
                 result.x -= 2;
             }
             // Vertical wall, ground to the right.
-            if(!isGround(data[locX][locY - 1], cstr) && !isGround(data[locX][locY + 1], cstr) && isGround(data[locX + 1][locY], cstr))  {
+            if(!isGround(data[locX][locY - 1].toString(), c) && !isGround(data[locX][locY + 1].toString(), c) && isGround(data[locX + 1][locY].toString(), c))  {
                 result.x += 2;
             }
             // - - -
             // - x x
             // - x -
-            if(data[locX + 1][locY].toString() == cstr && data[locX][locY + 1].toString() == cstr && isGround(data[locX - 1][locY], cstr) && isGround(data[locX][locY - 1], cstr))  {
+            if(data[locX + 1][locY].toString() == c && data[locX][locY + 1].toString() == c && isGround(data[locX - 1][locY].toString(), c) && isGround(data[locX][locY - 1].toString(), c))  {
                 result.x -= 2;
                 result.y -= 2;
-            }
-
-            else if(data[locX + 1][locY].toString() == cstr && data[locX][locY + 1].toString() == cstr)  {
+            } else if(data[locX + 1][locY].toString() == c && data[locX][locY + 1].toString() == c)  {
                 // x x x
                 // x x x
                 // x x -
@@ -197,36 +214,30 @@ class Map extends Rect {
             // - - -
             // x x -
             // - x -
-            if(data[locX - 1][locY].toString() == cstr && data[locX][locY + 1].toString() == cstr && isGround(data[locX + 1][locY], cstr) && isGround(data[locX][locY - 1], cstr))  {
+            if(data[locX - 1][locY].toString() == c && data[locX][locY + 1].toString() == c && isGround(data[locX + 1][locY].toString(), c) && isGround(data[locX][locY - 1].toString(), c))  {
                 result.x += 2;
                 result.y -= 2;
-            }
-
-            else if(data[locX - 1][locY].toString() == cstr && data[locX][locY + 1].toString() == cstr)  {
+            } else if(data[locX - 1][locY].toString() == c && data[locX][locY + 1].toString() == c)  {
                 result.x -= 2;
                 result.y += 1;
             }
             // - x -
             // x x -
             // - - -
-            if(data[locX - 1][locY].toString() == cstr && data[locX][locY - 1].toString() == cstr && isGround(data[locX + 1][locY], cstr) && isGround(data[locX][locY + 1], cstr))  {
+            if(data[locX - 1][locY].toString() == c && data[locX][locY - 1].toString() == c && isGround(data[locX + 1][locY].toString(), c) && isGround(data[locX][locY + 1].toString(), c))  {
                 result.x += 2;
                 result.y += 2;
-            }
-
-            else if(data[locX - 1][locY].toString() == cstr && data[locX][locY - 1].toString() == cstr)  {
+            } else if(data[locX - 1][locY].toString() == c && data[locX][locY - 1].toString() == c)  {
                 result.x -= 2;
                 result.y -= 1;
             }
             // - x -
             // - x x
             // - - -
-            if(data[locX + 1][locY].toString() == cstr && data[locX][locY - 1].toString() == cstr && isGround(data[locX - 1][locY], cstr) && isGround(data[locX][locY + 1], cstr))  {
+            if(data[locX + 1][locY].toString() == c && data[locX][locY - 1].toString() == c && isGround(data[locX - 1][locY].toString(), c) && isGround(data[locX][locY + 1].toString(), c))  {
                 result.x -= 2;
                 result.y += 2;
-            }
-
-            else if(data[locX + 1][locY].toString() == cstr && data[locX][locY - 1].toString() == cstr)  {
+            } else if(data[locX + 1][locY].toString() == c && data[locX][locY - 1].toString() == c)  {
                 result.x += 2;
                 result.y -= 1;
             }
@@ -235,33 +246,32 @@ class Map extends Rect {
     }
 
     function addPersistentItem(c : Color, x : Int, y : Int) : Void {
-        if(!(Lambda.has(persistentItemMapping, c.toString())))  {
+        if(!persistentItemMapping.has(c.toString()))  {
             if(c.toString() != "#ffffff")  {
                 Util.log("Color without data: " + c.toString());
             }
             return;
         }
-        var itemData : Dynamic = persistentItemMapping.get(c.toString());
-        if(!(Lambda.has(itemData, "type")))
+        var itemData : ItemDetail = persistentItemMapping.get(c.toString());
+        if(itemData.type == null)
             return;
 
         var e : Entity;
-        if(Lambda.has(itemData, "args"))  {
+        if(itemData.args != null)  {
             // TODO: new ItemData["type"].call(args)
-            e = Type.createInstance(itemData, [itemData.args]);
+            e = Type.createInstance(itemData.type, [itemData.args]);
         } else  {
-            e = Type.createInstance(itemData, []);
+            e = Type.createInstance(itemData.type, []);
         }
 
-        if(!(Lambda.has(itemData, "special")))  {
-            var ssLoc:Vec;
-            if (Reflect.hasField(itemData, "spritesheet")) {
-                ssLoc = Reflect.field(itemData, "spritesheet");
-            } else {
-                ssLoc = new Vec(0, 0);
-            }
-            e.loadSpritesheet(Reflect.field(itemData, "gfx"), new Vec(_tileSize, _tileSize), ssLoc);
+        var ssLoc:Vec;
+        if (itemData.spritesheet != null) {
+            ssLoc = itemData.spritesheet;
+        } else {
+            ssLoc = new Vec(0, 0);
         }
+
+        e.loadSpritesheet(Reflect.field(itemData, "gfx"), new Vec(_tileSize, _tileSize), ssLoc);
         e.setPos(new Vec(x * tileSize, y * tileSize));
         if(e.groups().contains("persistent"))  {
             persistent.get(topLeftCorner.asKey()).push(e);
@@ -414,39 +424,39 @@ class Map extends Rect {
         var imgData : BitmapData = new BitmapData(widthInTiles * tileSize, heightInTiles * tileSize, true, 0xFFFFFFFF);
         for (x in 0...widthInTiles) {
             for (y in 0...heightInTiles) {
-                var c : Color = data[Std.int(topLeftCorner.x + x)][Std.int(topLeftCorner.y + y)];
-                if(!(Lambda.has(persistentItemMapping, c.toString())))  {
+                var c: String = data[Std.int(topLeftCorner.x + x)][Std.int(topLeftCorner.y + y)].toString();
+
+                if(!persistentItemMapping.has(c))  {
                     if(c.toString() != "#ffffff")  {
-                        Util.log("Color without data: " + c.toString());
+                        Util.log("Color without data: " + c);
                         continue;
                     }
-
                 }
-                var itemData : Dynamic = persistentItemMapping.get(c.toString());
-                if(!(Lambda.has(itemData, "gfx"))) {
-                    continue;
-                };
 
-                var ss : Vec = fancyProcessing(itemData, c.toString(), x, y).multiply(_tileSize);
+                var itemData : ItemDetail = persistentItemMapping.get(c);
+
+                Util.assert(itemData != null, "IT WAS NULL!");
+
+                var ss: Vec = fancyProcessing(itemData, c, x, y).multiply(_tileSize);
                 // Hardcore hardcoding TODO
                 var key : String = Util.className(itemData.gfx);
                 var bAsset;
 
                 if (!cachedAssets.exists(key)) {
-                    cachedAssets.set(key, Type.createInstance(itemData.Gfx, []));
+                    cachedAssets.set(key, Type.createInstance(itemData.gfx, []));
                 }
 
                 if(!isGround(c, ""))  {
                     collisionInfo[x][y] = true;
                 }
                 bAsset = cachedAssets.get(key);
-                imgData.copyPixels(bAsset.bitmapData, new Rectangle(ss.x, ss.y, _tileSize, _tileSize), new Point(x * 25, y * 25));
+                imgData.copyPixels(bAsset, new Rectangle(ss.x, ss.y, _tileSize, _tileSize), new Point(x * 25, y * 25));
             }
         }
         // I have this suspicion that I don't need to keep adding the bitmapData TODO
         // Add imgData to screen.
         var bmp : Bitmap = new Bitmap(imgData);
-        graphics.addDO(bmp);
+        graphics.setPixels(bmp);
     }
 
     public function loadNewMap(diff : Vec) : Map {
@@ -465,9 +475,8 @@ class Map extends Rect {
 }
 
 class BogusMapEntry extends Entity {
-
-    public function new(x : Int = 0, y : Int = 0) {
-        super(x, y, 25, 25);
+    public function new(size : Int) {
+        super(0, 0, size, size);
     }
 
     // holy freaking christ
@@ -481,4 +490,3 @@ class BogusMapEntry extends Entity {
     }
 
 }
-

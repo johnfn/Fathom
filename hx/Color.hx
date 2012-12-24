@@ -23,7 +23,7 @@ class Color {
     }
 
     public function toString() : String {
-        return "#" + zeroPad(StringTools.hex(r)) + zeroPad(StringTools.hex(g)) + zeroPad(StringTools.hex(b));
+        return ("#" + zeroPad(StringTools.hex(r)) + zeroPad(StringTools.hex(g)) + zeroPad(StringTools.hex(b))).toLowerCase();
     }
 
     static public function fromInt(hex : Int) : Color {

@@ -100,12 +100,6 @@ class Graphic implements IPositionable {
         return "[Graphic]";
     }
 
-    // blabla... blame some optimizations in Map again
-    // TODO eventually remove
-    public function addDO(d:DisplayObject): Void {
-        sprite.addChild(d);
-    }
-
     // Set this entities graphics to be the sprite at (x, y) on the provided spritesheet.
     public function setTile(x : Int, y : Int) : Graphic {
         Util.assert(this.spritesheetObj != null, "The spritesheet is null.");
@@ -217,7 +211,7 @@ class Graphic implements IPositionable {
         return scaleY;
     }
 
-    public function getPixel(x:Int, y:Int) {
+    public function getPixel(x:Int, y:Int) : UInt {
         return this.pixels.bitmapData.getPixel(x, y);
     }
 

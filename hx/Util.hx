@@ -71,7 +71,7 @@ class Util {
 	}
 
 	// Recursive helper method for Util.p.
-		static function pHelper(o : Dynamic) : String {
+	static function pHelper(o : Dynamic) : String {
 		var result : String;
 		if(Util.className(o) == "Object")  {
 			result = "{ ";
@@ -81,9 +81,19 @@ class Util {
 
 			// result = result.slice(0, -2) + " ";
 			result += "}";
-		}
+		} else if (Util.className(o) == "flash.utils.TypedDictionary") {
+			var td:flash.utils.TypedDictionary<Dynamic, Dynamic> = cast(o, flash.utils.TypedDictionary<Dynamic, Dynamic>);
+			result = "{ ";
 
-		else if(Util.className(o) == "Array")  {
+			untyped {
+				for (k in td) {
+					result += k + ": " + o + ",";
+				}
+			}
+
+			result += "}";
+
+		} else if(Util.className(o) == "Array")  {
 			var arr : Array<Dynamic> = try cast(o, Array<Dynamic>) catch(e:Dynamic) null;
 			result = "[";
 			var i : Int = 0;
@@ -122,10 +132,10 @@ class Util {
 	}
 
 	// This function is currently broken if val is an object, and there's no
-		// easy way to fix it.
-		//public static function make2DArrayVal(width:int, height:int, val:*):Array {
-		//  return make2DArrayFn(width, height, function():* { return val; });
-		//}
+	// easy way to fix it.
+	//public static function make2DArrayVal(width:int, height:int, val:*):Array {
+	//  return make2DArrayFn(width, height, function():* { return val; });
+	//}
 	static public function make2DArrayFn<T>(width : Int, height : Int, fn : Int -> Int -> T) : Array<Array<T>> {
 		var result : Array<Array<T>> = new Array<Array<T>>();
 
@@ -151,7 +161,7 @@ class Util {
 	}
 
 	// With thanks to http://kirill-poletaev.blogspot.com/2010/07/rotate-object-to-mouse-using-as3.html
-		static public function rotateToFace(pointer : Vec, target : Vec) : Float {
+	static public function rotateToFace(pointer : Vec, target : Vec) : Float {
 		var cx : Float = target.x - pointer.x;
 		var cy : Float = target.y - pointer.y;
 		var radians : Float = Math.atan2(cy, cx);
@@ -159,11 +169,10 @@ class Util {
 		return degrees;
 	}
 
-	static public function make2DArray(width : Int, height : Int, defaultValue : Dynamic) : Array<Array<Dynamic>> {
-		return make2DArrayFn(width, height, function(x : Int, y : Int) : Dynamic {
+	static public function make2DArray<T>(width : Int, height : Int, defaultValue : T) : Array<Array<T>> {
+		return make2DArrayFn(width, height, function(x : Int, y : Int) : T {
 			return defaultValue;
-		}
-);
+		});
 	}
 
 	static public function movementVector() : Vec {

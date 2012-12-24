@@ -26,8 +26,7 @@ class Text extends Entity {
             normalTextFormat.font = textName;
         normalTextFormat.size = 16;
         normalTextFormat.color = 0xFFFFFF;
-        if(textName != null)
-            redTextFormat.font = textName;
+        if(textName != null) redTextFormat.font = textName;
         redTextFormat.size = 16;
         redTextFormat.color = 0xFF0000;
         textField = new TextField();
@@ -99,9 +98,7 @@ class Text extends Entity {
             if(s.charAt(i) == "*")  {
                 idx--;
                 currentPair.push(idx);
-            }
-
-            else  {
+            } else  {
                 resultString += s.charAt(i);
             }
 

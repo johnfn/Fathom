@@ -8,6 +8,7 @@ class AllTests {
     r.add(new VecTest());
     r.add(new GraphicTest());
     r.add(new EntityTest());
+    r.add(new MapTest());
 
     r.run();
   }
