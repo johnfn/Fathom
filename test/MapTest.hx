@@ -4,7 +4,7 @@ import Graphic;
 using Lambda;
 
 class SpecialThing extends Entity {
-  public function new(x: Int, y: Int) {
+  public function new() {
     super();
     //e.loadSpritesheet(AllTests.MyBitmapData, new Vec(_tileSize, _tileSize), ssLoc);
 
@@ -68,7 +68,12 @@ class MapTest extends haxe.unit.TestCase {
     m.loadNewMap(new Vec(0, 1));
 
     assertEquals(constructedCount, 1);
-  }
 
+    assertEquals(Fathom.entities.select([Set.hasGroup("test")]).length, 1);
+    var s:Entity = Fathom.entities.one([Set.hasGroup("test")]);
+
+    assertEquals(s.x, 0);
+    assertEquals(s.y, 2);
+  }
 }
 
