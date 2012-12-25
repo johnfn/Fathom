@@ -48,7 +48,7 @@ class Entity extends Graphic {
         return val;
     }
 
-    public function inFathom(): Bool {
+    public function getInFathom(): Bool {
         return _currentlyInFathom;
     }
 
@@ -258,7 +258,7 @@ class Entity extends Graphic {
     }
 
     // Modes for which this entity receives events.
-    public function modes() : Array<Dynamic> {
+    public function modes() : Array<Int> {
         return [0];
     }
 

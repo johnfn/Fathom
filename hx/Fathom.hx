@@ -30,7 +30,7 @@ class Fathom {
     static public var initialized : Bool = false;
     static public var stage : Stage;
     static public var grid : SpatialHash;
-    static public var modes : Array<Dynamic> = [Fathom._currentMode];
+    static public var modes : Array<Int> = [Fathom._currentMode];
     static var _paused : Bool = false;
     static public var MCPool : Dynamic = { };
     public function new() {

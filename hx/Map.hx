@@ -31,7 +31,6 @@ class Map extends Rect {
     public var tileSize(getTileSize, never) : Int;
     public var widthInTiles(getWidthInTiles, never) : Int;
     public var heightInTiles(getHeightInTiles, never) : Int;
-    public var visible(never, setVisible) : Bool;
 
     var _widthInTiles : Int;
     var _heightInTiles : Int;
@@ -360,42 +359,14 @@ class Map extends Rect {
         return false;
     }
 
-    public function setVisible(val : Bool) : Bool {
-        Util.assert(false);
-        return false;
-        /*
-        persistent.get(topLeftCorner.asKey()).map(function(e : Dynamic, i : Int, a : Array<Dynamic>) : Void {
-            e.visible = val;
-        }
-);
-        return val;
-        */
-    }
-
-    public function collides(i : Dynamic) : Bool {
-        if(Std.is(i, Vec)) {
-            untyped {
-                return collidesPt(i);
-            }
-        }
-        if(Std.is(i, Rect))  {
-            untyped {
-                return collidesRect(i);
-            }
-        }
-        throw "Unsupported type for Map#collides.";
-    }
-
     public function update() : Void {
-        var items : Array<Dynamic> = persistent.get(topLeftCorner.asKey());
-        return;
-        var i : Int = 0;
-        while(i < items.length) {
-            if(Hooks.hasLeftMap(items[i], this))  {
-                Util.assert(!items[i].groups().contains("Character"));
-                this.itemSwitchedMaps(items[i]);
+        var items : Array<Entity> = persistent.get(topLeftCorner.asKey());
+
+        for (it in items) {
+            if(Hooks.hasLeftMap(it, this))  {
+                Util.assert(!it.groups().contains("Character"));
+                this.itemSwitchedMaps(it);
             }
-            i++;
         }
     }
 

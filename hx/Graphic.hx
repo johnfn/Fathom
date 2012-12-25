@@ -12,6 +12,11 @@ import flash.events.Event;
 import Hooks;
 import Util;
 
+typedef SpriteSheet = {
+    var x:Int;
+    var y:Int;
+}
+
 class Graphic implements IPositionable {
     var sprite:Sprite;
 
@@ -31,7 +36,7 @@ class Graphic implements IPositionable {
     public var cameraSpacePos : Rect;
     public var animations : AnimationHandler;
     public var pixels(getPixels, setPixels) : Bitmap;
-    var spritesheet : Array<Dynamic>;
+    var spritesheet : SpriteSheet;
     // TODO: Rename
     var _depth : Int;
     static var cachedAssets : Dictionary = new Dictionary();
@@ -56,7 +61,6 @@ class Graphic implements IPositionable {
 
     public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
         pixels = new Bitmap();
-        spritesheet = [];
         _depth = 0;
         spritesheetObj = null;
         spriteSheetWidth = -1;
@@ -67,6 +71,7 @@ class Graphic implements IPositionable {
         sprite.y = y;
         sprite.width = width;
         sprite.height = height;
+        spritesheet = {x: 0, y: 0};
 
         if (height == -1)
             height = width;
@@ -112,7 +117,10 @@ class Graphic implements IPositionable {
             bd.copyPixels(bData, source, new Point(0, 0), null, null, true);
             Reflect.setField(cachedAssets, uid, bd);
         }
-        this.spritesheet = [x, y];
+
+        spritesheet.x = x;
+        spritesheet.y = y;
+
         pixels.bitmapData = Reflect.field(cachedAssets, uid);
         // TODO: Implicit assumption that bitmap faces right.
         // TODO: Caching?
@@ -127,11 +135,11 @@ class Graphic implements IPositionable {
     }
 
     public function getSpriteX() : Int {
-        return this.spritesheet[0];
+        return this.spritesheet.x;
     }
 
     public function getSpriteY() : Int {
-        return this.spritesheet[1];
+        return this.spritesheet.y;
     }
 
     // TODO: This could eventually be called setOrigin.
