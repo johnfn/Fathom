@@ -65,6 +65,7 @@ class MapTest extends haxe.unit.TestCase {
   }
 
   public function testSpecialItems() {
+    constructedCount = 0;
     m.loadNewMap(new Vec(0, 1));
 
     assertEquals(constructedCount, 1);
@@ -74,6 +75,29 @@ class MapTest extends haxe.unit.TestCase {
 
     assertEquals(s.x, 0);
     assertEquals(s.y, 2);
+
+    var s:String;
+
+    constructedCount = 0;
+    m.loadNewMapAbs(new Vec(0, 0));
+
+    assertEquals(constructedCount, 0);
+    assertEquals(Fathom.entities.select([Set.hasGroup("test")]).length, 0);
+  }
+
+  public function testPersistentItem() {
+    var s:Entity;
+
+    m.loadNewMapAbs(new Vec(0, 1));
+    s = Fathom.entities.one([Set.hasGroup("test")]);
+
+    s.setPos(new Vec(7, 7));
+
+    m.loadNewMapAbs(new Vec(0, 0));
+    m.loadNewMapAbs(new Vec(0, 1));
+
+    s = Fathom.entities.one([Set.hasGroup("test")]);
+
+    assertDotEquals(s.vec(), new Vec(7, 7));
   }
 }
-

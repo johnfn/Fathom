@@ -58,13 +58,9 @@ class EntityTest extends haxe.unit.TestCase {
     assertEquals(e3.HACK_sprite().parent, e2.HACK_sprite());
     e1.removeFromFathom();
 
-    assertEquals(e1.parent, null);
-    assertEquals(e2.parent, null);
-    assertEquals(e3.parent, null);
-
-    assertEquals(e1.HACK_sprite().parent, null);
-    assertEquals(e2.HACK_sprite().parent, e1.HACK_sprite());
-    assertEquals(e3.HACK_sprite().parent, e2.HACK_sprite());
+    assertFalse(e1.inFathom);
+    assertFalse(e2.inFathom);
+    assertFalse(e3.inFathom);
   }
 
   public function testListenUnlisten() {

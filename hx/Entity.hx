@@ -27,7 +27,6 @@ class Entity extends Graphic {
     // These are purely for debugging purposes.
     static var counter : Int = 0;
     var uid : Float;
-    var rememberedParent : Entity;
     var groupSet : Set<String>;
     var entityChildren : Array<Entity>;
     var events: Array<Void -> Void>;
@@ -35,8 +34,10 @@ class Entity extends Graphic {
     // Allows for a fast check to see if this entity moves.
     var _isStatic : Bool;
     var _currentlyInFathom: Bool = false;
+    var _parent: Entity = null;
 
-    public var parent(getParent, never): Entity;
+    public var inFathom(getInFathom, setInFathom): Bool;
+    public var parent(getParent, setParent): Entity;
 
     public function getIsStatic() : Bool {
         return _isStatic;
@@ -45,6 +46,14 @@ class Entity extends Graphic {
     function setIsStatic(val : Bool) : Bool {
         _isStatic = val;
         return val;
+    }
+
+    public function inFathom(): Bool {
+        return _currentlyInFathom;
+    }
+
+    private function setInFathom(v: Bool): Bool {
+        return _currentlyInFathom = v;
     }
 
     public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
@@ -65,7 +74,7 @@ class Entity extends Graphic {
         // has to be bootstrapped onto the Stage. If Fathom.container does not exist, `this`
         // must be the container.
         if(Fathom.container != null)  {
-            this.rememberedParent = Fathom.container;
+            Fathom.container.addChild(this);
             addToFathom();
         }
     }
@@ -125,11 +134,11 @@ class Entity extends Graphic {
     public function addChild(child : Entity) : Entity {
         if(entityChildren == null)
             throw "You need to call super() before addChild().";
-
         Util.assert(!entityChildren.has(child), "Already has that child.");
+
+        child.parent = this;
         sprite.addChild(child.sprite);
         entityChildren.push(child);
-        child.rememberedParent = this;
         return child;
     }
 
@@ -139,25 +148,24 @@ class Entity extends Graphic {
         if(Std.is(child, Entity))
             Util.assert(entityChildren.has(child), "Doesn't have that child.");
 
+        child.parent = null;
         entityChildren.remove(child);
         sprite.removeChild(child.sprite);
         return child;
     }
 
-    /* This causes the Entity to cease existing in-game. The only way to
-       bring it back is to call addToFathom(). */
-    public function removeFromFathom(recursing : Bool = false) : Void {
-        Util.assert(this.parent != null, "Doesn't have a parent.");
+    /* This makes the entity disappear, but stay in memory. Think of a
+       moveable block that you saw on another screen. You only need to call
+       it on the parent object, not the children. */
+    public function removeFromFathom() : Void {
+        Util.assert(!destroyed, "Entity was destroyed.");
         Util.assert(Fathom.entities.contains(this), "Removed but not in Fathom.");
 
-        this.rememberedParent = this.parent;
-
         for (ch in entityChildren) {
-            ch.removeFromFathom(true);
+            ch.removeFromFathom();
         }
 
-        if(!recursing && this.parent != null)
-            sprite.parent.removeChild(this.sprite);
+        this.visible = false;
         Fathom.entities.remove(this);
         _currentlyInFathom = false;
     }
@@ -166,9 +174,13 @@ class Entity extends Graphic {
        this except after a call to removeFromFathom(). */
     public function addToFathom() : Void {
         Util.assert(!destroyed, "Entity was destroyed.");
-        Util.assert(this.sprite.parent == null, "Entity already has a parent.");
-        Util.assert(rememberedParent != null, "Entity doesn't remember its parent.");
-        rememberedParent.addChild(this);
+        Util.assert(!Fathom.entities.contains(this), "Added but already in Fathom.");
+
+        for (ch in entityChildren) {
+            ch.addToFathom();
+        }
+
+        this.visible = true;
         Fathom.entities.add(this);
         _currentlyInFathom = true;
     }
@@ -278,11 +290,11 @@ class Entity extends Graphic {
     }
 
     public function getParent(): Entity {
-        if (_currentlyInFathom) {
-            return rememberedParent;
-        } else {
-            return null;
-        }
+        return _parent;
+    }
+
+    private function setParent(p: Entity): Entity {
+        return _parent = p;
     }
 }
 

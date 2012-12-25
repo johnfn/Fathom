@@ -129,23 +129,20 @@ class Map extends Rect {
     function hideCurrentPersistentItems() : Void {
         var processedItems : Array<Entity> = [];
         var k:String = topLeftCorner.asKey();
-        var items : Array<Dynamic> = persistent.exists(k) ? persistent.get(k) : [];
-        var i : Int = 0;
-        while(i < items.length) {
-            if(!items[i].destroyed)  {
-                items[i].removeFromFathom();
-                processedItems.push(items[i]);
+        var items : Array<Entity> = persistent.exists(k) ? persistent.get(k) : [];
+
+
+        for (i in items) {
+            if(!i.destroyed)  {
+                i.removeFromFathom();
+                processedItems.push(i);
             }
-            i++;
         }
         persistent.set(topLeftCorner.asKey(), processedItems);
     }
 
     function updatePersistentItems(diff : Vec) : Void {
         hideCurrentPersistentItems();
-        for(e in Fathom.entities.select([Set.doesntHaveGroup("persistent")])) {
-            e.destroy();
-        }
 
         topLeftCorner.add(diff);
         dumpToGraphics();
@@ -282,9 +279,8 @@ class Map extends Rect {
         }
 
         e.setPos(new Vec(x * tileSize, y * tileSize));
-        if(e.groups().contains("persistent"))  {
-            persistent.get(topLeftCorner.asKey()).push(e);
-        }
+        persistent.get(topLeftCorner.asKey()).push(e);
+
         if(e.groups().contains("remember-loc"))  {
             trace("I never did this LOL");
         }

@@ -119,7 +119,7 @@ class Util {
 		if(!b)  {
 			Util.log("Assertion failed" + s);
 			Util.printStackTrace();
-			throw "Assertion failed!";
+			throw "Assertion failed: " + s;
 		}
 	}
 
