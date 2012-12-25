@@ -8,8 +8,8 @@ class SetTest extends haxe.unit.TestCase {
     s.add(5);
     s.add(1);
 
-    assertEquals(s.contains(1), true);
-    assertEquals(s.contains(5), true);
+    assertEquals(s.has(1), true);
+    assertEquals(s.has(5), true);
     assertEquals(s.length, 2);
   }
 
@@ -75,7 +75,7 @@ class SetTest extends haxe.unit.TestCase {
     var result:Set<Int> = (new Set<Int>([1,2,3])).concat(4,5,6);
 
     for (x in 1...6) {
-      assertTrue(result.contains(x));
+      assertTrue(result.has(x));
     }
   }
 
@@ -86,12 +86,12 @@ class SetTest extends haxe.unit.TestCase {
     var result:Set<Int> = Set.merge<Int>(s1, s2);
 
     for (x in 0...8) {
-      assertTrue(result.contains(x));
+      assertTrue(result.has(x));
     }
 
     s1.extend(s2);
     for (x in 0...8) {
-      assertTrue(s1.contains(x));
+      assertTrue(s1.has(x));
     }
   }
   */
@@ -103,7 +103,7 @@ class SetTest extends haxe.unit.TestCase {
     s1.extend(s2);
 
     for (x in 1...6) {
-      assertTrue(s1.contains(x));
+      assertTrue(s1.has(x));
     }
   }
 
@@ -112,16 +112,16 @@ class SetTest extends haxe.unit.TestCase {
 
     s = s.filter(function(e:Int) { return (e % 2) == 0; });
 
-    assertTrue(s.contains(0));
-    assertTrue(s.contains(2));
-    assertTrue(s.contains(4));
-    assertTrue(s.contains(6));
-    assertTrue(s.contains(8));
+    assertTrue(s.has(0));
+    assertTrue(s.has(2));
+    assertTrue(s.has(4));
+    assertTrue(s.has(6));
+    assertTrue(s.has(8));
 
-    assertFalse(s.contains(1));
-    assertFalse(s.contains(3));
-    assertFalse(s.contains(5));
-    assertFalse(s.contains(7));
+    assertFalse(s.has(1));
+    assertFalse(s.has(3));
+    assertFalse(s.has(5));
+    assertFalse(s.has(7));
   }
 
   public function testLength() {

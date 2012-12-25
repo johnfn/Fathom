@@ -70,10 +70,8 @@ class Rect extends Vec, implements IPositionable {
 		return this.height + y;
 	}
 
-	/* Is i contained entirely within this Rect?
-     *
-     * This is NOT a collision detection test. This is a contains test. */
-    public function containsPt(i: Vec): Bool {
+	/* Is i contained by this Rect? */
+    public function containsPt(p: Vec): Bool {
 		return x <= p.x && p.x < right && y <= p.y && p.y < bottom;
     }
 
