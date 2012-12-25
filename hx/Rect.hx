@@ -70,21 +70,19 @@ class Rect extends Vec, implements IPositionable {
 		return this.height + y;
 	}
 
-	/* Is i contained entirely within this Rect? i can be either a Rect
-     * or a Point.
+	/* Is i contained entirely within this Rect?
      *
      * This is NOT a collision detection test. This is a contains test. */
-    public function contains(i : Dynamic) : Bool {
-		if(Std.is(i, Vec))  {
-			var p : Vec = try cast(i, Vec) catch(e:Dynamic) null;
-			return x <= p.x && p.x < right && y <= p.y && p.y < bottom;
-		}
-		if(Std.is(i, Rect))  {
-			var r : Rect = try cast(i, Rect) catch(e:Dynamic) null;
-			return x <= r.x && r.x < right && x <= r.right && r.right < right && y <= r.bottom && r.bottom < right && y <= r.y && r.y < right;
-		}
-		throw "Unsupported type for contains.";
-	}
+    public function containsPt(i: Vec): Bool {
+		return x <= p.x && p.x < right && y <= p.y && p.y < bottom;
+    }
+
+	/* Is i contained entirely within this Rect?
+     *
+     * This is NOT a collision detection test. This is a contains test. */
+    public function containsRect(r: Rect): Bool {
+		return x <= r.x && r.x < right && x <= r.right && r.right < right && y <= r.bottom && r.bottom < right && y <= r.y && r.y < right;
+    }
 
 	public function makeBigger(size : Int) : Rect {
 		return new Rect(x - size, y - size, width + size * 2, height + size * 2);

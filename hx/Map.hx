@@ -334,7 +334,7 @@ class Map extends Rect {
     }
 
     public function collidesPt(other : Vec) : Bool {
-        if(!contains(other)) return true;
+        if(!containsPt(other)) return true;
 
         var xPt : Int = Math.floor(other.x / this.tileSize);
         var yPt : Int = Math.floor(other.y / this.tileSize);
