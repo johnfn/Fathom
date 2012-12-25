@@ -17,6 +17,7 @@ typedef SpriteSheet = {
     var y:Int;
 }
 
+//TODO: Extend Rect!
 class Graphic implements IPositionable {
     var sprite:Sprite;
 
@@ -142,17 +143,10 @@ class Graphic implements IPositionable {
         return this.spritesheet.y;
     }
 
-    // TODO: This could eventually be called setOrigin.
-    public function setRotationOrigin(x : Float, y : Float) : Graphic {
-        pixels.x -= x;
-        pixels.y -= y;
-        return this;
-    }
-
     //TODO: Maybe shouldn't even have to pass in tileDimension.
-    /* Load a spritesheet. tileDimension should be the size of the tiles; pass in null if
-   there's only one tile. whichTile is the tile that this Graphic will be; pass in
-   null if you want to defer the decision by calling setTile() later. */
+    /* Load a spritesheet. tileDimension should be the size of the tiles or null if
+    there's only one tile. whichTile is the tile that this Graphic will be; pass in
+    null if you want to defer the decision by calling setTile() later. */
     public function loadSpritesheet<T>(spritesheetClass : Class<T>, tileDimension : Vec = null, whichTile : Vec = null) : Graphic {
         Util.assert(this.spritesheetObj == null);
         Util.assert(!tileDimension.equals(new Vec(0, 0)));

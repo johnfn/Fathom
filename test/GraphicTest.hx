@@ -7,6 +7,7 @@ class GraphicTest extends haxe.unit.TestCase {
   override public function setup() {
     g = new Graphic(0, 0, 10, 10);
     g.loadSpritesheet(AllTests.MyBitmapData, new Vec(2, 2));
+    g.setTile(0, 0);
   }
 
   override public function tearDown() {
@@ -25,6 +26,19 @@ class GraphicTest extends haxe.unit.TestCase {
     assertEquals(g.getPixel(1, 1), 0xffffff);
     assertEquals(g.getPixel(0, 1), 0x000000);
     assertEquals(g.getPixel(1, 0), 0x000000);
+  }
+
+  public function testSpriteSheetLoc() {
+    g.setTile(1, 2);
+
+    assertEquals(g.getSpriteX(), 1);
+    assertEquals(g.getSpriteY(), 2);
+
+    g.setTile(0, 1);
+
+    assertEquals(g.getSpriteX(), 0);
+    assertEquals(g.getSpriteY(), 1);
+
   }
 
   public function testSetTile() {

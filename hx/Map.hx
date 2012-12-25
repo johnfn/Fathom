@@ -280,7 +280,7 @@ class Map extends Rect {
         e.setPos(new Vec(x * tileSize, y * tileSize));
         persistent.get(topLeftCorner.asKey()).push(e);
 
-        if(e.groups().contains("remember-loc"))  {
+        if(e.groups().has("remember-loc"))  {
             trace("I never did this LOL");
         }
     }
@@ -334,8 +334,8 @@ class Map extends Rect {
     }
 
     public function collidesPt(other : Vec) : Bool {
-        if(!contains(other))
-            return true;
+        if(!contains(other)) return true;
+
         var xPt : Int = Math.floor(other.x / this.tileSize);
         var yPt : Int = Math.floor(other.y / this.tileSize);
         return tiles[xPt][yPt] != null;
@@ -364,7 +364,7 @@ class Map extends Rect {
 
         for (it in items) {
             if(Hooks.hasLeftMap(it, this))  {
-                Util.assert(!it.groups().contains("Character"));
+                Util.assert(!it.groups().has("Character"));
                 this.itemSwitchedMaps(it);
             }
         }

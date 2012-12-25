@@ -32,7 +32,6 @@ class Fathom {
     static public var grid : SpatialHash;
     static public var modes : Array<Int> = [Fathom._currentMode];
     static var _paused : Bool = false;
-    static public var MCPool : Dynamic = { };
     public function new() {
         throw ("You can't initialize a Fathom object. Call the static methods on Fathom instead.");
     }

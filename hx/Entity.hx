@@ -159,7 +159,7 @@ class Entity extends Graphic {
        it on the parent object, not the children. */
     public function removeFromFathom() : Void {
         Util.assert(!destroyed, "Entity was destroyed.");
-        Util.assert(Fathom.entities.contains(this), "Removed but not in Fathom.");
+        Util.assert(Fathom.entities.has(this), "Removed but not in Fathom.");
 
         for (ch in entityChildren) {
             ch.removeFromFathom();
@@ -174,7 +174,7 @@ class Entity extends Graphic {
        this except after a call to removeFromFathom(). */
     public function addToFathom() : Void {
         Util.assert(!destroyed, "Entity was destroyed.");
-        Util.assert(!Fathom.entities.contains(this), "Added but already in Fathom.");
+        Util.assert(!Fathom.entities.has(this), "Added but already in Fathom.");
 
         for (ch in entityChildren) {
             ch.addToFathom();
@@ -187,7 +187,7 @@ class Entity extends Graphic {
 
     /* This flags an Entity to be removed permanently. It can't be add()ed back. */
     public function destroy() : Void {
-        Util.assert(Fathom.entities.contains(this), "That entity is not in Fathom.");
+        Util.assert(Fathom.entities.has(this), "That entity is not in Fathom.");
         destroyed = true;
     }
 

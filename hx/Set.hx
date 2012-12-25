@@ -25,17 +25,17 @@ class Set<T> {
         if (length != other.length) return false;
 
         for (x in this) {
-            if (!other.contains(x)) return false;
+            if (!other.has(x)) return false;
         }
 
         return true;
     }
 
     public function add(item : T) : Void {
-        //if(startedIterating && !iterationList.contains(item))  {
+        //if(startedIterating && !iterationList.has(item))  {
         //    iterationList.push(item);
         //}
-        if (!contains(item)) {
+        if (!has(item)) {
           _length++;
         }
 
@@ -43,7 +43,7 @@ class Set<T> {
     }
 
     public function remove(item : T) : Void {
-        if(!contains(item))  {
+        if(!has(item))  {
             throw "Set#remove called on non-existant item";
         }
 
@@ -51,7 +51,7 @@ class Set<T> {
         _length--;
     }
 
-    public function contains(item : T) : Bool {
+    public function has(item : T) : Bool {
         // This looks redundant, but if we don't have the item
         // contents[item] == undefined.
         return contents.get(item) == true;
@@ -210,13 +210,13 @@ class Set<T> {
 
     public static function hasGroup(g: String) : Entity -> Bool {
         return function(e:Entity): Bool {
-            return e.groups().contains(g);
+            return e.groups().has(g);
         }
     }
 
     public static function doesntHaveGroup(g: String) : Entity -> Bool {
         return function(e:Entity): Bool {
-            return e.groups().contains(g);
+            return e.groups().has(g);
         }
     }
 
