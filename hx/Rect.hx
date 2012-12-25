@@ -82,11 +82,12 @@ class Rect extends Vec, implements IPositionable {
 		return x <= r.x && r.x < right && x <= r.right && r.right < right && y <= r.bottom && r.bottom < right && y <= r.y && r.y < right;
     }
 
+    /* Makes this rect SIZE bigger on each side. */
 	public function makeBigger(size : Int) : Rect {
 		return new Rect(x - size, y - size, width + size * 2, height + size * 2);
 	}
 
-	override public function clone() : Vec {
+	override public function clone() : Rect {
 		return new Rect(x, y, width, height);
 	}
 
@@ -98,11 +99,10 @@ class Rect extends Vec, implements IPositionable {
 		return "[Rect (" + x + ", " + y + ") w: " + width + " h: " + height + "]";
 	}
 
-	override public function equals(v : Vec) : Bool {
-		// This makes inheritance work.
-		if(Util.className(v) != "Rect")
-			return false;
-		var r : Rect = try cast(v, Rect) catch(e:Dynamic) null;
+	override public function equals(val : Vec) : Bool {
+		if (!Std.is(val, Rect)) return false;
+		var r: Rect = cast(val, Rect);
+
 		return x == r.x && y == r.y && width == r.width && right == r.right;
 	}
 

@@ -69,4 +69,12 @@ class VecTest extends haxe.unit.TestCase {
 
     assertTrue(v.angle() == 0);
   }
+
+  public function testEquals() {
+    var v1:Vec = new Vec(0, 0);
+    var v2:Vec = new Vec(0, 0);
+    var v3:Vec = new Vec(0, 0);
+
+    this.assertDotEquals(v1, v2);
+  }
 }
