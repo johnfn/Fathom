@@ -5,11 +5,12 @@ using Lambda;
 // with addAnimations(), turn one on with play(), and advance() will
 // take care of the rest.
 class AnimationHandler {
-    public var ticksPerFrame(never, setTicksPerFrame) : Int;
+    public var ticksPerFrame(getTicksPerFrame, setTicksPerFrame) : Int;
+    public var currentFrame(getCurrentFrame, never): Int;
 
     var animations : TypedDictionary<String, Array<Dynamic>>;
     var currentAnimation : String;
-    var currentFrame : Int;
+    var _currentFrame : Int;
     var currentTick : Int;
     var _ticksPerFrame : Int;
     var gfx : Graphic;
@@ -18,11 +19,10 @@ class AnimationHandler {
     public function new(s : Graphic) {
         animations = new TypedDictionary();
         currentAnimation = "";
-        currentFrame = 0;
+        _currentFrame = 0;
         currentTick = 0;
         _ticksPerFrame = 6;
         andThenFn = null;
-        currentAnimation = "default";
         this.gfx = s;
     }
 
@@ -31,25 +31,32 @@ class AnimationHandler {
         return val;
     }
 
+    public function getTicksPerFrame(): Int {
+        return _ticksPerFrame;
+    }
+
+    public function getCurrentFrame(): Int {
+        return _currentFrame;
+    }
+
     // We assume that you hold y is constant, with numFrames frames starting at x.
     public function addAnimation(name : String, frameX : Int, frameY : Int, numFrames : Int) : Void {
         var frames : Array<Dynamic> = [];
-        var i : Int = 0;
-        while(i < numFrames) {
+
+        for (i in 0...numFrames) {
             frames.push([frameX + i, frameY]);
-            i++;
         }
         animations.set(name, frames);
     }
 
     public function toString() : String {
-        return "[Animation " + currentAnimation + " " + currentFrame + "]";
+        return "[Animation " + currentAnimation + " " + _currentFrame + "]";
     }
 
     // Stops all animations and resets all counters.
     public function stop() : Void {
         currentAnimation = "";
-        currentFrame = 0;
+        _currentFrame = 0;
         currentTick = 0;
         andThenFn = null;
     }
@@ -106,19 +113,24 @@ class AnimationHandler {
     }
 
     public function advance() : Void {
-        if(!hasAnyAnimations())  {
+        if (!hasAnyAnimations())  {
             return;
         }
-        var lastFrame : Int = currentFrame;
+
+        if (!animations.has(currentAnimation)) {
+            return;
+        }
+
+        var lastFrame : Int = _currentFrame;
         var cb : Bool = false;
 
         // TODO: When/if I do issue #9, I should remove this.
         ++currentTick;
-        if(currentTick > _ticksPerFrame)  {
-            ++currentFrame;
+        if(currentTick >= _ticksPerFrame)  {
+            ++_currentFrame;
             currentTick = 0;
-            if(currentFrame >= animations.get(currentAnimation).length)  {
-                currentFrame = 0;
+            if(_currentFrame >= animations.get(currentAnimation).length)  {
+                _currentFrame = 0;
                 if(andThenFn != null)  {
                     andThenFn();
                     cb = true;
@@ -127,8 +139,8 @@ class AnimationHandler {
             }
         }
         // Update tile if necessary.
-        if(lastFrame != currentFrame && !cb)  {
-            this.gfx.setTile(animations.get(currentAnimation)[currentFrame][0], animations.get(currentAnimation)[currentFrame][1]);
+        if(lastFrame != _currentFrame && !cb)  {
+            this.gfx.setTile(animations.get(currentAnimation)[_currentFrame][0], animations.get(currentAnimation)[_currentFrame][1]);
         }
     }
 
@@ -145,24 +157,26 @@ class AnimationHandler {
     }
 
     public function play(name : String) : AnimationHandler {
+        Util.assert(animations.has(name), "No animation named " + name);
+
         if(currentAnimation != name)  {
             currentAnimation = name;
             currentTick = 0;
-            currentFrame = 0;
+            _currentFrame = 0;
         }
         return this;
     }
 
     // Returns true if it's on the final frame of the animation, false otherwise.
     public function lastFrame() : Bool {
-        return currentFrame == animations.get(currentAnimation).length - 1 && currentTick == _ticksPerFrame - 1;
+        return _currentFrame == animations.get(currentAnimation).length - 1 && currentTick == _ticksPerFrame - 1;
     }
 
     // Plays the animation, starting offsetInTicks ticks ahead of the
         // beginning of the animation.
     public function playWithOffset(name : String, offsetInTicks : Int) : AnimationHandler {
         play(name);
-        currentFrame = Math.floor(offsetInTicks / _ticksPerFrame);
+        _currentFrame = Math.floor(offsetInTicks / _ticksPerFrame);
         currentTick = offsetInTicks % _ticksPerFrame;
         return this;
     }
@@ -175,10 +189,6 @@ class AnimationHandler {
     public function andThen(f) : AnimationHandler {
         this.andThenFn = f;
         return this;
-    }
-
-    public function getAnimationFrame() : Int {
-        return currentFrame;
     }
 
 }
