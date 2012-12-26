@@ -1,6 +1,12 @@
 import flash.utils.TypedDictionary;
 using Lambda;
 
+//TODO use this...
+typedef Pair = {
+    var x: Int;
+    var y: Int;
+}
+
 // AnimationHandler takes care of animating Graphics. You add animations
 // with addAnimations(), turn one on with play(), and advance() will
 // take care of the rest.

@@ -10,7 +10,7 @@ class AnimationTest extends haxe.unit.TestCase {
   // RED BLACK GREEN WHITE
   override public function setup() {
     g = new Graphic(0, 0);
-    g.loadSpritesheet(AllTests.TestAnimation, new Vec(25, 25), new Vec(0, 0));
+    g.loadSpritesheet(AllTests.TestAnimation, new Vec(16, 16), new Vec(0, 0));
     g.animations.ticksPerFrame = 1;
   }
 
@@ -19,7 +19,7 @@ class AnimationTest extends haxe.unit.TestCase {
   }
 
   public function testSimpleAnimations() {
-    g.animations.addAnimationXY("a", [[0,0], [0,1], [0,2], [0,3]]);
+    g.animations.addAnimationXY("a", [[0,0], [1,0], [2,0], [3,0]]);
     g.animations.play("a");
 
     assertEquals(g.animations.currentFrame, 0);
@@ -31,7 +31,7 @@ class AnimationTest extends haxe.unit.TestCase {
 
     g.update();
     assertEquals(g.animations.currentFrame, 2);
-    assertEquals(g.getPixel(0, 0), 0x0000FF);
+    assertEquals(g.getPixel(0, 0), 0x00FF00);
 
     g.update();
     assertEquals(g.animations.currentFrame, 3);
