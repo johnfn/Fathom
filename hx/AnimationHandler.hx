@@ -14,7 +14,7 @@ class AnimationHandler {
     public var ticksPerFrame(getTicksPerFrame, setTicksPerFrame) : Int;
     public var currentFrame(getCurrentFrame, never): Int;
 
-    var animations : TypedDictionary<String, Array<Dynamic>>;
+    var animations : TypedDictionary<String, Array<Array<Int>>>;
     var currentAnimation : String;
     var _currentFrame : Int;
     var currentTick : Int;
@@ -47,7 +47,7 @@ class AnimationHandler {
 
     // We assume that you hold y is constant, with numFrames frames starting at x.
     public function addAnimation(name : String, frameX : Int, frameY : Int, numFrames : Int) : Void {
-        var frames : Array<Dynamic> = [];
+        var frames : Array<Array<Int>> = [];
 
         for (i in 0...numFrames) {
             frames.push([frameX + i, frameY]);
@@ -70,11 +70,9 @@ class AnimationHandler {
     // In case addAnimation() isn't good enough, you can just use an array
     // to specify x positions of frames.
     public function addAnimationArray(name : String, frames : Array<Dynamic>, frameY : Int) : Void {
-        var framesWithY : Array<Dynamic> = [];
-        var i : Int = 0;
-        while(i < frames.length) {
+        var framesWithY : Array<Array<Int>> = [];
+        for (i in 0...frames.length) {
             framesWithY.push([frames[i], frameY]);
-            i++;
         }
         animations.set(name, framesWithY);
     }
@@ -82,7 +80,7 @@ class AnimationHandler {
     // In case you don't want to hold y constant, you can specify the x and y coordinate of
     // each frame.
     // addAnimationXY("walk", [[0, 0], [0, 1], [0, 2]]);
-    public function addAnimationXY(name : String, frames : Array<Dynamic>) : Void {
+    public function addAnimationXY(name : String, frames : Array<Array<Int>>) : Void {
         animations.set(name, frames);
     }
 
@@ -144,6 +142,7 @@ class AnimationHandler {
                 }
             }
         }
+
         // Update tile if necessary.
         if(lastFrame != _currentFrame && !cb)  {
             this.gfx.setTile(animations.get(currentAnimation)[_currentFrame][0], animations.get(currentAnimation)[_currentFrame][1]);
@@ -171,7 +170,9 @@ class AnimationHandler {
             _currentFrame = 0;
         }
 
-        this.gfx.setTile(animations.get(currentAnimation)[_currentFrame][0], animations.get(currentAnimation)[_currentFrame][1]);
+        var anim:Array<Int> = animations.get(currentAnimation)[_currentFrame];
+
+        gfx.setTile(anim[0], anim[1]);
         return this;
     }
 

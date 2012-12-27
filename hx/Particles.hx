@@ -29,7 +29,7 @@ class Particles {
     var stopParticleGen : Int;
     var particleData : TypedDictionary<Entity, ParticleData>;
     var animated : Bool;
-    var animationFrames : Array<Dynamic>;
+    var animationFrames : Array<Array<Int>>;
 
     // dimensions of the particle. currently only defined if thie particle is animated, TODO.
     var particleDim : Vec;
@@ -75,22 +75,21 @@ class Particles {
     }
 
     // Makes the assumption that the baseMC is a height * numFrames by width spritesheet.
-        // Yep, square frames for now. TODO.
-        public function animateFromSpritesheet() : Particles {
+    // Yep, square frames for now. TODO.
+    public function animateFromSpritesheet() : Particles {
         var width : Int;
         var height : Int;
         var asset = Type.createInstance(baseMC, []);
-        var animationFrames : Array<Dynamic> = [];
+        var animationFrames : Array<Array<Int>> = [];
         animated = true;
         // Initialize the baseMC just to get its width and height.
         width = asset.width;
         height = asset.height;
         particleDim = new Vec(asset.height, asset.height);
         Util.assert(width % height == 0);
-        var i : Int = 0;
-        while(i < width / height) {
+
+        for (i in 0...Std.int(width / height)) {
             animationFrames.push([i, 0]);
-            i++;
         }
         this.animationFrames = animationFrames;
         return this;
