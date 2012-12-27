@@ -67,8 +67,25 @@ class AnimationTest extends haxe.unit.TestCase {
     assertEquals(g.getPixel(0, 0), 0xFF0000);
 
     g.animations.play("b");
+    // It should have instantly switched to b's first frame.
     assertEquals(g.animations.currentFrame, 0);
     assertEquals(g.getPixel(0, 0), 0x000000);
+  }
+
+  public function testAndThen() {
+    var tester:Int = 0;
+    var test:Void -> Void = function() {
+      ++tester;
+    }
+
+    g.animations.addAnimationXY("a", [[0, 0], [1, 0]]);
+    g.animations.play("a").andThen(test);
+
+    assertEquals(tester, 0);
+    g.update();
+    assertEquals(tester, 0);
+    g.update();
+    assertEquals(tester, 1);
   }
 }
 

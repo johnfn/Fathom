@@ -96,8 +96,8 @@ class Particles {
     }
 
     // This naming scheme only really makes sense with chaining:
-        // new Particles().withLifetime(50, 90).thatFlicker();
-        public function thatFlicker() : Particles {
+    // new Particles().withLifetime(50, 90).thatFlicker();
+    public function thatFlicker() : Particles {
         flickerOnDeath = true;
         return this;
     }
