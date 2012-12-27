@@ -170,6 +170,8 @@ class AnimationHandler {
             currentTick = 0;
             _currentFrame = 0;
         }
+
+        this.gfx.setTile(animations.get(currentAnimation)[_currentFrame][0], animations.get(currentAnimation)[_currentFrame][1]);
         return this;
     }
 

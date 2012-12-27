@@ -41,5 +41,34 @@ class AnimationTest extends haxe.unit.TestCase {
     assertEquals(g.animations.currentFrame, 0);
     assertEquals(g.getPixel(0, 0), 0xFF0000);
   }
+
+  public function testStop() {
+    g.animations.addAnimationXY("a", [[0,0], [1,0], [2,0], [3,0]]);
+    g.animations.play("a");
+
+    assertEquals(g.animations.currentFrame, 0);
+    assertEquals(g.getPixel(0, 0), 0xFF0000);
+
+    g.animations.stop();
+
+    for (x in 0...3) {
+      g.update();
+      assertEquals(g.animations.currentFrame, 0);
+      assertEquals(g.getPixel(0, 0), 0xFF0000);
+    }
+  }
+
+  public function testTwoAnimations() {
+    g.animations.addAnimationXY("a", [[0, 0]]);
+    g.animations.addAnimationXY("b", [[1, 0]]);
+
+    g.animations.play("a");
+    assertEquals(g.animations.currentFrame, 0);
+    assertEquals(g.getPixel(0, 0), 0xFF0000);
+
+    g.animations.play("b");
+    assertEquals(g.animations.currentFrame, 0);
+    assertEquals(g.getPixel(0, 0), 0x000000);
+  }
 }
 
