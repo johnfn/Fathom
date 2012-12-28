@@ -57,6 +57,10 @@ class GraphicTest extends haxe.unit.TestCase {
     // Green
     g.setTile(1, 1);
     assertEquals(g.getPixel(0, 0), 0x00ff00);
+
+    // Black
+    g.setTile(0, 0);
+    assertEquals(g.getPixel(0, 0), 0xffffff);
   }
 
   public function testFlip() {

@@ -88,34 +88,6 @@ class AnimationHandler {
         animations.delete(name);
     }
 
-    /* Convenient function for adding many animations simultaneously.
-
-        addAnimations({ "walk": {startPos: [0, 0], numFrames: 4 }
-                      , "die" : {startPos: [4, 0], numFrames: 4 }
-                      , "hurt": {array: [1, 3, 5], y: 0}
-                      });
-
-        "start" is the starting x and y position of the animation on the tilesheet.
-        "numFrames" is the length of the animation.
-
-        You can alternatively specify an array and a y value.
-    */
-    public function addAnimations(animationList : Dynamic) : Void {
-        for(animName in Reflect.fields(animationList)) {
-            var val : Dynamic = Reflect.field(animationList, animName);
-            var frames : Array<Dynamic> = [];
-            var y : Int;
-
-            if(Reflect.field(val, "startPos"))  {
-                addAnimation(animName, Reflect.field(val, "startPos")[0], Reflect.field(val, "startPos")[1], Reflect.field(val, "numFrames"));
-            } else  {
-                addAnimationArray(animName, Reflect.field(val, "array"), Reflect.field(val, "y"));
-            }
-
-        }
-
-    }
-
     public function advance() : Void {
         if (!hasAnyAnimations())  {
             return;
@@ -164,7 +136,7 @@ class AnimationHandler {
     public function play(name : String) : AnimationHandler {
         Util.assert(animations.has(name), "No animation named " + name);
 
-        if(currentAnimation != name)  {
+        if(currentAnimation != name) {
             currentAnimation = name;
             currentTick = 0;
             _currentFrame = 0;
@@ -194,7 +166,7 @@ class AnimationHandler {
 
        animations.play("die").andThen(this.destroy);
 
-         */
+     */
     public function andThen(f) : AnimationHandler {
         this.andThenFn = f;
         return this;

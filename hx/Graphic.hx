@@ -9,6 +9,7 @@ import flash.display.Bitmap;
 import flash.geom.Rectangle;
 import flash.geom.Matrix;
 import flash.events.Event;
+import flash.utils.TypedDictionary;
 import Hooks;
 import Util;
 
@@ -40,7 +41,7 @@ class Graphic implements IPositionable {
     var spritesheet : SpriteSheet;
     // TODO: Rename
     var _depth : Int;
-    static var cachedAssets : Dictionary = new Dictionary();
+    static var cachedAssets : TypedDictionary<String, BitmapData> = new TypedDictionary();
     // Rename spritesheetObj and spritesheet
     // spritesheetObj isnt even necessarily a spritesheet
     var spritesheetObj : Dynamic;
@@ -112,19 +113,18 @@ class Graphic implements IPositionable {
         var bData: BitmapData = spritesheetObj;
         //TODO: Cache this
         var uid : String = Util.className(spritesheetObj) + x + " " + y;
-        if(!(Reflect.field(cachedAssets, uid)))  {
+        if(!(cachedAssets.exists(uid))) {
             var bd : BitmapData = new BitmapData(spriteSheetWidth, spriteSheetHeight, true, 0);
             var source : Rectangle = new Rectangle(x * spriteSheetWidth, y * spriteSheetHeight, spriteSheetWidth, spriteSheetHeight);
             bd.copyPixels(bData, source, new Point(0, 0), null, null, true);
-            Reflect.setField(cachedAssets, uid, bd);
+            cachedAssets.set(uid, bd);
         }
 
         spritesheet.x = x;
         spritesheet.y = y;
 
-        pixels.bitmapData = Reflect.field(cachedAssets, uid);
+        pixels.bitmapData = cachedAssets.get(uid);
         // TODO: Implicit assumption that bitmap faces right.
-        // TODO: Caching?
         if(facing == -1)  {
             pixels.bitmapData = flipBitmapData(pixels.bitmapData);
         }
@@ -145,8 +145,8 @@ class Graphic implements IPositionable {
 
     //TODO: Maybe shouldn't even have to pass in tileDimension.
     /* Load a spritesheet. tileDimension should be the size of the tiles or null if
-    there's only one tile. whichTile is the tile that this Graphic will be; pass in
-    null if you want to defer the decision by calling setTile() later. */
+       there's only one tile. whichTile is the tile that this Graphic will be; pass in
+       null if you want to defer the decision by calling setTile() later. */
     public function loadSpritesheet<T>(spritesheetClass : Class<T>, tileDimension : Vec = null, whichTile : Vec = null) : Graphic {
         Util.assert(this.spritesheetObj == null);
         Util.assert(!tileDimension.equals(new Vec(0, 0)));

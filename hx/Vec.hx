@@ -8,6 +8,7 @@ class Vec implements IPositionable {
 
     var _x : Float;
     var _y : Float;
+
     public function new(x : Float = 0, y : Float = 0) {
         this.x = x;
         this.y = y;
@@ -188,7 +189,7 @@ class Vec implements IPositionable {
     }
 
     /* Create a unique key to store in an object. */
-  public function asKey() : String {
+    public function asKey() : String {
         return x + "," + y;
     }
 

@@ -222,6 +222,10 @@ class Entity extends Graphic {
         }
     }
 
+    public override function loadSpritesheet<T>(spritesheetClass : Class<T>, tileDimension : Vec = null, whichTile : Vec = null) : Entity {
+        return cast(super.loadSpritesheet(spritesheetClass, tileDimension, whichTile), Entity);
+    }
+
     //TODO: Group strings to enums with Inheritable property.
     //TODO: There is a possible namespace collision here. assert no 2 groups have same name.
     //TODO: Enumerations are better.

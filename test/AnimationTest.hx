@@ -86,6 +86,7 @@ class AnimationTest extends haxe.unit.TestCase {
     assertEquals(tester, 0);
     g.update();
     assertEquals(tester, 1);
+
   }
 }
 

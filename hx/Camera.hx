@@ -21,8 +21,7 @@ class Camera extends Rect {
     var camBoundingRect : Rect;
     static var EVENT_TYPE_SHAKE : String = "Shake";
     // This is a list of all events currently happening to this camera.
-    // There can only ever be 1 event of each type.
-    var events : TypedDictionary<Int, Void -> Void>;
+    var events : Array<Void -> Void>;
     // These two variables are the focal points of the camera.
     var _focalX : Float;
     var _focalY : Float;
@@ -50,7 +49,7 @@ class Camera extends Rect {
     public function new(stage : Stage) {
         CAM_LAG = 90;
         camBoundingRect = null;
-        events = new TypedDictionary();
+        events = [];
         easeRate = 1;
         FOLLOW_MODE_NONE = 0;
         FOLLOW_MODE_SLIDE = 1;
@@ -90,7 +89,7 @@ class Camera extends Rect {
     }
 
     // Updating the focus updates the x, y coordinates also.
-        public function setFocalX(val : Float) : Float {
+    public function setFocalX(val : Float) : Float {
         _focalX = (isBound()) ? bind(val, focalBoundingRect.x, focalBoundingRect.right) : val;
         _x = _focalX - width / 2;
         return val;
@@ -111,7 +110,7 @@ class Camera extends Rect {
     }
 
     // We have to ensure that setting these properties does not cause the camera to
-        // exceed its bounding box.
+    // exceed its bounding box.
     override public function setX(val : Float) : Float {
         _x = (isBound()) ? bind(val, camBoundingRect.x, camBoundingRect.right) : val;
         return val;
@@ -189,28 +188,24 @@ class Camera extends Rect {
             duration--;
         };
 
-        Reflect.setField(events, EVENT_TYPE_SHAKE, fn);
+        events.push(fn);
     }
 
     public function stopAllEvents() : Void {
-        events = new TypedDictionary();
+        events = [];
     }
 
     function easeXY() : Void {
         if(followMode == FOLLOW_MODE_SLIDE)  {
             if(Math.abs(goalFocalX - _focalX) > .0000001)  {
                 focalX = _focalX + (goalFocalX - _focalX) / (CAM_LAG / this.easeRate);
-            }
-
-            else  {
+            } else  {
                 focalX = goalFocalX;
             }
 
             if(Math.abs(goalFocalY - _focalY) > .0000001)  {
                 focalY = _focalY + (goalFocalY - _focalY) / (CAM_LAG / this.easeRate);
-            }
-
-            else  {
+            } else  {
                 focalY = goalFocalY;
             }
 
@@ -226,32 +221,31 @@ class Camera extends Rect {
 
     public function setEaseSpeed(ease : Int) : Camera {
         this.easeRate = ease;
+
         return this;
     }
 
     /* Adjust camera to follow the focus, and have the other points
-       all also be visible. */    public function follow(focus : Vec, points:Array<Vec>) : Void {
-        points.push(new Vec(focus.x - scaledWidth / 2, focus.y - scaledHeight / 2));
-        points.push(new Vec(focus.x - scaledWidth / 2, focus.y + scaledHeight / 2));
-        points.push(new Vec(focus.x + scaledWidth / 2, focus.y - scaledHeight / 2));
-        points.push(new Vec(focus.x + scaledWidth / 2, focus.y + scaledHeight / 2));
+       all also be visible. */
+    public function follow(focus : Vec, points:Array<Vec>) : Void {
         var VERY_BIG : Float = 99999999999;
         var left : Float = VERY_BIG;
         var right : Float = -VERY_BIG;
         var top : Float = VERY_BIG;
         var bottom : Float = -VERY_BIG;
-        var i : Int = 0;
-        while(i < points.length) {
-            if(points[i].x < left)
-                left = points[i].x;
-            if(points[i].x > right)
-                right = points[i].x;
-            if(points[i].y < top)
-                top = points[i].y;
-            if(points[i].y > bottom)
-                bottom = points[i].y;
-            i++;
+
+        points.push(new Vec(focus.x - scaledWidth / 2, focus.y - scaledHeight / 2));
+        points.push(new Vec(focus.x - scaledWidth / 2, focus.y + scaledHeight / 2));
+        points.push(new Vec(focus.x + scaledWidth / 2, focus.y - scaledHeight / 2));
+        points.push(new Vec(focus.x + scaledWidth / 2, focus.y + scaledHeight / 2));
+
+        for (p in points) {
+            if(p.x < left) left = p.x;
+            if(p.x > right) right = p.x;
+            if(p.y < top) top = p.y;
+            if(p.y > bottom) bottom = p.y;
         }
+
         // This implies we were passed in bad data, but it can't hurt to check.
         if(left < camBoundingRect.x)
             left = camBoundingRect.x;
@@ -289,7 +283,7 @@ class Camera extends Rect {
         }
 
         for(ev in events) {
-            events.get(ev)();
+            ev();
         }
 
         easeXY();
