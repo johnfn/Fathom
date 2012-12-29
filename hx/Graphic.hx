@@ -1,6 +1,7 @@
 import starling.display.Image;
 import starling.textures.Texture;
 import starling.display.Sprite;
+import starling.display.DisplayObjectContainer;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.geom.Point;
@@ -29,7 +30,7 @@ typedef SpriteSheet = {
 
 class Graphic implements IPositionable {
     var texturedObject:Image;
-    var sprite:Sprite;
+    var sprite:DisplayObjectContainer;
 
     public var spriteX(getSpriteX, never) : Int;
     public var spriteY(getSpriteY, never) : Int;
@@ -64,7 +65,7 @@ class Graphic implements IPositionable {
     public var alpha(getAlpha, setAlpha): Float;
 
     //TODO, obviously...
-    public function HACK_sprite():Sprite {
+    public function HACK_sprite():DisplayObjectContainer {
         return sprite;
     }
 
@@ -159,10 +160,7 @@ class Graphic implements IPositionable {
         texturedObject.pivotX = width  / 2;
         texturedObject.pivotY = height / 2;
 
-        sprite = new Sprite();
         sprite.addChild(texturedObject);
-
-        Fathom.container.addChild(sprite);
 
         if (whichTile == null)     whichTile = new Vec(0, 0);
         if (tileDimension == null) tileDimension = new Vec(fullTexture.nativeWidth, fullTexture.nativeHeight);

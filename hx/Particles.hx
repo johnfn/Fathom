@@ -205,7 +205,7 @@ class Particles {
         newParticle.scaleX = scaleX;
         newParticle.scaleY = scaleY;
         //TODO
-        Fathom.container.addChild(newParticle.HACK_sprite());
+        Fathom.container.addChild(newParticle);
         return this;
     }
 

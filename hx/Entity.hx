@@ -1,5 +1,6 @@
 import Util;
 import flash.display.BitmapData;
+import starling.display.DisplayObjectContainer;
 
 using Lambda;
 
@@ -45,7 +46,7 @@ class Entity extends Graphic {
         return _currentlyInFathom = v;
     }
 
-    public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
+    public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1, d:DisplayObjectContainer = null) {
         entityChildren = [];
         events = [];
         isFlickering = false;
@@ -58,14 +59,22 @@ class Entity extends Graphic {
             throw "Util.initialize() has not been called. Failing.";
         }
 
+        if (d != null) {
+            this.sprite = d;
+        }
+
         //TODO: I had this idea about how parents should bubble down events to children.
         // All Entities are added to the container, except the container itself, which
         // has to be bootstrapped onto the Stage. If Fathom.container does not exist, `this`
         // must be the container.
         if(Fathom.container != null)  {
-            Fathom.container.addChild(this.sprite);
+            Fathom.container.addChild(this);
             addToFathom();
         }
+    }
+
+    public static function fromDO(d:starling.display.DisplayObjectContainer):Entity {
+        return new Entity(0, 0, 1, 1, d);
     }
 
     public function withDepth(d : Int) : Entity {

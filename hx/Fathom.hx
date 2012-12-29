@@ -30,7 +30,7 @@ class Fathom {
     static public var mapRef : Map;
     //static public var fpsTxt : Text;
     static public var entities : Set<Entity> = new Set([]);
-    static public var container : DisplayObjectContainer;
+    static public var container : Entity;
     static public var initialized : Bool = false;
     static public var stage : Stage;
     static public var grid : SpatialHash;
@@ -227,7 +227,6 @@ class Fathom {
         camera.update();
         MagicKeyObject.dealWithVariableKeyRepeatRates();
     }
-
 }
 
 class RootEntity extends DisplayObjectContainer {
@@ -240,7 +239,8 @@ class RootEntity extends DisplayObjectContainer {
 
         super();
 
-        Fathom.container = this;
+        Fathom.container = Entity.fromDO(this);
+
         // Can't intiialize the Cam until the container is initialized...
         Fathom._camera = new Camera(Fathom.stage).scaleBy(1).setEaseSpeed(3);
         Fathom.cb();
