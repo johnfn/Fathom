@@ -204,7 +204,6 @@ class Particles {
         particleData.set(newParticle, newData);
         newParticle.scaleX = scaleX;
         newParticle.scaleY = scaleY;
-        //TODO
         Fathom.container.addChild(newParticle);
         return this;
     }

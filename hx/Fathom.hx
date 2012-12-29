@@ -14,6 +14,8 @@ class Fathom {
     static public var currentMode(getCurrentMode, never) : Int;
     static public var showingFPS(never, setShowingFPS) : Bool;
 
+    static public var sContainer:DisplayObjectContainer;
+
     static public var starling:Starling;
     static public var cb:Void -> Void;
 
@@ -143,9 +145,9 @@ class Fathom {
             e.xColl = new Set<Entity>();
             e.yColl = new Set<Entity>();
             // Resolve 1 px in the x-direction at a time...
-            while(onceThrough || oldVelX != 0) {
+            while (onceThrough || oldVelX != 0) {
                 // Attempt to resolve as much of dy as possible on every tick.
-                while(oldVelY != 0) {
+                while (oldVelY != 0) {
                     var amtY : Float = Util.bind(oldVelY, -1, 1);
                     e.y += amtY;
                     oldVelY -= amtY;
@@ -225,7 +227,7 @@ class Fathom {
             mapRef.update();
         }
         camera.update();
-        MagicKeyObject.dealWithVariableKeyRepeatRates();
+        MagicKeyObject.dealWithVariableKeyRepeatRates(); //TODO
     }
 }
 
@@ -239,13 +241,15 @@ class RootEntity extends DisplayObjectContainer {
 
         super();
 
+        Fathom.sContainer = this;
+
         Fathom.container = Entity.fromDO(this);
 
-        // Can't intiialize the Cam until the container is initialized...
+        // Can't initialize the Cam until the container is initialized...
         Fathom._camera = new Camera(Fathom.stage).scaleBy(1).setEaseSpeed(3);
-        Fathom.cb();
 
         var textField = new starling.text.TextField(400, 300, "Welcome to Starling!");
-        addChild(textField);
+        Fathom.sContainer.addChild(textField);
+        Fathom.cb();
     }
 }

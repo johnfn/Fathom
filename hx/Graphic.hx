@@ -157,8 +157,8 @@ class Graphic implements IPositionable {
         texturedObject.width = width;
         texturedObject.height = height;
 
-        texturedObject.pivotX = width  / 2;
-        texturedObject.pivotY = height / 2;
+        texturedObject.pivotX = texturedObject.width  / 2;
+        texturedObject.pivotY = texturedObject.height / 2;
 
         sprite.addChild(texturedObject);
 

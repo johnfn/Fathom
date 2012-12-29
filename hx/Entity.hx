@@ -47,6 +47,10 @@ class Entity extends Graphic {
     }
 
     public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1, d:DisplayObjectContainer = null) {
+        if(!Fathom.initialized)  {
+            throw "Util.initialize() has not been called. Failing.";
+        }
+
         entityChildren = [];
         events = [];
         isFlickering = false;
@@ -55,9 +59,6 @@ class Entity extends Graphic {
         _isStatic = true;
         groupSet = new Set(["persistent"]);
         super(x, y, width, height);
-        if(!Fathom.initialized)  {
-            throw "Util.initialize() has not been called. Failing.";
-        }
 
         if (d != null) {
             this.sprite = d;
@@ -73,8 +74,8 @@ class Entity extends Graphic {
         }
     }
 
-    public static function fromDO(d:starling.display.DisplayObjectContainer):Entity {
-        return new Entity(0, 0, 1, 1, d);
+    public static function fromDO(d:DisplayObjectContainer):Entity {
+        return new Entity(0, 0, 20, 20, d);
     }
 
     public function withDepth(d : Int) : Entity {
@@ -132,13 +133,13 @@ class Entity extends Graphic {
     }
 
     public function addChild(child : Entity) : Entity {
-        if(entityChildren == null)
-            throw "You need to call super() before addChild().";
+        Util.assert(entityChildren != null, "You need to call super() before addChild().");
         Util.assert(!entityChildren.has(child), "Already has that child.");
 
         child.parent = this;
         sprite.addChild(child.sprite);
         entityChildren.push(child);
+
         return child;
     }
 
