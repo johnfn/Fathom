@@ -1,7 +1,8 @@
-import flash.display.MovieClip;
+import starling.core.Starling;
+import starling.events.Event;
+import starling.display.DisplayObjectContainer;
+
 import flash.display.Stage;
-import flash.events.Event;
-import flash.utils.Dictionary;
 
 using Lambda;
 
@@ -13,27 +14,31 @@ class Fathom {
     static public var currentMode(getCurrentMode, never) : Int;
     static public var showingFPS(never, setShowingFPS) : Bool;
 
+    static public var starling:Starling;
+    static public var cb:Void -> Void;
+
     static var gameloopID : Int;
     static var FPS : Int = 0;
     static var fpsFn : Void -> String;
     static public var _camera : Camera;
     //TODO
-        static var _currentMode : Int = 0;
+    static var _currentMode : Int = 0;
     static public function getCamera() : Camera {
         return _camera;
     }
 
     static public var mapRef : Map;
-    static public var fpsTxt : Text;
+    //static public var fpsTxt : Text;
     static public var entities : Set<Entity> = new Set([]);
-    static public var container : Entity;
+    static public var container : DisplayObjectContainer;
     static public var initialized : Bool = false;
     static public var stage : Stage;
     static public var grid : SpatialHash;
     static public var modes : Array<Int> = [Fathom._currentMode];
     static var _paused : Bool = false;
+
     public function new() {
-        throw ("You can't initialize a Fathom object. Call the static methods on Fathom instead.");
+        throw ("You can't initialize a Fathom object. Use Fathom.initialize() instead.");
     }
 
     static public function getPaused() : Bool {
@@ -66,20 +71,23 @@ class Fathom {
     }
 
     static public function setShowingFPS(b : Bool) : Bool {
-        fpsTxt.visible = b;
+        //fpsTxt.visible = b;
         return b;
     }
 
     //TODO: Eventually main class should extend this or something...
-    static public function initialize(stage : Stage, FPS : Int = 30) : Void {
+    static public function initialize(stage : Stage, cb: Void -> Void = null, FPS : Int = 30) : Void {
         // Inside of the Entity constructor, we assert Fathom.initialized, because all
         // MCs must be added to the container MC.
+
+        Fathom.starling = new Starling(RootEntity, stage);
+        Fathom.starling.showStats = true;
+        Fathom.starling.start();
+
         Fathom.stage = stage;
         Fathom.initialized = true;
         Fathom.FPS = FPS;
-        Fathom.container = new Entity().addGroup("container");
-        Fathom.stage.addChild(Fathom.container.HACK_sprite());
-        Fathom._camera = new Camera(stage).scaleBy(1).setEaseSpeed(3);
+        Fathom.cb = cb;
 
         /*
         fpsFn = Hooks.fpsCounter();
@@ -104,7 +112,8 @@ class Fathom {
     }
 
     /* This stops everything. The only conceivable use would be
-       possibly for some sort of end game situation. */    static public function stop() : Void {
+       possibly for some sort of end game situation. */
+    static public function stop() : Void {
         container.removeEventListener(Event.ENTER_FRAME, update);
     }
 
@@ -173,7 +182,6 @@ class Fathom {
             e.touchingLeft   = (e.xColl.any([Set.doesntHaveGroup("non-blocking")]) && e.vel.x < 0);
             e.touchingRight  = (e.xColl.any([Set.doesntHaveGroup("non-blocking")]) && e.vel.x > 0);
         }
-;
     }
 
     static function movingEntities() : Set<MovingEntity> {
@@ -185,7 +193,7 @@ class Fathom {
     }
 
     static function updateFPS() : Void {
-        fpsTxt.text = fpsFn();
+        //fpsTxt.text = fpsFn();
     }
 
     static function update(event : Event) : Void {
@@ -222,3 +230,22 @@ class Fathom {
 
 }
 
+class RootEntity extends DisplayObjectContainer {
+    private static var count:Int = 0;
+
+    public function new() {
+        if (++count != 1) {
+            throw "THERE CAN ONLY BE ONE.";
+        }
+
+        super();
+
+        Fathom.container = this;
+        // Can't intiialize the Cam until the container is initialized...
+        Fathom._camera = new Camera(Fathom.stage).scaleBy(1).setEaseSpeed(3);
+        Fathom.cb();
+
+        var textField = new starling.text.TextField(400, 300, "Welcome to Starling!");
+        addChild(textField);
+    }
+}

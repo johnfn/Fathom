@@ -135,17 +135,17 @@ class Vec implements IPositionable {
     }
 
     public function divide(v : Dynamic) : Vec {
-    if (Std.is(v, IPositionable)) {
-      var i:IPositionable = cast(v, IPositionable);
+        if (Std.is(v, IPositionable)) {
+          var i:IPositionable = cast(v, IPositionable);
 
-      x /= i.x;
-      y /= i.y;
-    } else {
-      untyped {
-        x /= v;
-        y /= v;
-      }
-    }
+          x /= i.x;
+          y /= i.y;
+        } else {
+          untyped {
+            x /= v;
+            y /= v;
+          }
+        }
 
         return this;
     }

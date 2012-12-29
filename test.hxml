@@ -3,3 +3,7 @@
 -swf test.swf
 -main AllTests
 -debug
+-swf-lib starling.swf
+--macro "patchTypes('starling.patch')"
+-swf-version 11.3
+-D as3_native 

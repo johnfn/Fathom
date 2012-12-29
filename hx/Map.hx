@@ -387,6 +387,7 @@ class Map extends Rect {
     static var cachedAssets : TypedDictionary<String, Dynamic> = new TypedDictionary();
 
     function dumpToGraphics() : Void {
+        /*
         // Write out the tiles to imgData
         var imgData : BitmapData = new BitmapData(widthInTiles * tileSize, heightInTiles * tileSize, true, 0xFFFFFFFF);
         for (x in 0...widthInTiles) {
@@ -424,6 +425,7 @@ class Map extends Rect {
         // Add imgData to screen.
         var bmp : Bitmap = new Bitmap(imgData);
         graphics.setPixels(bmp);
+        */
     }
 
     public function loadNewMap(diff : Vec) : Map {
@@ -432,7 +434,8 @@ class Map extends Rect {
         updatePersistentItems(diff);
         Fathom.grid = new SpatialHash(new Set<Entity>());
         Fathom.grid.loadMap(this, bogusmapentry);
-        Fathom.container.sortDepths();
+        //TODO
+        //Fathom.container.sortDepths();
         return this;
     }
 

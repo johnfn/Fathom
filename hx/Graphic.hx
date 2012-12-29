@@ -1,15 +1,14 @@
-import flash.display.Sprite;
-import flash.display.DisplayObject;
-import flash.display.DisplayObjectContainer;
-import flash.filters.DropShadowFilter;
-import flash.geom.Point;
-import flash.utils.Dictionary;
-import flash.display.BitmapData;
+import starling.display.Image;
+import starling.textures.Texture;
+import starling.display.Sprite;
 import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.geom.Matrix;
-import flash.events.Event;
+import starling.events.Event;
 import flash.utils.TypedDictionary;
+
 import Hooks;
 import Util;
 
@@ -18,8 +17,18 @@ typedef SpriteSheet = {
     var y:Int;
 }
 
-//TODO: Extend Rect!
+/** Graphic is a wrapper around a Starling Image with some additional smarts
+ *  for game-related development.
+ *
+ *  Smarts include:
+ *
+ *  Tilemap support with Graphic.loadSpritesheet (TODO) and setTile().
+ *
+ *  Animation support with `animation`.
+ */
+
 class Graphic implements IPositionable {
+    var texturedObject:Image;
     var sprite:Sprite;
 
     public var spriteX(getSpriteX, never) : Int;
@@ -37,16 +46,14 @@ class Graphic implements IPositionable {
     // The location of the entity, after camera transformations.
     public var cameraSpacePos : Rect;
     public var animations : AnimationHandler;
-    public var pixels(getPixels, setPixels) : Bitmap;
     var spritesheet : SpriteSheet;
     // TODO: Rename
     var _depth : Int;
-    static var cachedAssets : TypedDictionary<String, BitmapData> = new TypedDictionary();
-    // Rename spritesheetObj and spritesheet
-    // spritesheetObj isnt even necessarily a spritesheet
-    var spritesheetObj : Dynamic;
-    var spriteSheetWidth : Int;
-    var spriteSheetHeight : Int;
+    static var cachedAssets : TypedDictionary<String, Texture> = new TypedDictionary();
+    // Rename spritesheet
+    var fullTexture : Texture;
+    var tileWidth : Int;
+    var tileHeight : Int;
 
     public var height(getHeight, setHeight): Float;
     public var width(getWidth, setWidth): Float;
@@ -62,24 +69,21 @@ class Graphic implements IPositionable {
     }
 
     public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
-        pixels = new Bitmap();
         _depth = 0;
-        spritesheetObj = null;
-        spriteSheetWidth = -1;
-        spriteSheetHeight = -1;
+        fullTexture = null;
+        tileWidth = -1;
+        tileHeight = -1;
         facing = 1;
+        spritesheet = {x: 0, y: 0};
+
         sprite = new Sprite();
         sprite.x = x;
         sprite.y = y;
-        sprite.width = width;
-        sprite.height = height;
-        spritesheet = {x: 0, y: 0};
 
-        if (height == -1)
-            height = width;
+        if (height == -1) height = width;
 
-        this.cameraSpacePos = new Rect(0, 0, width, height);
-        this.entitySpacePos = new Rect(x, y, width, height);
+        cameraSpacePos = new Rect(0, 0, width, height);
+        entitySpacePos = new Rect(x, y, width, height);
         this.x = x;
         this.y = y;
 
@@ -90,17 +94,16 @@ class Graphic implements IPositionable {
         if (width != -1) {
             this.width = width;
         }
+
         animations = new AnimationHandler(this);
-        // Bypass our overridden addChild method.
-        sprite.addChild(pixels);
     }
 
     public function addEventListener(etype, f: Event -> Void) {
-        sprite.addEventListener(etype, f);
+        texturedObject.addEventListener(etype, f);
     }
 
     public function removeEventListener(etype, f: Event -> Void) {
-        sprite.removeEventListener(etype, f);
+        texturedObject.removeEventListener(etype, f);
     }
 
     public function toString(): String {
@@ -109,25 +112,18 @@ class Graphic implements IPositionable {
 
     // Set this entities graphics to be the sprite at (x, y) on the provided spritesheet.
     public function setTile(x : Int, y : Int) : Graphic {
-        Util.assert(this.spritesheetObj != null, "The spritesheet is null.");
-        var bData: BitmapData = spritesheetObj;
-        //TODO: Cache this
-        var uid : String = Util.className(spritesheetObj) + x + " " + y;
-        if(!(cachedAssets.exists(uid))) {
-            var bd : BitmapData = new BitmapData(spriteSheetWidth, spriteSheetHeight, true, 0);
-            var source : Rectangle = new Rectangle(x * spriteSheetWidth, y * spriteSheetHeight, spriteSheetWidth, spriteSheetHeight);
-            bd.copyPixels(bData, source, new Point(0, 0), null, null, true);
-            cachedAssets.set(uid, bd);
-        }
-
+        Util.assert(fullTexture != null, "The spritesheet is null.");
         spritesheet.x = x;
         spritesheet.y = y;
 
-        pixels.bitmapData = cachedAssets.get(uid);
+        texturedObject.texture = Texture.fromTexture(fullTexture);
+
         // TODO: Implicit assumption that bitmap faces right.
+        /*
         if(facing == -1)  {
             pixels.bitmapData = flipBitmapData(pixels.bitmapData);
         }
+        */
 
         if(!animations.hasAnimation("default"))  {
             animations.addAnimation("default", x, y, 1);
@@ -144,29 +140,37 @@ class Graphic implements IPositionable {
     }
 
     //TODO: Maybe shouldn't even have to pass in tileDimension.
+    //TODO: this should be a static method.
     /* Load a spritesheet. tileDimension should be the size of the tiles or null if
        there's only one tile. whichTile is the tile that this Graphic will be; pass in
        null if you want to defer the decision by calling setTile() later. */
-    public function loadSpritesheet<T>(spritesheetClass : Class<T>, tileDimension : Vec = null, whichTile : Vec = null) : Graphic {
-        Util.assert(this.spritesheetObj == null);
+    public function loadSpritesheet<T : (BitmapData)>(spritesheetClass : Class<T>, tileDimension : Vec = null, whichTile : Vec = null) : Graphic {
+        Util.assert(this.fullTexture == null);
         Util.assert(!tileDimension.equals(new Vec(0, 0)));
-        this.spritesheetObj = Type.createInstance(spritesheetClass, [0, 0]);
 
-        var spritesheetSize : Vec = new Vec(spritesheetObj.width, spritesheetObj.height);
-        if (tileDimension != null)  {
-            this.spriteSheetWidth = Std.int(tileDimension.x);
-            this.spriteSheetHeight = Std.int(tileDimension.y);
-        } else  {
-            this.spriteSheetWidth = Std.int(spritesheetObj.width);
-            this.spriteSheetHeight = Std.int(spritesheetObj.height);
-        }
+        fullTexture = Texture.fromBitmapData(Type.createInstance(spritesheetClass, [0, 0]));
 
-        if (whichTile != null)  {
-            setTile(Std.int(whichTile.x), Std.int(whichTile.y));
-        } else  {
-            setTile(0, 0);
-        }
+        texturedObject = new Image(fullTexture);
+        texturedObject.x = x;
+        texturedObject.y = y;
+        texturedObject.width = width;
+        texturedObject.height = height;
 
+        texturedObject.pivotX = width  / 2;
+        texturedObject.pivotY = height / 2;
+
+        sprite = new Sprite();
+        sprite.addChild(texturedObject);
+
+        Fathom.container.addChild(sprite);
+
+        if (whichTile == null)     whichTile = new Vec(0, 0);
+        if (tileDimension == null) tileDimension = new Vec(fullTexture.nativeWidth, fullTexture.nativeHeight);
+
+        tileWidth  = Std.int(tileDimension.x);
+        tileHeight = Std.int(tileDimension.y);
+
+        setTile(Std.int(whichTile.x), Std.int(whichTile.y));
         return this;
     }
 
@@ -176,26 +180,21 @@ class Graphic implements IPositionable {
         return this;
     }
 
-    private function flipBitmapData(original : BitmapData, axis : String = "x") : BitmapData {
-        var flipped : BitmapData = new BitmapData(pixels.bitmapData.width, pixels.bitmapData.height, true, 0);
-
-        var matrix : Matrix;
-        if(axis == "x")  {
-            matrix = new Matrix(-1, 0, 0, 1, original.width, 0);
-        } else  {
-            matrix = new Matrix(1, 0, 0, -1, 0, original.height);
-        }
-
-        flipped.draw(original, matrix, null, null, null, true);
-        return flipped;
-    }
-
     public function setPos(v : IPositionable) : Graphic {
         x = v.x;
         y = v.y;
         return this;
     }
 
+    public function getTexture(): Texture {
+        return texturedObject.texture;
+    }
+
+    public function setTexture(t: Texture): Texture {
+        return texturedObject.texture = t;
+    }
+
+    /*
     public function getPixels(): Bitmap {
         return pixels;
     }
@@ -203,6 +202,7 @@ class Graphic implements IPositionable {
     public function setPixels(p: Bitmap): Bitmap {
         return pixels = p;
     }
+    */
 
     // These two are in Camera space.
     public function getCameraSpaceScaleX() : Float {
@@ -213,24 +213,24 @@ class Graphic implements IPositionable {
         return scaleY;
     }
 
+#if debug
+    /** This method is ONLY for testing.
+     *  Don't use it in an actal game!
+     */
     public function getPixel(x:Int, y:Int) : UInt {
-        return this.pixels.bitmapData.getPixel(x, y);
+        var bd:BitmapData = new BitmapData(Std.int(Fathom.stage.width), Std.int(Fathom.stage.height));
+        bd.draw(Fathom.stage);
+        var b:Bitmap = new Bitmap(bd);
+
+        return b.bitmapData.getPixel(x, y);
     }
+#end
 
     var facing : Int;
     // Pass in the x-coordinate of your velocity, and this'll orient
     // the Graphic in that direction.
     public function face(dir : Int) : Void {
-        if(dir > 0 && facing < 0)  {
-            pixels.bitmapData = flipBitmapData(pixels.bitmapData);
-            facing = dir;
-            return;
-        }
-        if(dir < 0 && facing > 0)  {
-            pixels.bitmapData = flipBitmapData(pixels.bitmapData);
-            facing = dir;
-            return;
-        }
+        texturedObject.scaleX = dir;
     }
 
     public function setDepth(v : Int) : Int {
@@ -270,7 +270,7 @@ class Graphic implements IPositionable {
         groupSet = null;
         entityChildren = null;
         cachedAssets = null;
-        spritesheetObj = null;
+        fullTexture = null;
     }
     */
     // Uninteresting getters and setters.

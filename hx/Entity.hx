@@ -1,16 +1,5 @@
-import flash.display.Sprite;
-import flash.display.DisplayObject;
-import flash.display.DisplayObjectContainer;
-import flash.filters.DropShadowFilter;
-import flash.geom.Point;
-import flash.utils.Dictionary;
-import flash.display.BitmapData;
-import flash.display.Bitmap;
-import flash.geom.Rectangle;
-import flash.events.Event;
-import flash.geom.Matrix;
-import Hooks;
 import Util;
+import flash.display.BitmapData;
 
 using Lambda;
 
@@ -74,7 +63,7 @@ class Entity extends Graphic {
         // has to be bootstrapped onto the Stage. If Fathom.container does not exist, `this`
         // must be the container.
         if(Fathom.container != null)  {
-            Fathom.container.addChild(this);
+            Fathom.container.addChild(this.sprite);
             addToFathom();
         }
     }
@@ -105,9 +94,11 @@ class Entity extends Graphic {
     }
 
     public function debugDraw() : Entity {
+        /*
         sprite.graphics.beginFill(0xFF0000);
         sprite.graphics.drawRect(0, 0, this.width, this.height);
         sprite.graphics.endFill();
+        */
         return this;
     }
 
@@ -222,7 +213,7 @@ class Entity extends Graphic {
         }
     }
 
-    public override function loadSpritesheet<T>(spritesheetClass : Class<T>, tileDimension : Vec = null, whichTile : Vec = null) : Entity {
+    public override function loadSpritesheet<T: (BitmapData)>(spritesheetClass : Class<T>, tileDimension : Vec = null, whichTile : Vec = null) : Entity {
         return cast(super.loadSpritesheet(spritesheetClass, tileDimension, whichTile), Entity);
     }
 
@@ -241,7 +232,7 @@ class Entity extends Graphic {
         return (!(this == other)) && touchingRect(other);
     }
 
-    public function collidesPt(point : Point) : Bool {
+    public function collidesPt(point : Vec) : Bool {
         return point.x >= this.x && point.x <= this.x + this.width &&
                point.y >= this.y && point.y <= this.y + this.height;
     }
