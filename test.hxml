@@ -4,6 +4,7 @@
 -main AllTests
 -debug
 -swf-lib starling/starling.swf
+-swf-lib TheMiner/theminer.swf
 --macro "patchTypes('starling/starling.patch')"
 -swf-version 11.3
 -D as3_native 

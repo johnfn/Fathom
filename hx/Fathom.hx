@@ -1,6 +1,7 @@
 import starling.core.Starling;
 import starling.events.Event;
-import starling.display.DisplayObjectContainer;
+import starling.display.Sprite;
+import com.sociodox.theminer.TheMiner;
 
 import flash.display.Stage;
 
@@ -14,7 +15,7 @@ class Fathom {
     static public var currentMode(getCurrentMode, never) : Int;
     static public var showingFPS(never, setShowingFPS) : Bool;
 
-    static public var sContainer:DisplayObjectContainer;
+    static public var sContainer:Sprite;
 
     static public var starling:Starling;
     static public var cb:Void -> Void;
@@ -234,7 +235,7 @@ class Fathom {
     }
 }
 
-class RootEntity extends DisplayObjectContainer {
+class RootEntity extends Sprite {
     private static var count:Int = 0;
 
     public function new() {
@@ -253,5 +254,9 @@ class RootEntity extends DisplayObjectContainer {
         Fathom.cb();
 
         Fathom.start();
+
+#if profile
+        flash.Lib.current.addChild(new TheMiner());
+#end
     }
 }

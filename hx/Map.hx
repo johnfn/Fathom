@@ -277,13 +277,12 @@ class Map extends Rect {
             e = Type.createInstance(itemData.gfx, []).setPos(new Vec(tileSize, tileSize));
         } else {
             e = new Entity(x * tileSize, y * tileSize, tileSize, tileSize).loadSpritesheet(itemData.gfx, new Vec(tileSize, tileSize)).setTile(Std.int(ssLoc.x), Std.int(ssLoc.y));
-            trace(e.x);
         }
 
         persistent.get(topLeftCorner.asKey()).push(e);
 
         if (e.groups().has("remember-loc")) {
-            trace("I never did this LOL");
+            Util.assert(false, "I never did this LOL");
         }
     }
 

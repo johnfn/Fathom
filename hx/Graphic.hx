@@ -30,7 +30,7 @@ typedef SpriteSheet = {
 
 class Graphic implements IPositionable {
     var texturedObject:Image;
-    var sprite:DisplayObjectContainer;
+    var sprite:Sprite;
 
     public var spriteX(getSpriteX, never) : Int;
     public var spriteY(getSpriteY, never) : Int;
@@ -178,6 +178,7 @@ class Graphic implements IPositionable {
         tileHeight = Std.int(tileDimension.y);
 
         setTile(Std.int(whichTile.x), Std.int(whichTile.y));
+
         return this;
     }
 
