@@ -207,14 +207,15 @@ class Fathom {
         var cachedMode : Int = currentMode;
         updateFPS();
         moveEverything();
-        for(e in list) {
-            if(!e.modes().has(cachedMode))
+        for (e in list) {
+            if (!e.modes().has(cachedMode)) {
                 continue;
+            }
             // This acts as a pseudo garbage-collector. We separate out the
             // destroyed() call from the clearMemory() call because we sometimes
             // want to destroy() an item halfway through this update() call, so the
             // actual destruction would have to wait until the end of the update.
-            if(e.destroyed)  {
+            if (e.destroyed)  {
                 e.clearMemory();
                 continue;
             }

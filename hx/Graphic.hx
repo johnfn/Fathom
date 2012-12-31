@@ -161,8 +161,8 @@ class Graphic implements IPositionable {
         }
 
         texturedObject = new Image(fullTexture);
-        texturedObject.x = x;
-        texturedObject.y = y;
+        texturedObject.x = 0;
+        texturedObject.y = 0;
         texturedObject.width = width;
         texturedObject.height = height;
 
