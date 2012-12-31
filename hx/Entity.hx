@@ -223,9 +223,19 @@ class Entity extends Graphic {
         }
     }
 
+    // We do some casting so you don't have to.
     public override function loadSpritesheet<T: (BitmapData)>(spritesheetClass : Class<T>, tileDimension : Vec = null, whichTile : Vec = null) : Entity {
         return cast(super.loadSpritesheet(spritesheetClass, tileDimension, whichTile), Entity);
     }
+
+    public override function setTile(x : Int, y : Int) : Entity {
+        return cast(super.setTile(x, y), Entity);
+    }
+
+    public override function setPos(v : IPositionable) : Entity {
+        return cast(super.setPos(v), Entity);
+    }
+
 
     //TODO: Group strings to enums with Inheritable property.
     //TODO: There is a possible namespace collision here. assert no 2 groups have same name.

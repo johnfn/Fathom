@@ -80,13 +80,14 @@ class Text extends Entity {
 
       return this;
     }
-    */    public function getText() : String {
+    */
+    public function getText() : String {
         return textField.text;
     }
 
     // Interpolate the string by adding colors. Any words between *stars* are
-        // colored red.
-        public function setText(s : String) : String {
+    // colored red.
+    public function setText(s : String) : String {
         var pairs : Array<Dynamic> = [];
         var currentPair : Array<Dynamic> = [];
         var idx : Int = 0;
@@ -121,9 +122,7 @@ class Text extends Entity {
         if(typewriting)  {
             // TODO: Haven't done this yet.
             Util.assert(false);
-        }
-
-        else  {
+        } else  {
             destroy();
         }
 

@@ -104,6 +104,15 @@ class Set<T> {
         return _concatHelper(list);
     }
 
+    public function first(): T {
+        for (k in contents) {
+            return k;
+        }
+
+        Util.assert(false, "Set#first called on empty set.");
+        return null;
+    }
+
     public function filter(f : T -> Bool) : Set<T> {
         var result : Set<T> = new Set<T>();
         for(k in contents) {
@@ -216,7 +225,7 @@ class Set<T> {
 
     public static function doesntHaveGroup(g: String) : Entity -> Bool {
         return function(e:Entity): Bool {
-            return e.groups().has(g);
+            return !e.groups().has(g);
         }
     }
 

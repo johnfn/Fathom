@@ -104,8 +104,8 @@ class Fathom {
         grid = new SpatialHash(Fathom.entities.select([]));
     }
 
-    static public function start() : Void {
-        container.addEventListener(Event.ENTER_FRAME, update);
+    static public function start(): Void {
+        sContainer.addEventListener(Event.ENTER_FRAME, update);
     }
 
     static public function destroyAll(): Void {
@@ -223,9 +223,11 @@ class Fathom {
         }
 
         Particles.updateAll();
+
         if(mapRef.modes().has(cachedMode))  {
             mapRef.update();
         }
+
         camera.update();
         MagicKeyObject.dealWithVariableKeyRepeatRates(); //TODO
     }
@@ -243,13 +245,12 @@ class RootEntity extends DisplayObjectContainer {
 
         Fathom.sContainer = this;
 
-        Fathom.container = Entity.fromDO(this);
+        Fathom.container = Entity.fromDO(this).addGroup("container");
 
         // Can't initialize the Cam until the container is initialized...
         Fathom._camera = new Camera(Fathom.stage).scaleBy(1).setEaseSpeed(3);
-
-        var textField = new starling.text.TextField(400, 300, "Welcome to Starling!");
-        Fathom.sContainer.addChild(textField);
         Fathom.cb();
+
+        Fathom.start();
     }
 }

@@ -42,7 +42,7 @@ class EntityTest extends haxe.unit.TestCase {
       p = p.parent;
     }
 
-    assertEquals(p, flash.Lib.current.stage);
+    assertEquals(p, Fathom.sContainer);
   }
 
   public function testAddRemove() {

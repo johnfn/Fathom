@@ -5,6 +5,7 @@ class GraphicTest extends haxe.unit.TestCase {
   var g:Graphic;
 
   override public function setup() {
+    Fathom.initialize(flash.Lib.current.stage); //, test);
     g = new Graphic(0, 0, 10, 10);
     g.loadSpritesheet(AllTests.MyBitmapData, new Vec(2, 2));
     g.setTile(0, 0);

@@ -117,7 +117,8 @@ class Graphic implements IPositionable {
         spritesheet.x = x;
         spritesheet.y = y;
 
-        texturedObject.texture = Texture.fromTexture(fullTexture);
+        var region:Rectangle = new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+        texturedObject.texture = Texture.fromTexture(fullTexture, region);
 
         // TODO: Implicit assumption that bitmap faces right.
         /*
@@ -129,6 +130,7 @@ class Graphic implements IPositionable {
         if(!animations.hasAnimation("default"))  {
             animations.addAnimation("default", x, y, 1);
         }
+
         return this;
     }
 
@@ -142,14 +144,21 @@ class Graphic implements IPositionable {
 
     //TODO: Maybe shouldn't even have to pass in tileDimension.
     //TODO: this should be a static method.
-    /* Load a spritesheet. tileDimension should be the size of the tiles or null if
-       there's only one tile. whichTile is the tile that this Graphic will be; pass in
-       null if you want to defer the decision by calling setTile() later. */
+    /** Load a spritesheet. tileDimension should be the size of the tiles or null if
+     *  there's only one tile. whichTile is the tile that this Graphic will be; pass in
+     *  null if you want to defer the decision by calling setTile() later.
+     */
     public function loadSpritesheet<T : (BitmapData)>(spritesheetClass : Class<T>, tileDimension : Vec = null, whichTile : Vec = null) : Graphic {
-        Util.assert(this.fullTexture == null);
-        Util.assert(!tileDimension.equals(new Vec(0, 0)));
+        Util.assert(fullTexture == null);
+        Util.assert(tileDimension == null || !tileDimension.equals(new Vec(0, 0)));
 
-        fullTexture = Texture.fromBitmapData(Type.createInstance(spritesheetClass, [0, 0]));
+        var classAsKey:String = Type.getClassName(spritesheetClass);
+        if (cachedAssets.exists(classAsKey)) {
+            fullTexture = cachedAssets.get(classAsKey);
+        } else {
+            fullTexture = Texture.fromBitmapData(Type.createInstance(spritesheetClass, [0, 0]));
+            cachedAssets.set(classAsKey, fullTexture);
+        }
 
         texturedObject = new Image(fullTexture);
         texturedObject.x = x;
@@ -294,9 +303,7 @@ class Graphic implements IPositionable {
     }
 
     public function setX(val : Float) : Float {
-        entitySpacePos.x = val;
-
-        return entitySpacePos.x;
+        return entitySpacePos.x = val;
     }
 
     public function getX() : Float {
@@ -304,9 +311,7 @@ class Graphic implements IPositionable {
     }
 
     public function setY(val : Float) : Float {
-        entitySpacePos.y = val;
-
-        return entitySpacePos.y;
+        return entitySpacePos.y = val;
     }
 
     public function getY() : Float {
@@ -315,7 +320,7 @@ class Graphic implements IPositionable {
 
     public function setCameraSpaceX(val : Float) : Float {
         cameraSpacePos.x = val;
-        x = cameraSpacePos.x;
+        sprite.x = cameraSpacePos.x;
         return val;
     }
 
@@ -325,7 +330,7 @@ class Graphic implements IPositionable {
 
     public function setCameraSpaceY(val : Float) : Float {
         cameraSpacePos.y = val;
-        y = cameraSpacePos.y;
+        sprite.y = cameraSpacePos.y;
         return val;
     }
 

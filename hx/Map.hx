@@ -122,6 +122,8 @@ class Map extends Rect {
             }
         }
 
+        loadNewMap(new Vec(0, 0));
+
         return this;
     }
 
@@ -144,7 +146,6 @@ class Map extends Rect {
         hideCurrentPersistentItems();
 
         topLeftCorner.add(diff);
-        dumpToGraphics();
         addNewPersistentItems();
     }
 
@@ -264,12 +265,6 @@ class Map extends Rect {
         // If the provided graphics are BitmapData, this is a static object.
         // We won't treat it specially in that case.
 
-        if(!isSpecial(itemData)) return;
-
-        // Otherwise, we create it.
-
-        var e : Entity = Type.createInstance(itemData.gfx, []);
-
         var ssLoc:Vec;
         if (itemData.spritesheet != null) {
             ssLoc = itemData.spritesheet;
@@ -277,10 +272,17 @@ class Map extends Rect {
             ssLoc = new Vec(0, 0);
         }
 
-        e.setPos(new Vec(x * tileSize, y * tileSize));
+        var e: Entity;
+        if (isSpecial(itemData)) {
+            e = Type.createInstance(itemData.gfx, []).setPos(new Vec(tileSize, tileSize));
+        } else {
+            e = new Entity(x * tileSize, y * tileSize, tileSize, tileSize).loadSpritesheet(itemData.gfx, new Vec(tileSize, tileSize)).setTile(Std.int(ssLoc.x), Std.int(ssLoc.y));
+            trace(e.x);
+        }
+
         persistent.get(topLeftCorner.asKey()).push(e);
 
-        if(e.groups().has("remember-loc"))  {
+        if (e.groups().has("remember-loc")) {
             trace("I never did this LOL");
         }
     }
@@ -385,48 +387,6 @@ class Map extends Rect {
     }
 
     static var cachedAssets : TypedDictionary<String, Dynamic> = new TypedDictionary();
-
-    function dumpToGraphics() : Void {
-        /*
-        // Write out the tiles to imgData
-        var imgData : BitmapData = new BitmapData(widthInTiles * tileSize, heightInTiles * tileSize, true, 0xFFFFFFFF);
-        for (x in 0...widthInTiles) {
-            for (y in 0...heightInTiles) {
-                var c: String = data[Std.int(topLeftCorner.x + x)][Std.int(topLeftCorner.y + y)].toString();
-
-                if(!persistentItemMapping.has(c))  {
-                    if(c.toString() != "#ffffff")  {
-                        Util.log("Color without data: " + c);
-                        continue;
-                    }
-                }
-
-                var itemData : ItemDetail = persistentItemMapping.get(c);
-
-                var ss: Vec = fancyProcessing(itemData, c, x, y).multiply(_tileSize);
-                var key : String = Type.getClassName(itemData.gfx);
-
-                var bAsset;
-
-                if (isSpecial(itemData)) continue;
-
-                if (!cachedAssets.exists(key)) {
-                    cachedAssets.set(key, Type.createInstance(itemData.gfx, []));
-                }
-
-                if(!isGround(c, ""))  {
-                    collisionInfo[x][y] = true;
-                }
-                bAsset = cachedAssets.get(key);
-                imgData.copyPixels(bAsset, new Rectangle(ss.x, ss.y, _tileSize, _tileSize), new Point(x * 25, y * 25));
-            }
-        }
-        // I have this suspicion that I don't need to keep adding the bitmapData TODO
-        // Add imgData to screen.
-        var bmp : Bitmap = new Bitmap(imgData);
-        graphics.setPixels(bmp);
-        */
-    }
 
     public function loadNewMap(diff : Vec) : Map {
         collisionInfo = Util.make2DArray(widthInTiles, heightInTiles, false);
