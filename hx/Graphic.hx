@@ -224,14 +224,16 @@ class Graphic implements IPositionable {
      *  Don't use it in an actal game!
      */
     public function getPixel(x:Int, y:Int) : UInt {
-        sprite.x = 0;
-        sprite.y = 0;
+        var bd:BitmapData = new BitmapData(Std.int(Fathom.stage.stageWidth), Std.int(Fathom.stage.stageHeight));
+        bd.draw(flash.Lib.current.stage);
 
-        var bd:BitmapData = new BitmapData(Std.int(Fathom.stage.width), Std.int(Fathom.stage.height));
-        bd.draw(Fathom.stage);
         var b:Bitmap = new Bitmap(bd);
+        Fathom.stage.addChild(b);
+        b.x = 200;
+        b.y = 200;
 
-        return b.bitmapData.getPixel(x, y);
+        return bd.getPixel(2, 2);
+        //return bd.getPixel(Std.int(sprite.x) + x, Std.int(sprite.y) + y);
     }
 #end
 
@@ -259,8 +261,11 @@ class Graphic implements IPositionable {
     }
 
     public function add(p : IPositionable) : Graphic {
-        this.x += p.x;
-        this.y += p.y;
+        Util.assert(Fathom.stage.scaleX == 1, "Haven't considered scaled stages.");
+        Util.assert(Fathom.stage.scaleY == 1, "Haven't considered scaled stages.");
+
+        x += p.x;
+        y += p.y;
 
         return this;
     }

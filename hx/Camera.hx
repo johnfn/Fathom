@@ -310,6 +310,4 @@ class Camera extends Rect {
         s.cameraSpaceX = (s.x - this.x) * camScaleX;
         s.cameraSpaceY = (s.y - this.y) * camScaleY;
     }
-
 }
-
