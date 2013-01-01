@@ -124,11 +124,6 @@ class Graphic implements IPositionable {
         texturedObject.texture = Texture.fromTexture(fullTexture, region);
 
         // TODO: Implicit assumption that bitmap faces right.
-        /*
-        if(facing == -1)  {
-            pixels.bitmapData = flipBitmapData(pixels.bitmapData);
-        }
-        */
 
         if(!animations.hasAnimation("default"))  {
             animations.addAnimation("default", x, y, 1);
@@ -167,13 +162,17 @@ class Graphic implements IPositionable {
         if (tileDimension == null) tileDimension = new Vec(fullTexture.nativeWidth, fullTexture.nativeHeight);
 
         texturedObject = new Image(fullTexture);
+
+        sprite.addChild(texturedObject);
+
         texturedObject.width  = tileDimension.x;
         texturedObject.height = tileDimension.y;
 
         texturedObject.x = 0;
         texturedObject.y = 0;
 
-        sprite.addChild(texturedObject);
+        //texturedObject.pivotX = texturedObject.width / 2;
+        //texturedObject.pivotY = texturedObject.height / 2;
 
         tileWidth  = Std.int(tileDimension.x);
         tileHeight = Std.int(tileDimension.y);
@@ -222,11 +221,7 @@ class Graphic implements IPositionable {
         return scaleY;
     }
 
-#if debug
-    /** This method is ONLY for testing.
-     *  Don't use it in an actal game!
-     */
-    public function getPixel(x:Int, y:Int) : UInt {
+    public static function takeScreenshot(): BitmapData {
         var sw: Int = flash.Lib.current.stage.stageWidth;
         var sh: Int = flash.Lib.current.stage.stageHeight;
 
@@ -239,7 +234,16 @@ class Graphic implements IPositionable {
         var result:BitmapData = new BitmapData(sw, sh, true);
         Starling.context.drawToBitmapData(result);
 
-        return result.getPixel(Std.int(sprite.x) + x, Std.int(sprite.y) + y);
+        return result;
+    }
+
+#if debug
+
+    /** This method should only be used for testing.
+     *  Don't use it in an actual game!
+     */
+    public function getPixel(x:Int, y:Int) : UInt {
+        return takeScreenshot().getPixel(Std.int(sprite.x) + x, Std.int(sprite.y) + y);
     }
 #end
 
@@ -247,7 +251,6 @@ class Graphic implements IPositionable {
     // Pass in the x-coordinate of your velocity, and this'll orient
     // the Graphic in that direction.
     public function face(dir : Int) : Void {
-        Util.assert(false, "under construction");
         texturedObject.scaleX = dir;
     }
 

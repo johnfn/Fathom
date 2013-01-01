@@ -12,6 +12,8 @@ class AllTests extends Sprite {
   }
 
   static function test() {
+    //TODO: Figure out why I need this...
+
     haxe.Timer.delay(function() {
         Fathom.camera.setFocus(new Vec(flash.Lib.current.stage.stageWidth/2, flash.Lib.current.stage.stageHeight/2));
 
@@ -23,8 +25,9 @@ class AllTests extends Sprite {
         r.add(new GraphicTest());
 
         r.add(new EntityTest());
-        //r.add(new MapTest());
+        r.add(new MapTest());
         //r.add(new AnimationTest());
+        r.add(new CameraTest());
 
         r.run();
     }, 250);

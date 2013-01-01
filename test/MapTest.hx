@@ -6,7 +6,6 @@ using Lambda;
 class SpecialThing extends Entity {
   public function new() {
     super();
-    //e.loadSpritesheet(AllTests.MyBitmapData, new Vec(_tileSize, _tileSize), ssLoc);
 
     MapTest.constructedCount++;
   }
@@ -22,9 +21,6 @@ class MapTest extends haxe.unit.TestCase {
   public static var constructedCount:Int = 0;
 
   override public function setup() {
-    Fathom.initialize(flash.Lib.current.stage);
-
-
     m = new Map(2, 2, 2);
 
     m.fromImage(AllTests.TestMap, [], [
@@ -37,31 +33,33 @@ class MapTest extends haxe.unit.TestCase {
     constructedCount = 0;
   }
 
+  //TODO TEST: Map collisions with moving entities...
+
   override public function tearDown() {
     Fathom.destroyAll();
   }
 
   public function testMapLoad() {
-    assertEquals(m.graphics.getPixel(0, 0), 0x0000ff);
+    assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0x0000ff);
   }
 
   public function testMapChangeDiff() {
     m.loadNewMap(new Vec(1, 0));
-    assertEquals(m.graphics.getPixel(0, 0), 0xFFFFFF);
+    assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0xFFFFFF);
     m.loadNewMap(new Vec(-1, 0));
     m.loadNewMap(new Vec(0, 1)); // now at map (0, 1)
-    assertEquals(m.graphics.getPixel(0, 0), 0xFFFFFF);
+    assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0xFFFFFF);
     m.loadNewMap(new Vec(1, 0)); // now at map (1, 1)
-    assertEquals(m.graphics.getPixel(0, 0), 0x0000ff);
+    assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0x0000FF);
   }
 
   public function testMapChangeAbs() {
     m.loadNewMapAbs(new Vec(1, 0));
-    assertEquals(m.graphics.getPixel(0, 0), 0xFFFFFF);
+    assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0xFFFFFF);
     m.loadNewMapAbs(new Vec(0, 1)); // now at map (0, 1)
-    assertEquals(m.graphics.getPixel(0, 0), 0xFFFFFF);
+    assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0xFFFFFF);
     m.loadNewMapAbs(new Vec(1, 1)); // now at map (1, 1)
-    assertEquals(m.graphics.getPixel(0, 0), 0x0000ff);
+    assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0x0000FF);
   }
 
   public function testSpecialItems() {

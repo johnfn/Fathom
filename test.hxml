@@ -1,7 +1,7 @@
 -cp hx/
 -cp test/
 -swf test.swf
--swf-header 500:500:80:aeaeae
+-swf-header 500:500:80:ffffff
 -main AllTests
 -debug
 -swf-lib starling/starling.swf

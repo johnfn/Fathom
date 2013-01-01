@@ -52,20 +52,9 @@ class Map extends Rect {
     var persistent : TypedDictionary<String, Array<Entity>>;
     public var sizeVector : Vec;
 
-    public var graphics(getGraphics, setGraphics): Entity;
-
-    public function getGraphics(): Entity {
-        return _graphics;
-    }
-
-    private function setGraphics(e: Entity): Entity {
-        return _graphics = e;
-    }
-
     public function new(widthInTiles : Int, heightInTiles : Int, tileSize : Int) {
         data = [];
         tiles = [];
-        _graphics = new Entity();
         collisionInfo = [];
         topLeftCorner = new Vec(0, 0);
         exploredMaps = new TypedDictionary();
@@ -274,7 +263,7 @@ class Map extends Rect {
 
         var e: Entity;
         if (isSpecial(itemData)) {
-            e = Type.createInstance(itemData.gfx, []).setPos(new Vec(tileSize, tileSize));
+            e = Type.createInstance(itemData.gfx, []).setPos(new Vec(x * tileSize, y * tileSize));
         } else {
             e = new Entity(x * tileSize, y * tileSize, tileSize, tileSize).loadSpritesheet(itemData.gfx, new Vec(tileSize, tileSize)).setTile(Std.int(ssLoc.x), Std.int(ssLoc.y));
         }

@@ -19,6 +19,8 @@ class GraphicTest extends haxe.unit.TestCase {
 
   }
 
+  //TODO: adjusting w should adjust pivot also.
+
   public function testInit() {
     assertEquals(g.x, 200);
     assertEquals(g.y, 200);
