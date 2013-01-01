@@ -1,7 +1,10 @@
 import starling.core.Starling;
 import starling.events.Event;
 import starling.display.Sprite;
+
+#if profile
 import com.sociodox.theminer.TheMiner;
+#end
 
 import flash.display.Stage;
 
@@ -84,22 +87,15 @@ class Fathom {
         // MCs must be added to the container MC.
 
         Fathom.starling = new Starling(RootEntity, stage);
+#if profile
         Fathom.starling.showStats = true;
+#end
         Fathom.starling.start();
 
         Fathom.stage = stage;
         Fathom.initialized = true;
         Fathom.FPS = FPS;
         Fathom.cb = cb;
-
-        /*
-        fpsFn = Hooks.fpsCounter();
-        fpsTxt = new Text();
-        fpsTxt.addGroups("no-camera", "non-blocking");
-        fpsTxt.setPos(new Vec(200, 20));
-        fpsTxt.width = 200;
-        //fpsTxt.visible = false;
-        */
 
         MagicKeyObject._initializeKeyInput();
         grid = new SpatialHash(Fathom.entities.select([]));
@@ -117,7 +113,8 @@ class Fathom {
     /* This stops everything. The only conceivable use would be
        possibly for some sort of end game situation. */
     static public function stop() : Void {
-        container.removeEventListener(Event.ENTER_FRAME, update);
+        sContainer.removeEventListener(Event.ENTER_FRAME, update);
+        Fathom.starling.stop();
     }
 
     static public function anythingAt(x : Int, y : Int) : Bool {
@@ -202,16 +199,18 @@ class Fathom {
     static function update(event : Event) : Void {
         // We copy the entity list so that it doesn't change while we're
         // iterating through it.
-        var list : Set<Entity> = entities.select([]);
+        var list : Set<Entity> = entities.clone();
         // Similarly, if something changes the current mode, that shouldn't
         // be reflected until the next update cycle.
         var cachedMode : Int = currentMode;
+
         updateFPS();
         moveEverything();
         for (e in list) {
             if (!e.modes().has(cachedMode)) {
                 continue;
             }
+
             // This acts as a pseudo garbage-collector. We separate out the
             // destroyed() call from the clearMemory() call because we sometimes
             // want to destroy() an item halfway through this update() call, so the
@@ -226,7 +225,8 @@ class Fathom {
 
         Particles.updateAll();
 
-        if(mapRef.modes().has(cachedMode))  {
+        //TODO: map should just be another Entity.
+        if(mapRef != null && mapRef.modes().has(cachedMode))  {
             mapRef.update();
         }
 
@@ -251,9 +251,8 @@ class RootEntity extends Sprite {
 
         // Can't initialize the Cam until the container is initialized...
         Fathom._camera = new Camera(Fathom.stage).scaleBy(1).setEaseSpeed(3);
-        Fathom.cb();
-
         Fathom.start();
+        Fathom.cb();
 
 #if profile
         flash.Lib.current.addChild(new TheMiner());

@@ -44,8 +44,8 @@ class Camera extends Rect {
     // This just helps us fix a bug we may encounter.
     var isFocused : Bool;
     // The Rect we extend from is the area from the game the camera displays.
-        // TODO: This camera does not at all take into consideration non-square
-        // dimensions. That would make life a bit harder.
+    // TODO: This camera does not at all take into consideration non-square
+    // dimensions. That would make life a bit harder.
     public function new(stage : Stage) {
         CAM_LAG = 90;
         camBoundingRect = null;
@@ -55,6 +55,8 @@ class Camera extends Rect {
         FOLLOW_MODE_SLIDE = 1;
         followMode = FOLLOW_MODE_SLIDE;
         isFocused = false;
+        Util.assert(stage.stageWidth == stage.stageHeight, "Non-square dimensions not supported for Cam. Sorry :(");
+
         super(0, 0, stage.stageWidth / Fathom.scaleX, stage.stageHeight / Fathom.scaleY);
         this.normalWidth = this.width;
         this.normalHeight = this.height;
@@ -145,21 +147,21 @@ class Camera extends Rect {
     }
 
     // Set the bounding rectangle that the camera can't move outside of.
-        // We reduce the size so that we can compare the center coordinate of the
-        // camera to see if it's in bounds.
-        public function setFocalBoundingRect(val : Rect) : Rect {
+    // We reduce the size so that we can compare the center coordinate of the
+    // camera to see if it's in bounds.
+    public function setFocalBoundingRect(val : Rect) : Rect {
         camBoundingRect = val;
         return val;
     }
 
     // Since the focalBoundingRect depends on the width and height, we need to
-        // recalculate it every time someone calls this getter method.
-        public function getFocalBoundingRect() : Rect {
+    // recalculate it every time someone calls this getter method.
+    public function getFocalBoundingRect() : Rect {
         return new Rect(camBoundingRect.x + this.width / 2, camBoundingRect.y + this.height / 2, camBoundingRect.width - this.width, camBoundingRect.height - this.height);
     }
 
     // Sets the center of the Camera to look at `loc`.
-        public function setFocus(loc : Vec) : Void {
+    public function setFocus(loc : Vec) : Void {
         this.isFocused = true;
         goalFocalX = (isBound()) ? bind(loc.x, focalBoundingRect.x, focalBoundingRect.right) : loc.x;
         goalFocalY = (isBound()) ? bind(loc.y, focalBoundingRect.y, focalBoundingRect.bottom) : loc.x;

@@ -160,19 +160,17 @@ class Graphic implements IPositionable {
             cachedAssets.set(classAsKey, fullTexture);
         }
 
-        texturedObject = new Image(fullTexture);
-        texturedObject.x = 0;
-        texturedObject.y = 0;
-        texturedObject.width = width;
-        texturedObject.height = height;
-
-        texturedObject.pivotX = texturedObject.width  / 2;
-        texturedObject.pivotY = texturedObject.height / 2;
-
-        sprite.addChild(texturedObject);
-
         if (whichTile == null)     whichTile = new Vec(0, 0);
         if (tileDimension == null) tileDimension = new Vec(fullTexture.nativeWidth, fullTexture.nativeHeight);
+
+        texturedObject = new Image(fullTexture);
+        texturedObject.width  = tileDimension.x;
+        texturedObject.height = tileDimension.y;
+
+        texturedObject.x = 0;
+        texturedObject.y = 0;
+
+        sprite.addChild(texturedObject);
 
         tileWidth  = Std.int(tileDimension.x);
         tileHeight = Std.int(tileDimension.y);
@@ -226,6 +224,9 @@ class Graphic implements IPositionable {
      *  Don't use it in an actal game!
      */
     public function getPixel(x:Int, y:Int) : UInt {
+        sprite.x = 0;
+        sprite.y = 0;
+
         var bd:BitmapData = new BitmapData(Std.int(Fathom.stage.width), Std.int(Fathom.stage.height));
         bd.draw(Fathom.stage);
         var b:Bitmap = new Bitmap(bd);
@@ -238,6 +239,7 @@ class Graphic implements IPositionable {
     // Pass in the x-coordinate of your velocity, and this'll orient
     // the Graphic in that direction.
     public function face(dir : Int) : Void {
+        Util.assert(false, "under construction");
         texturedObject.scaleX = dir;
     }
 
