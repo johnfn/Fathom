@@ -2,19 +2,15 @@ import flash.display.BitmapData;
 import Graphic;
 
 class GraphicTest extends haxe.unit.TestCase {
-  var g:Graphic;
-
-  override public function hasGlobalSetup(): Bool {
-    return false;
-  }
+  var g:Entity;
 
   override public function setup() {
-    g = new Graphic(200, 200, 100, 100);
+    g = new Entity(200, 200, 100, 100);
     g.loadSpritesheet(AllTests.MyBitmapData, new Vec(2, 2));
     g.setTile(0, 0);
   }
 
-  override public function globalTearDown() {
+  override public function globalTeardown() {
     Fathom.stop();
   }
 
@@ -23,8 +19,8 @@ class GraphicTest extends haxe.unit.TestCase {
   }
 
   public function testInit() {
-    assertEquals(g.x, 0);
-    assertEquals(g.y, 0);
+    assertEquals(g.x, 200);
+    assertEquals(g.y, 200);
   }
 
   public function testImageLoading() {

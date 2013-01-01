@@ -1,4 +1,5 @@
 import starling.display.Image;
+import starling.core.Starling;
 import starling.textures.Texture;
 import starling.display.Sprite;
 import starling.display.DisplayObjectContainer;
@@ -8,7 +9,9 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.geom.Matrix;
 import starling.events.Event;
+import starling.core.RenderSupport;
 import flash.utils.TypedDictionary;
+import flash.display.Stage3D;
 
 import Hooks;
 import Util;
@@ -224,16 +227,25 @@ class Graphic implements IPositionable {
      *  Don't use it in an actal game!
      */
     public function getPixel(x:Int, y:Int) : UInt {
-        var bd:BitmapData = new BitmapData(Std.int(Fathom.stage.stageWidth), Std.int(Fathom.stage.stageHeight));
-        bd.draw(flash.Lib.current.stage);
+        var sw: Int = flash.Lib.current.stage.stageWidth;
+        var sh: Int = flash.Lib.current.stage.stageHeight;
 
-        var b:Bitmap = new Bitmap(bd);
-        Fathom.stage.addChild(b);
-        b.x = 200;
-        b.y = 200;
+        var support:RenderSupport = new RenderSupport();
+        RenderSupport.clear(flash.Lib.current.stage.color, 1.0);
+        support.setOrthographicProjection(0, 0, sw, sh);
+        Fathom.starling.stage.render(support, 1.0);
+        support.finishQuadBatch();
 
-        return bd.getPixel(2, 2);
-        //return bd.getPixel(Std.int(sprite.x) + x, Std.int(sprite.y) + y);
+        var result:BitmapData = new BitmapData(sw, sh, true);
+        Starling.context.drawToBitmapData(result);
+
+        var b:Bitmap = new Bitmap(result);
+
+        flash.Lib.current.stage.addChild(b);
+        b.x = 300;
+        b.y = 300;
+
+        return result.getPixel(Std.int(sprite.x) + x, Std.int(sprite.y) + y);
     }
 #end
 
