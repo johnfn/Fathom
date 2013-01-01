@@ -239,12 +239,6 @@ class Graphic implements IPositionable {
         var result:BitmapData = new BitmapData(sw, sh, true);
         Starling.context.drawToBitmapData(result);
 
-        var b:Bitmap = new Bitmap(result);
-
-        flash.Lib.current.stage.addChild(b);
-        b.x = 300;
-        b.y = 300;
-
         return result.getPixel(Std.int(sprite.x) + x, Std.int(sprite.y) + y);
     }
 #end

@@ -4,15 +4,16 @@ import Graphic;
 class GraphicTest extends haxe.unit.TestCase {
   var g:Entity;
 
-  override public function setup() {
+  override public function globalSetup() {
     g = new Entity(200, 200, 100, 100);
     g.loadSpritesheet(AllTests.MyBitmapData, new Vec(2, 2));
     g.setTile(0, 0);
   }
 
   override public function globalTeardown() {
-    Fathom.stop();
+    Fathom.destroyAll();
   }
+
 
   override public function tearDown() {
 

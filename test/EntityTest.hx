@@ -9,8 +9,6 @@ class EntityTest extends haxe.unit.TestCase {
   var e3:Entity;
 
   override public function setup() {
-    Fathom.initialize(flash.Lib.current.stage);
-
     e1 = new Entity(0, 0, 10, 10).addGroups(["a"]);
     e2 = new Entity(0, 0, 10, 10).addGroups(["b"]);
     e3 = new Entity(0, 0, 10, 10).addGroups(["c"]);
@@ -42,7 +40,7 @@ class EntityTest extends haxe.unit.TestCase {
       p = p.parent;
     }
 
-    assertEquals(p, Fathom.sContainer);
+    assertEquals(p, Fathom.starling.stage);
   }
 
   public function testAddRemove() {

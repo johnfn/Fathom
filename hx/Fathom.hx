@@ -107,7 +107,6 @@ class Fathom {
 
     static public function destroyAll(): Void {
         Fathom.entities = new Set();
-        Fathom.container = null;
     }
 
     /* This stops everything. The only conceivable use would be
