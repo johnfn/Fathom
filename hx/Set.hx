@@ -1,4 +1,3 @@
-import flash.utils.Proxy;
 import flash.utils.TypedDictionary;
 
 // TODO: High level stuff - should have some consistency with mutable/immutable
@@ -7,7 +6,7 @@ import flash.utils.TypedDictionary;
 class Set<T> {
     public var length(getLength, never) : Int;
 
-    var contents : TypedDictionary<T, Bool>;
+    var contents : ObjectHash<T, Bool>;
     var _length : Int;
 
     public function new(init : Array<T> = null) {
@@ -32,9 +31,6 @@ class Set<T> {
     }
 
     public function add(item : T) : Void {
-        //if(startedIterating && !iterationList.has(item))  {
-        //    iterationList.push(item);
-        //}
         if (!has(item)) {
           _length++;
         }

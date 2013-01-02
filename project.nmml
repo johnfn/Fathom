@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="Fathom Tests" package="com.joshuagranick.haxe.actuateexample" version="1.0.0" company="Fathom" />
+	<app main="AllTests" path="Export" />
+	
+	<source path="hx" />
+	<source path="test" />
+	
+	<haxelib name="nme" />
+	
+	<assets path="test" include="*" exclude="nme.svg" />
+	
+  <!--
+	<icon path="Assets/nme.svg" />
+  -->
+	
+</project>

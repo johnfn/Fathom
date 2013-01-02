@@ -4,12 +4,12 @@ import Graphic;
 class CameraTest extends haxe.unit.TestCase {
   var g:Entity;
 
-  override public function globalSetup() {
+  override public function setup() {
     g = new Entity(0, 0, 100, 100);
     g.loadSpritesheet(AllTests.TestAnimation, new Vec(16, 16), new Vec(0, 0));
   }
 
-  override public function globalTeardown() {
+  override public function tearDown() {
     Fathom.destroyAll();
   }
 
@@ -19,6 +19,27 @@ class CameraTest extends haxe.unit.TestCase {
 
     assertEquals(bd.getPixel(0, 0), 0xff0000);
   }
+
+  public function testMove() {
+    Fathom._camera.setFocus(new Vec(Std.int(Fathom.stage.stageWidth / 2), Std.int(Fathom.stage.stageHeight / 2)));
+
+    g.setPos(new Vec(5, 5));
+    Fathom._camera.update();
+
+    assertEquals(g.HACK_sprite().x, 5);
+    assertEquals(g.HACK_sprite().y, 5);
+  }
+
+  public function failingTestMove2() {
+    Fathom._camera.setFocus(new Vec(Std.int(Fathom.stage.stageWidth / 2), Std.int(Fathom.stage.stageHeight / 2)));
+
+    g.setPos(new Vec(5, 5));
+    //Fathom._camera.update();
+
+    assertEquals(g.HACK_sprite().x, 5);
+    assertEquals(g.HACK_sprite().y, 5);
+  }
+
 
   /*
   No idea how to test this!
