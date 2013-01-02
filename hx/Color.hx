@@ -33,15 +33,15 @@ class Color {
         return new Color(r, g, b);
     }
 
-    public function read(s : String) : Color {
+    public static function read(s : String) : Color {
         s = s.substring(1);
-        r = Std.parseInt("0x" + s.substring(0, 2));
-        g = Std.parseInt("0x" + s.substring(2, 4));
-        b = Std.parseInt("0x" + s.substring(4, 6));
-        return this;
+        var r:Int = Std.parseInt("0x" + s.substring(0, 2));
+        var g:Int = Std.parseInt("0x" + s.substring(2, 4));
+        var b:Int = Std.parseInt("0x" + s.substring(4, 6));
+        return new Color(r, g, b);
     }
 
-    public function eq(c : Color) : Bool {
+    public function equals(c : Color) : Bool {
         return r == c.r && g == c.g && b == c.b && a == c.a;
     }
 

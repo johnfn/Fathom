@@ -1,5 +1,6 @@
 #if nme
 import nme.display.Sprite;
+import nme.display.Shape;
 #else
 import starling.display.Sprite;
 import flash.display.BitmapData;
@@ -33,7 +34,6 @@ class AllTests extends Sprite {
 #end
 
         var r = new haxe.unit.TestRunner();
-
         r.add(new SetTest());
 #if flash9
         r.add(new RectTest());
@@ -44,7 +44,9 @@ class AllTests extends Sprite {
         r.add(new MapTest());
         r.add(new AnimationTest());
         r.add(new CameraTest());
+        r.add(new ColorTest());
 #end
+
         r.run();
     }, 250);
 
