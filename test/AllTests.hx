@@ -37,11 +37,10 @@ class AllTests extends Sprite {
 
         r.add(new SetTest());
         r.add(new SuperObjectHashTest());
-#if flash9
         r.add(new RectTest());
         r.add(new VecTest());
+#if flash9
         r.add(new GraphicTest());
-
         r.add(new EntityTest());
         r.add(new MapTest());
         r.add(new AnimationTest());

@@ -111,6 +111,8 @@ class SuperObjectHash<Key, Val> {
 		return keys();
 	}
 
-	// dont even bother overriding ObjectHash#values - it's exactly the same.
-
+	public function values():Iterator<Val> {
+		if (primKey == NotPrimitive) return backingHash.iterator();
+		return primitiveHashTable.iterator();
+	}
 }
