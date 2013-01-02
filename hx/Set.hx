@@ -48,7 +48,7 @@ class Set<T> {
     }
 
     public function has(item : T) : Bool {
-        return false;
+        return contents.exists(item);
     }
 
     /*
