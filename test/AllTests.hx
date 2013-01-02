@@ -33,15 +33,10 @@ class AllTests extends Sprite {
         Fathom.camera.setFocus(new Vec(flash.Lib.current.stage.stageWidth/2, flash.Lib.current.stage.stageHeight/2));
 #end
 
-        trace(Type.typeof(5));
-        trace(Type.typeof("f"));
-        trace(Type.typeof(5.03));
-        trace(Type.typeof(true));
-
         var r = new haxe.unit.TestRunner();
 
-        r.add(new SetTest());
         r.add(new SuperObjectHashTest());
+        r.add(new SetTest());
 #if flash9
         r.add(new RectTest());
         r.add(new VecTest());

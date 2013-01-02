@@ -1,4 +1,8 @@
+#if flash
+import ObjectHash;
+#else
 import nme.ObjectHash;
+#end
 
 /**
   * SuperObjectHash is like ObjectHash, but it supports primitive values
@@ -17,25 +21,17 @@ enum PrimType {
 	DontKnow;
 }
 
-typedef Primitive = {
-	var type:PrimType;
-
-	@:optional var intValue:Int;
-	@:optional var strValue:String;
-	@:optional var floatValue:Float;
-	@:optional var boolValue:Bool;
-};
-
-
 // Subtle problem - we can't directly extend ObjectHash because we don't
 // have the same Key, Val values as the ObjectHash we would extend at all times.
 class SuperObjectHash<Key, Val> {
 	var primKey:PrimType;
-	var objHash:ObjectHash<Dynamic, Val>;
+	var backingHash:ObjectHash<Dynamic, Val>;
+	var primitiveHashTable:Hash<Val>;
 
 	public function new() {
 		primKey = DontKnow;
-		objHash = new ObjectHash();
+		backingHash = new ObjectHash();
+		primitiveHashTable = new Hash();
 	}
 
 	function setPrimitiveType(k:Key) {
@@ -50,22 +46,16 @@ class SuperObjectHash<Key, Val> {
 		}
 	}
 
-	function constructNonPrimitiveKey(k: Key):Dynamic {
-		switch (primKey) {
-			case IntType: return {type: IntType, intValue: cast(k, Int)};
-			case StringType: return {type: StringType, strValue: cast(k, String)};
-			case FloatType: return {type: FloatType, floatValue: cast(k, Float)};
-			case BoolType: return {type: BoolType, boolValue: cast(k, Bool)};
-			default: return k;
-		}
+	function hashPrimitiveKey(k: Key):String {
+		return Std.string(k);
 	}
 
 	function grabPrimitiveValue(p: Dynamic): Key untyped {
 		switch (primKey) {
-			case IntType: return p.intValue;
-			case StringType: return p.strValue;
-			case FloatType: return p.floatValue;
-			case BoolType: return p.boolValue;
+			case IntType: return Std.parseInt(p);
+			case StringType: return p;
+			case FloatType: return Std.parseFloat(p);
+			case BoolType: return p == "true" ? true : false;
 			default: return p;
 		}
 	}
@@ -74,44 +64,51 @@ class SuperObjectHash<Key, Val> {
 		if (primKey == DontKnow) setPrimitiveType(k);
 
 		if (primKey == NotPrimitive) {
-			objHash.set(k, v);
+			backingHash.set(k, v);
 		} else {
-			objHash.set(constructNonPrimitiveKey(k), v);
+			primitiveHashTable.set(hashPrimitiveKey(k), v);
 		}
 	}
 
 	public function get(k: Key): Val {
 		if (primKey == DontKnow) setPrimitiveType(k);
 
-		return objHash.get(constructNonPrimitiveKey(k));
+		if (primKey == NotPrimitive) {
+			return backingHash.get(k);
+		} else {
+			return primitiveHashTable.get(hashPrimitiveKey(k));
+		}
 	}
 
 	public function exists(k: Key): Bool {
 		if (primKey == DontKnow) setPrimitiveType(k);
-		if (primKey == NotPrimitive) return objHash.exists(k);
 
-		return objHash.exists(constructNonPrimitiveKey(k));
+		if (primKey == NotPrimitive) {
+			return backingHash.exists(k);
+		} else {
+			return primitiveHashTable.exists(hashPrimitiveKey(k));
+		}
 	}
 
 	public function delete(k: Key): Void {
 		if (primKey == DontKnow) setPrimitiveType(k);
 
-		objHash.remove(constructNonPrimitiveKey(k));
+		if (primKey == NotPrimitive) {
+			backingHash.remove(k);
+		} else {
+			primitiveHashTable.remove(hashPrimitiveKey(k));
+		}
 	}
 
 	// This one is a little harder because we have to sneakily
 	// modify the values on the fly.
-	public function keys(): Iterator<Key> {
-		var itr:Iterator<Key> = objHash.keys();
+	public function keys(): Iterator<Key> untyped {
+		if (primKey == NotPrimitive) return backingHash.keys();
+		return primitiveHashTable.iterator();
+	}
 
-		if (primKey == NotPrimitive) return itr;
-
-		// The wonderful idea of just creating & returning an Iterator object
-		// on the fly was borrowed from ObjectHash. It's a prime example of how
-		// Haxe strikes a balance between JS and Java.
-		return { hasNext: function() return itr.hasNext()
-					 , next: function() return grabPrimitiveValue(itr.next())
-					 };
+	public function iterator():Iterator<Key> {
+		return keys();
 	}
 
 	// dont even bother overriding ObjectHash#values - it's exactly the same.
