@@ -6,10 +6,12 @@ class Set<T> {
 
     var contents : ObjectHash<T, Bool>;
     var _length : Int;
+    var restrictedTypes:Array<String>;
 
     public function new(init : Array<T> = null) {
         contents = new ObjectHash();
         _length = 0;
+
         if(init == null)
             return;
 
@@ -46,9 +48,7 @@ class Set<T> {
     }
 
     public function has(item : T) : Bool {
-        // This looks redundant, but if we don't have the item
-        // contents[item] == undefined.
-        return contents.get(item) == true;
+        return false;
     }
 
     /*
@@ -68,7 +68,7 @@ class Set<T> {
     */
 
     public function extend(other : Set<T>) : Set<T> {
-        for(k in other.contents) {
+        for (k in other.contents.keys()) {
             add(k);
         }
 
@@ -99,7 +99,7 @@ class Set<T> {
     }
 
     public function first(): T {
-        for (k in contents) {
+        for (k in contents.keys()) {
             return k;
         }
 
@@ -109,7 +109,7 @@ class Set<T> {
 
     public function filter(f : T -> Bool) : Set<T> {
         var result : Set<T> = new Set<T>();
-        for(k in contents) {
+        for(k in contents.keys()) {
             if (f(k))  {
                 result.add(k);
             }
@@ -121,7 +121,7 @@ class Set<T> {
     public function map<T2>(f: T -> T2) : Set<T2> {
         var result: Set<T2> = new Set<T2>();
 
-        for (k in contents) {
+        for (k in contents.keys()) {
             result.add(f(k));
         }
 
@@ -134,7 +134,7 @@ class Set<T> {
 
     public function toArray() : Array<T> {
         var result : Array<T> = [];
-        for(k in contents) {
+        for (k in contents.keys()) {
             result.push(k);
         }
 

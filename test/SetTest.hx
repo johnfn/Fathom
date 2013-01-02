@@ -13,6 +13,21 @@ class SetTest extends haxe.unit.TestCase {
     assertEquals(s.length, 2);
   }
 
+  public function testHas() {
+    var s:Set<Int> = new Set<Int>();
+    for (x in 0...100) {
+      s.add(x);
+    }
+
+    for (x in 0...100) {
+      assertTrue(s.has(x));
+    }
+
+    for (x in 101...200) {
+      assertFalse(s.has(x));
+    }
+  }
+
   /*
   public function testEquality() {
     var o:Dynamic = {};
