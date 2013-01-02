@@ -4,12 +4,12 @@
 class Set<T> {
     public var length(getLength, never) : Int;
 
-    var contents : ObjectHash<T, Bool>;
+    var contents : SuperObjectHash<T, Bool>;
     var _length : Int;
     var restrictedTypes:Array<String>;
 
     public function new(init : Array<T> = null) {
-        contents = new ObjectHash();
+        contents = new SuperObjectHash();
         _length = 0;
 
         if(init == null)
