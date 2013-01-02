@@ -234,6 +234,13 @@ class Graphic implements IPositionable {
         var result:BitmapData = new BitmapData(sw, sh, true);
         Starling.context.drawToBitmapData(result);
 
+        /*
+        var b:Bitmap = new Bitmap(result);
+        Fathom.stage.addChild(b);
+        b.x = 200;
+        b.y = 200;
+        */
+
         return result;
     }
 
@@ -266,7 +273,6 @@ class Graphic implements IPositionable {
     //TODO...
     public function update() : Void {
         animations.advance();
-        Fathom.camera.translateSingleObject(this);
     }
 
     public function add(p : IPositionable) : Graphic {

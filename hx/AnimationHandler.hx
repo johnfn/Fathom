@@ -15,7 +15,8 @@ class AnimationHandler {
     public var currentFrame(getCurrentFrame, never): Int;
 
     var animations : TypedDictionary<String, Array<Array<Int>>>;
-    var currentAnimation : String;
+    //TODO -> public
+    public var currentAnimation : String;
     var _currentFrame : Int;
     var currentTick : Int;
     var _ticksPerFrame : Int;
@@ -93,14 +94,14 @@ class AnimationHandler {
             return;
         }
 
-        if (!animations.has(currentAnimation)) {
+        if (!animations.exists(currentAnimation)) {
             return;
         }
 
         var lastFrame : Int = _currentFrame;
         var cb : Bool = false;
 
-        // TODO: When/if I do issue #9, I should remove this.
+        // TODO: Whenif I do issue #9, I should remove this.
         ++currentTick;
         if(currentTick >= _ticksPerFrame)  {
             ++_currentFrame;
@@ -154,7 +155,7 @@ class AnimationHandler {
     }
 
     // Plays the animation, starting offsetInTicks ticks ahead of the
-        // beginning of the animation.
+    // beginning of the animation.
     public function playWithOffset(name : String, offsetInTicks : Int) : AnimationHandler {
         play(name);
         _currentFrame = Math.floor(offsetInTicks / _ticksPerFrame);

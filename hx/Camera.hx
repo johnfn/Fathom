@@ -6,10 +6,9 @@ import flash.display.Stage;
 import flash.utils.TypedDictionary;
 
 /*
-
-   * Entity Space: the coordinates you use 99% of the time.
-   * Camera Space: the coordinates of the sprite, post camera transformations.
-  */
+ *  Entity Space: the coordinates you use 99% of the time.
+ *  Camera Space: the coordinates of the sprite, post camera transformations.
+ */
 class Camera extends Rect {
     public var focalX(getFocalX, setFocalX) : Float;
     public var focalY(getFocalY, setFocalY) : Float;
@@ -307,6 +306,7 @@ class Camera extends Rect {
     public function translateSingleObject(s : Graphic) : Void {
         var camScaleX : Float = normalWidth / width;
         var camScaleY : Float = normalHeight / height;
+
         s.cameraSpaceX = (s.x - this.x) * camScaleX;
         s.cameraSpaceY = (s.y - this.y) * camScaleY;
     }

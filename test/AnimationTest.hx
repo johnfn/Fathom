@@ -1,21 +1,24 @@
 import flash.display.BitmapData;
+import flash.display.Bitmap;
 import Rect;
 
 using Lambda;
 
 class AnimationTest extends haxe.unit.TestCase {
-  var g:Graphic;
+  var g:Entity;
 
   // The animation test graphic looks like this:
   // RED BLACK GREEN WHITE
   override public function setup() {
-    g = new Graphic(0, 0);
+    g = new Entity(0, 0, 16, 16);
     g.loadSpritesheet(AllTests.TestAnimation, new Vec(16, 16), new Vec(0, 0));
     g.animations.ticksPerFrame = 1;
+
+    Fathom.camera.setFocus(new Vec(flash.Lib.current.stage.stageWidth/2, flash.Lib.current.stage.stageHeight/2));
   }
 
   override public function tearDown() {
-
+    Fathom.destroyAll();
   }
 
   public function testSimpleAnimations() {
@@ -53,6 +56,7 @@ class AnimationTest extends haxe.unit.TestCase {
 
     for (x in 0...3) {
       g.update();
+      //Fathom.stage.addChild(new Bitmap(Graphic.takeScreenshot()));
       assertEquals(g.animations.currentFrame, 0);
       assertEquals(g.getPixel(0, 0), 0xFF0000);
     }
