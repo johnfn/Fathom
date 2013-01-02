@@ -1,7 +1,6 @@
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.KeyboardEvent;
-import flash.utils.TypedDictionary;
 
 class MagicKeyObject {
     public var A(getA, never): Bool; function getA() { return getProperty("A"); }
@@ -64,7 +63,7 @@ class MagicKeyObject {
     }
 
     static function keysToKeyCodes() : Dynamic {
-        var res: TypedDictionary<String, Int> = new TypedDictionary();
+        var res: ObjectHash<String, Int> = new ObjectHash();
         res.set("Enter", 13);
         res.set("Space", 32);
         res.set("Left", 37);

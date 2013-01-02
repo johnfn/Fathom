@@ -1,6 +1,11 @@
 import Util;
+#if nme
+import nme.display.BitmapData;
+import nme.display.Sprite;
+#else
 import flash.display.BitmapData;
 import starling.display.Sprite;
+#end
 
 using Lambda;
 

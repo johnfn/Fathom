@@ -1,3 +1,12 @@
+#if nme
+import nme.display.Sprite;
+import nme.display.DisplayObjectContainer;
+import nme.display.Bitmap;
+import nme.display.BitmapData;
+import nme.geom.Point;
+import nme.geom.Rectangle;
+import nme.events.Event;
+#else
 import starling.display.Image;
 import starling.core.Starling;
 import starling.textures.Texture;
@@ -7,11 +16,9 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import flash.geom.Matrix;
 import starling.events.Event;
 import starling.core.RenderSupport;
-import flash.utils.TypedDictionary;
-import flash.display.Stage3D;
+#end
 
 import Hooks;
 import Util;
@@ -53,7 +60,7 @@ class Graphic implements IPositionable {
     var spritesheet : SpriteSheet;
     // TODO: Rename
     var _depth : Int;
-    static var cachedAssets : TypedDictionary<String, Texture> = new TypedDictionary();
+    static var cachedAssets : ObjectHash<String, Texture> = new ObjectHash();
     // Rename spritesheet
     var fullTexture : Texture;
     var tileWidth : Int;
@@ -222,18 +229,27 @@ class Graphic implements IPositionable {
     }
 
     public static function takeScreenshot(): BitmapData {
-        var sw: Int = flash.Lib.current.stage.stageWidth;
-        var sh: Int = flash.Lib.current.stage.stageHeight;
+        var sw:Int, sh: Int;
+#if nme
+        Util.assert(false, "dont know how to get stage size yet");
+#else
+        sw = flash.Lib.current.stage.stageWidth;
+        sh = flash.Lib.current.stage.stageHeight;
+#end
 
+        var result:BitmapData = new BitmapData(sw, sh, true);
+
+#if nme
+        result.draw(flash.Lib.current.stage);
+#else
         var support:RenderSupport = new RenderSupport();
         RenderSupport.clear(flash.Lib.current.stage.color, 1.0);
         support.setOrthographicProjection(0, 0, sw, sh);
         Fathom.starling.stage.render(support, 1.0);
         support.finishQuadBatch();
 
-        var result:BitmapData = new BitmapData(sw, sh, true);
         Starling.context.drawToBitmapData(result);
-
+#end
         /*
         var b:Bitmap = new Bitmap(result);
         Fathom.stage.addChild(b);

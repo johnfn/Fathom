@@ -1,9 +1,11 @@
-import flash.display.Sprite;
+#if nme
+import nme.geom.Point;
+import nme.geom.Rectangle;
+#else
 import flash.geom.Point;
-import flash.utils.TypedDictionary;
 import flash.geom.Rectangle;
-import flash.display.BitmapData;
-import flash.display.Bitmap;
+#end
+
 import Color;
 import Util;
 import Entity;
@@ -45,11 +47,11 @@ class Map extends Rect {
 
     public var collisionInfo : Array<Array<Bool>>;
     var topLeftCorner : Vec;
-    var exploredMaps : TypedDictionary<String, Bool>;
+    var exploredMaps : ObjectHash<String, Bool>;
     var _graphics : Entity;
     // Mapping between colors and items.
-    var persistentItemMapping : TypedDictionary<String, ItemDetail>;
-    var persistent : TypedDictionary<String, Array<Entity>>;
+    var persistentItemMapping : ObjectHash<String, ItemDetail>;
+    var persistent : ObjectHash<String, Array<Entity>>;
     public var sizeVector : Vec;
 
     public function new(widthInTiles : Int, heightInTiles : Int, tileSize : Int) {
@@ -57,9 +59,9 @@ class Map extends Rect {
         tiles = [];
         collisionInfo = [];
         topLeftCorner = new Vec(0, 0);
-        exploredMaps = new TypedDictionary();
-        persistentItemMapping = new TypedDictionary();
-        persistent = new TypedDictionary();
+        exploredMaps = new ObjectHash();
+        persistentItemMapping = new ObjectHash();
+        persistent = new ObjectHash();
         super(0, 0, widthInTiles * tileSize, heightInTiles * tileSize);
         Util.assert(widthInTiles == heightInTiles);
         this.sizeVector = new Vec(width, height);
@@ -374,7 +376,7 @@ class Map extends Rect {
         return this;
     }
 
-    static var cachedAssets : TypedDictionary<String, Dynamic> = new TypedDictionary();
+    static var cachedAssets : ObjectHash<String, Dynamic> = new ObjectHash();
 
     public function loadNewMap(diff : Vec) : Map {
         collisionInfo = Util.make2DArray(widthInTiles, heightInTiles, false);

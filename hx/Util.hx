@@ -1,7 +1,6 @@
 import flash.events.KeyboardEvent;
 import flash.display.DisplayObject;
 import flash.display.Sprite;
-import flash.system.FSCommand;
 import haxe.Stack;
 
 class Util {

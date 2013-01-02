@@ -1,5 +1,3 @@
-import flash.utils.TypedDictionary;
-
 // TODO: High level stuff - should have some consistency with mutable/immutable
 // function calls.
 // This class mimics the Set data type found in languages like Python.
@@ -10,7 +8,7 @@ class Set<T> {
     var _length : Int;
 
     public function new(init : Array<T> = null) {
-        contents = new TypedDictionary();
+        contents = new ObjectHash();
         _length = 0;
         if(init == null)
             return;
