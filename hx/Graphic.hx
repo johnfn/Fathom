@@ -39,7 +39,16 @@ typedef SpriteSheet = {
  */
 
 class Graphic implements IPositionable {
+#if nme
+    var texturedObject:Bitmap;
+    static var cachedAssets: ObjectHash<String, BitmapData> = new ObjectHash();
+    var fullTexture : BitmapData;
+#else
     var texturedObject:Image;
+    static var cachedAssets: ObjectHash<String, Texture> = new ObjectHash();
+    var fullTexture : Texture;
+#end
+
     var sprite:Sprite;
 
     public var spriteX(getSpriteX, never) : Int;
@@ -60,9 +69,6 @@ class Graphic implements IPositionable {
     var spritesheet : SpriteSheet;
     // TODO: Rename
     var _depth : Int;
-    static var cachedAssets : ObjectHash<String, Texture> = new ObjectHash();
-    // Rename spritesheet
-    var fullTexture : Texture;
     var tileWidth : Int;
     var tileHeight : Int;
 
@@ -201,14 +207,6 @@ class Graphic implements IPositionable {
         return this;
     }
 
-    public function getTexture(): Texture {
-        return texturedObject.texture;
-    }
-
-    public function setTexture(t: Texture): Texture {
-        return texturedObject.texture = t;
-    }
-
     /*
     public function getPixels(): Bitmap {
         return pixels;
@@ -265,7 +263,7 @@ class Graphic implements IPositionable {
     /** This method should only be used for testing.
      *  Don't use it in an actual game!
      */
-    public function getPixel(x:Int, y:Int) : UInt {
+    public function getPixel(x:Int, y:Int): Int {
         return takeScreenshot().getPixel(Std.int(sprite.x) + x, Std.int(sprite.y) + y);
     }
 #end

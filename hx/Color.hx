@@ -45,7 +45,7 @@ class Color {
         return r == c.r && g == c.g && b == c.b && a == c.a;
     }
 
-    public function toInt() : UInt {
+    public function toInt() : Int {
         return Std.parseInt("0x" + toString().substring(1));
     }
 
