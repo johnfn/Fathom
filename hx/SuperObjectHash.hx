@@ -104,7 +104,7 @@ class SuperObjectHash<Key, Val> {
 	// modify the values on the fly.
 	public function keys(): Iterator<Key> untyped {
 		if (primKey == NotPrimitive) return backingHash.keys();
-		return primitiveHashTable.iterator();
+		return primitiveHashTable.keys();
 	}
 
 	public function iterator():Iterator<Key> {

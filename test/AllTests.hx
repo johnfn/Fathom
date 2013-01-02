@@ -35,8 +35,8 @@ class AllTests extends Sprite {
 
         var r = new haxe.unit.TestRunner();
 
-        r.add(new SuperObjectHashTest());
         r.add(new SetTest());
+        r.add(new SuperObjectHashTest());
 #if flash9
         r.add(new RectTest());
         r.add(new VecTest());

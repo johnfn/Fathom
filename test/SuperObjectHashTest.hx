@@ -18,6 +18,19 @@ class SuperObjectHashTest extends haxe.unit.TestCase {
     }
   }
 
+  public function testWhyIsSetBreaking() {
+    var soh:SuperObjectHash<Int, Bool> = new SuperObjectHash();
+    soh.set(1, true);
+    soh.set(2, false);
+    soh.set(3, false);
+    soh.set(4, true);
+
+    assertEquals(soh.get(1), true);
+    assertEquals(soh.get(2), false);
+    assertEquals(soh.get(3), false);
+    assertEquals(soh.get(4), true);
+  }
+
   public function testPrimitiveBasicInt() {
     var soh:SuperObjectHash<Int, Int> = new SuperObjectHash();
 

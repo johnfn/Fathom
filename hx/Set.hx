@@ -134,6 +134,7 @@ class Set<T> {
 
     public function toArray() : Array<T> {
         var result : Array<T> = [];
+
         for (k in contents.keys()) {
             result.push(k);
         }
@@ -154,7 +155,7 @@ class Set<T> {
     }
 
     public function iterator() : Iterator<T> {
-        return new Set.SetIter(this);
+        return contents.iterator();
     }
 
     public function select(criteria: Array<T -> Bool>) : Set<T> {
@@ -223,22 +224,4 @@ class Set<T> {
         }
     }
 
-}
-
-class SetIter<T> {
-    var contents:Array<T>;
-    var loc:Int;
-
-    public function new(s:Set<T>) {
-        contents = s.toArray();
-        loc = 0;
-    }
-
-    public function hasNext() {
-        return loc < contents.length;
-    }
-
-    public function next() {
-        return contents[loc++];
-    }
 }
