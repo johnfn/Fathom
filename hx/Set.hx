@@ -41,7 +41,7 @@ class Set<T> {
             throw "Set#remove called on non-existant item";
         }
 
-        untyped __delete__(contents, item);
+        contents.delete(item);
         _length--;
     }
 

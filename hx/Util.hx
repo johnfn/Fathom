@@ -81,6 +81,7 @@ class Util {
 			// result = result.slice(0, -2) + " ";
 			result += "}";
 		} else if (Util.className(o) == "flash.utils.TypedDictionary") {
+#if flash
 			var td:flash.utils.TypedDictionary<Dynamic, Dynamic> = cast(o, flash.utils.TypedDictionary<Dynamic, Dynamic>);
 			result = "{ ";
 
@@ -91,7 +92,9 @@ class Util {
 			}
 
 			result += "}";
-
+#else
+			result = "WHAT IN GODS NAME HAPPENED HERE.";
+#end
 		} else if(Util.className(o) == "Array")  {
 			var arr : Array<Dynamic> = try cast(o, Array<Dynamic>) catch(e:Dynamic) null;
 			result = "[";

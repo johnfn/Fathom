@@ -1,6 +1,4 @@
 import flash.display.Sprite;
-import flash.utils.TypedDictionary;
-
 
 typedef ParticleData = {life: Int, totalLife: Int, vel: Vec, x: Int, y: Int};
 
@@ -27,7 +25,7 @@ class Particles {
     var velYLow : Float;
     var velYHigh : Float;
     var stopParticleGen : Int;
-    var particleData : TypedDictionary<Entity, ParticleData>;
+    var particleData : ObjectHash<Entity, ParticleData>;
     var animated : Bool;
     var animationFrames : Array<Array<Int>>;
 
@@ -52,7 +50,7 @@ class Particles {
         velYLow = 1;
         velYHigh = 4;
         stopParticleGen = -1;
-        particleData = new TypedDictionary();
+        particleData = new ObjectHash();
         animated = false;
         this.baseMC = baseMC;
         particleEffects.push(this);
@@ -153,14 +151,14 @@ class Particles {
     }
 
     // This terminates the entire Particle generator, not individual particles.
-        // Time is in frames.
-        public function thatStopsAfter(time : Int) : Particles {
+    // Time is in frames.
+    public function thatStopsAfter(time : Int) : Particles {
         stopParticleGen = time;
         return this;
     }
 
-    function killParticle(p : Sprite) : Void {
-        untyped __delete__(particleData, p);
+    function killParticle(p : Entity) : Void {
+        particleData.delete(p);
     }
 
     static public function removeParticleEffect(p : Particles) : Void {
@@ -242,7 +240,7 @@ class Particles {
             var lifeLeft : Int = data.get("life");
             // Kill the particle, if necessary.
             if(lifeLeft == 0 || (animated && pObj.animations.lastFrame()))  {
-                untyped __delete__(particleData, pObj);
+                particleData.delete(pObj);
                 deadParticles.push(pObj);
                 if(animated)  {
                     pObj.animations.stop();

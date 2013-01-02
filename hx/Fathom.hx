@@ -1,6 +1,11 @@
+#if flash
 import starling.core.Starling;
 import starling.events.Event;
 import starling.display.Sprite;
+#else
+import flash.events.Event;
+import flash.display.Sprite;
+#end
 
 #if profile
 import com.sociodox.theminer.TheMiner;
@@ -20,7 +25,9 @@ class Fathom {
 
     static public var sContainer:Sprite;
 
+#if flash
     static public var starling:Starling;
+#end
     static public var cb:Void -> Void;
 
     static var gameloopID : Int;
@@ -86,11 +93,13 @@ class Fathom {
         // Inside of the Entity constructor, we assert Fathom.initialized, because all
         // MCs must be added to the container MC.
 
+#if flash
         Fathom.starling = new Starling(RootEntity, stage);
-#if profile
+    #if profile
         Fathom.starling.showStats = true;
-#end
+    #end
         Fathom.starling.start();
+#end
 
         Fathom.stage = stage;
         Fathom.initialized = true;
@@ -113,7 +122,9 @@ class Fathom {
        possibly for some sort of end game situation. */
     static public function stop() : Void {
         sContainer.removeEventListener(Event.ENTER_FRAME, update);
+#if flash
         Fathom.starling.stop();
+#end
     }
 
     static public function anythingAt(x : Int, y : Int) : Bool {

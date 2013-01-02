@@ -141,7 +141,7 @@ class Map extends Rect {
     }
 
     function isGround(c : String, s : String) : Bool {
-        return grounds.has(c) && c.toString() != s;
+        return grounds.has(c) && c != s;
     }
 
     function fancyProcessing(itemData : ItemDetail, c : String, x : Int, y : Int) : Vec {
@@ -149,7 +149,7 @@ class Map extends Rect {
         if(itemData.roundOutEdges) {
             var locX : Int = Std.int(topLeftCorner.x) + x;
             var locY : Int = Std.int(topLeftCorner.y) + y;
-            if(locY == 0 || data[locX][locY - 1].toString() != c.toString())  {
+            if(locY == 0 || data[locX][locY - 1].toString() != c)  {
                 result.y--;
             }
             if(locX == 0 || data[locX - 1][locY].toString() != c)  {

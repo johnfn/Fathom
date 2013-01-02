@@ -130,6 +130,7 @@ class Graphic implements IPositionable {
     // Set this entities graphics to be the sprite at (x, y) on the provided spritesheet.
     public function setTile(x : Int, y : Int) : Graphic {
         Util.assert(fullTexture != null, "The spritesheet is null.");
+#if flash
         spritesheet.x = x;
         spritesheet.y = y;
 
@@ -141,7 +142,9 @@ class Graphic implements IPositionable {
         if(!animations.hasAnimation("default"))  {
             animations.addAnimation("default", x, y, 1);
         }
-
+#else
+        Util.assert(false, "nope!");
+#end
         return this;
     }
 
@@ -163,6 +166,7 @@ class Graphic implements IPositionable {
         Util.assert(fullTexture == null);
         Util.assert(tileDimension == null || !tileDimension.equals(new Vec(0, 0)));
 
+#if flash
         var classAsKey:String = Type.getClassName(spritesheetClass);
         if (cachedAssets.exists(classAsKey)) {
             fullTexture = cachedAssets.get(classAsKey);
@@ -191,7 +195,9 @@ class Graphic implements IPositionable {
         tileHeight = Std.int(tileDimension.y);
 
         setTile(Std.int(whichTile.x), Std.int(whichTile.y));
-
+#else
+        Util.assert(false, "Nope.");
+#end
         return this;
     }
 
@@ -230,6 +236,7 @@ class Graphic implements IPositionable {
         var sw:Int, sh: Int;
 #if nme
         Util.assert(false, "dont know how to get stage size yet");
+        return null;
 #else
         sw = flash.Lib.current.stage.stageWidth;
         sh = flash.Lib.current.stage.stageHeight;

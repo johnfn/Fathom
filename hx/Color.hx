@@ -34,10 +34,12 @@ class Color {
     }
 
     public static function read(s : String) : Color {
-        s = s.substring(1);
-        var r:Int = Std.parseInt("0x" + s.substring(0, 2));
-        var g:Int = Std.parseInt("0x" + s.substring(2, 4));
-        var b:Int = Std.parseInt("0x" + s.substring(4, 6));
+        Util.assert(s.length == 7, "improperly formatted string passed to Color.read");
+
+        s = s.substr(1, 7);
+        var r:Int = Std.parseInt("0x" + s.substr(0, 2));
+        var g:Int = Std.parseInt("0x" + s.substr(2, 4));
+        var b:Int = Std.parseInt("0x" + s.substr(4, 6));
         return new Color(r, g, b);
     }
 
@@ -46,7 +48,7 @@ class Color {
     }
 
     public function toInt() : Int {
-        return Std.parseInt("0x" + toString().substring(1));
+        return Std.parseInt("0x" + toString().substr(1));
     }
 
     public function randomizeRed(low : Int = 0, high : Int = 255) : Color {

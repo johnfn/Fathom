@@ -3,7 +3,6 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.display.BitmapData;
 import flash.display.Stage;
-import flash.utils.TypedDictionary;
 
 /*
  *  Entity Space: the coordinates you use 99% of the time.
@@ -229,7 +228,7 @@ class Camera extends Rect {
     /* Adjust camera to follow the focus, and have the other points
        all also be visible. */
     public function follow(focus : Vec, points:Array<Vec>) : Void {
-        var VERY_BIG : Float = 99999999999;
+        var VERY_BIG : Float = 9999999;
         var left : Float = VERY_BIG;
         var right : Float = -VERY_BIG;
         var top : Float = VERY_BIG;
