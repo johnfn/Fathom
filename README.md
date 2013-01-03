@@ -8,9 +8,15 @@ On the NME side, we take advantage of the desktop environment. It's not quite th
 
 Fathom compiles to AS3 (via .swc), so you can use AS3 too. But you don't get that awesome hotswapping stuff. 
 
-Fathom is also tested! How cool is that.
-
 ## Cool stuff
 
 * `SuperObjectHash` - Did you know that Haxe doesn't provide a cross-platform TypedDictionary? `nme.ObjectHash` comes close, but silently screws up primitive key values (so `ObjectHash<Int, String>` would be a disaster). `SuperObjectHash` is what you want.
 * `Set` - A collection of unique items, with some handy high power functions.
+
+## Tests
+
+Fathom is also tested! How cool is that.
+
+To run the AS3 tests, use `./as3tests`.
+
+To run the NME tests, use `./nmetests`.

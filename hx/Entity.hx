@@ -53,7 +53,7 @@ class Entity extends Graphic {
 
     public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1, d:Sprite = null) {
         if(!Fathom.initialized)  {
-            throw "Util.initialize() has not been called. Failing.";
+            throw "Fathom.initialize() has not been called. Failing.";
         }
 
         entityChildren = [];
@@ -68,6 +68,8 @@ class Entity extends Graphic {
         if (d != null) {
             this.sprite = d;
         }
+
+        trace(Fathom.container);
 
         //TODO: I had this idea about how parents should bubble down events to children.
         // All Entities are added to the container, except the container itself, which
@@ -229,7 +231,7 @@ class Entity extends Graphic {
     }
 
     // We do some casting so you don't have to.
-    public override function loadSpritesheet<T: (BitmapData)>(spritesheetClass : Class<T>, tileDimension : Vec = null, whichTile : Vec = null) : Entity {
+    public override function loadSpritesheet(spritesheetClass: BitmapData, tileDimension : Vec = null, whichTile : Vec = null) : Entity {
         return cast(super.loadSpritesheet(spritesheetClass, tileDimension, whichTile), Entity);
     }
 

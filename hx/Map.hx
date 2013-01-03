@@ -1,9 +1,11 @@
 #if nme
 import nme.geom.Point;
 import nme.geom.Rectangle;
+import nme.display.BitmapData;
 #else
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import flash.display.BitmapData;
 #end
 
 import Color;
@@ -15,7 +17,7 @@ using Lambda;
 typedef ItemDetail = {
     var color: String;
     var spritesheet: Vec;
-    var gfx: Class<Dynamic>;
+    var gfx: Dynamic; //TODO - use type safety and BitmapData/Entity or something...
 
     // Optional settings
 

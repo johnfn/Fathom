@@ -162,16 +162,16 @@ class Graphic implements IPositionable {
      *  there's only one tile. whichTile is the tile that this Graphic will be; pass in
      *  null if you want to defer the decision by calling setTile() later.
      */
-    public function loadSpritesheet<T : (BitmapData)>(spritesheetClass : Class<T>, tileDimension : Vec = null, whichTile : Vec = null) : Graphic {
-        Util.assert(fullTexture == null);
-        Util.assert(tileDimension == null || !tileDimension.equals(new Vec(0, 0)));
+    public function loadSpritesheet(spritesheetObj: BitmapData, tileDimension : Vec = null, whichTile : Vec = null) : Graphic {
+        Util.assert(fullTexture == null, "fullTexture is already set.");
+        Util.assert(tileDimension == null || !tileDimension.equals(new Vec(0, 0)), "tileDimension can't be 0 by 0!");
 
 #if flash
-        var classAsKey:String = Type.getClassName(spritesheetClass);
+        var classAsKey:String = Type.getClassName(spritesheetObj);
         if (cachedAssets.exists(classAsKey)) {
             fullTexture = cachedAssets.get(classAsKey);
         } else {
-            fullTexture = Texture.fromBitmapData(Type.createInstance(spritesheetClass, [0, 0]));
+            fullTexture = Texture.fromBitmapData(spritesheetObj);
             cachedAssets.set(classAsKey, fullTexture);
         }
 
@@ -196,8 +196,12 @@ class Graphic implements IPositionable {
 
         setTile(Std.int(whichTile.x), Std.int(whichTile.y));
 #else
-        texturedObject = new Bitmap(spritesheetClass);
-        sprite.add(texturedObject);
+        texturedObject = new Bitmap(spritesheetObj);
+
+        trace(texturedObject.width);
+        trace(texturedObject.height);
+
+        sprite.addChild(texturedObject);
 #end
         return this;
     }

@@ -1,8 +1,4 @@
-#if flash
 import ObjectHash;
-#else
-import nme.ObjectHash;
-#end
 
 /**
   * SuperObjectHash is like ObjectHash, but it supports primitive values
@@ -105,7 +101,7 @@ class SuperObjectHash<Key, Val> {
 	}
 
 	public function keys(): Iterator<Key> {
-		if (primKey == NotPrimitive) return backingHash.keys().iterator();
+		if (primKey == NotPrimitive) return backingHash.keys();
 
 		var keyItr:Iterator<String> = primitiveHashTable.keys();
 

@@ -1,3 +1,6 @@
+//TODO...
+#if flash
+
 import flash.display.Sprite;
 
 typedef ParticleData = {life: Int, totalLife: Int, vel: Vec, x: Int, y: Int};
@@ -263,4 +266,14 @@ class Particles {
     }
 
 }
+#else
 
+//TODO
+
+class Particles {
+
+    public static function updateAll():Void {
+
+    }
+}
+#end

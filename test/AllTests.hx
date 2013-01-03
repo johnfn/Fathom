@@ -1,7 +1,8 @@
 #if nme
 import nme.display.Sprite;
-import nme.display.Shape;
+import nme.display.Bitmap;
 import nme.Assets;
+import nme.events.Event;
 #else
 import starling.display.Sprite;
 import flash.display.BitmapData;
@@ -17,23 +18,44 @@ import flash.display.Bitmap;
 #end
 
 class AllTests extends Sprite {
+  public static var stage;
+
   public static function main() {
 
 #if flash9
     Fathom.initialize(flash.Lib.current.stage, test);
 #else
-    test();
+    nme.Lib.current.addChild(new AllTests());
 #end
   }
 
+#if nme
+  public function new () {
+    super ();
+    addEventListener(Event.ADDED_TO_STAGE, this_onAddedToStage);
+  }
+
+  private function this_onAddedToStage(e):Void {
+    Fathom.initialize(stage);
+    AllTests.stage = this;
+    Fathom.container = Entity.fromDO(this).addGroup("container");
+
+    test();
+  }
+#end
+
   static function test() {
-    //TODO: Figure out why I need this...
 #if nme
     var g:Entity = new Entity(200, 200, 100, 100);
-    g.loadSpritesheet(Assets.loadBitmapData("test/testanimation.png"), new Vec(0, 0));
+    g.loadSpritesheet(Assets.getBitmapData("test/testanimation.png"));
+    g.HACK_sprite().x = 0;
+    g.HACK_sprite().y = 0;
+
 #end
+    return;
     //g.setTile(0, 0);
 
+    //TODO: Figure out why I need this...
     haxe.Timer.delay(function() {
 #if flash9
         Fathom.camera.setFocus(new Vec(flash.Lib.current.stage.stageWidth/2, flash.Lib.current.stage.stageHeight/2));
