@@ -65,6 +65,9 @@ class AllTests extends Sprite {
 #if flash9
         Fathom.camera.setFocus(new Vec(flash.Lib.current.stage.stageWidth/2, flash.Lib.current.stage.stageHeight/2));
 #end
+    var g = new Entity(200, 200, 100, 100);
+    g.loadSpritesheet(AllTests.testSprite, new Vec(2, 2));
+    return;
 
         var r = new haxe.unit.TestRunner();
 

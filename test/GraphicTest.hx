@@ -27,6 +27,8 @@ class GraphicTest extends haxe.unit.TestCase {
   }
 
   public function testImageLoading() {
+    g.setTile(0, 0);
+
     assertEquals(g.getPixel(0, 0), 0xffffff);
     assertEquals(g.getPixel(1, 1), 0xffffff);
     assertEquals(g.getPixel(0, 1), 0x000000);
@@ -47,7 +49,7 @@ class GraphicTest extends haxe.unit.TestCase {
   }
 
   public function testSetTile() {
-    // Black
+    // White
     g.setTile(0, 0);
     assertEquals(g.getPixel(0, 0), 0xffffff);
 
@@ -63,7 +65,7 @@ class GraphicTest extends haxe.unit.TestCase {
     g.setTile(1, 1);
     assertEquals(g.getPixel(0, 0), 0x00ff00);
 
-    // Black
+    // White
     g.setTile(0, 0);
     assertEquals(g.getPixel(0, 0), 0xffffff);
   }

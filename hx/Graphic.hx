@@ -128,23 +128,30 @@ class Graphic implements IPositionable {
     }
 
     // Set this entities graphics to be the sprite at (x, y) on the provided spritesheet.
+    // TODO: Implicit assumption that bitmap faces right.
     public function setTile(x : Int, y : Int) : Graphic {
         Util.assert(fullTexture != null, "The spritesheet is null.");
-#if flash
+
         spritesheet.x = x;
         spritesheet.y = y;
 
         var region:Rectangle = new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-        texturedObject.texture = Texture.fromTexture(fullTexture, region);
 
-        // TODO: Implicit assumption that bitmap faces right.
+        trace(region.x + " " + region.y + " " + region.width + " " + region.height);
+
+#if flash
+        texturedObject.texture = Texture.fromTexture(fullTexture, region);
+#else
+        var bd:BitmapData = new BitmapData(tileWidth, tileHeight, true, 0);
+        bd.copyPixels(fullTexture, region, new Point(0, 0), null, null, true);
+
+        texturedObject.bitmapData = bd;
+#end
 
         if(!animations.hasAnimation("default"))  {
             animations.addAnimation("default", x, y, 1);
         }
-#else
-        trace("setTile hasn't been done yet.");
-#end
+
         return this;
     }
 
@@ -166,8 +173,11 @@ class Graphic implements IPositionable {
         Util.assert(fullTexture == null, "fullTexture is already set.");
         Util.assert(tileDimension == null || !tileDimension.equals(new Vec(0, 0)), "tileDimension can't be 0 by 0!");
 
+        if (whichTile == null)     whichTile = new Vec(0, 0);
+
 #if flash
         var classAsKey:String = Type.getClassName(Type.getClass(spritesheetObj));
+        // TODO Probably completely unnecessary, I'm sure Starling caches this.
         if (cachedAssets.exists(classAsKey)) {
             fullTexture = cachedAssets.get(classAsKey);
         } else {
@@ -175,12 +185,19 @@ class Graphic implements IPositionable {
             cachedAssets.set(classAsKey, fullTexture);
         }
 
-        if (whichTile == null)     whichTile = new Vec(0, 0);
         if (tileDimension == null) tileDimension = new Vec(fullTexture.nativeWidth, fullTexture.nativeHeight);
 
         texturedObject = new Image(fullTexture);
 
         sprite.addChild(texturedObject);
+#else
+        fullTexture = spritesheetObj;
+        texturedObject = new Bitmap(fullTexture);
+
+        if (tileDimension == null) tileDimension = new Vec(fullTexture.width, fullTexture.height);
+
+        sprite.addChild(texturedObject);
+#end
 
         texturedObject.width  = tileDimension.x;
         texturedObject.height = tileDimension.y;
@@ -195,12 +212,7 @@ class Graphic implements IPositionable {
         tileHeight = Std.int(tileDimension.y);
 
         setTile(Std.int(whichTile.x), Std.int(whichTile.y));
-#else
-        fullTexture = spritesheetObj;
-        texturedObject = new Bitmap(spritesheetObj);
 
-        sprite.addChild(texturedObject);
-#end
         return this;
     }
 
@@ -237,13 +249,9 @@ class Graphic implements IPositionable {
 
     public static function takeScreenshot(): BitmapData {
         var sw:Int, sh: Int;
-#if nme
-        Util.assert(false, "dont know how to get stage size yet");
-        return null;
-#else
-        sw = flash.Lib.current.stage.stageWidth;
-        sh = flash.Lib.current.stage.stageHeight;
-#end
+
+        sw = Fathom.stage.stageWidth;
+        sh = Fathom.stage.stageHeight;
 
         var result:BitmapData = new BitmapData(sw, sh, true);
 
