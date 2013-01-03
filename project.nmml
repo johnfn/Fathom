@@ -12,7 +12,6 @@
 	<assets path="test" include="*" exclude="nme.svg" />
 
   <haxeflag name="-D" value="dbg" />
-
 	
   <!--
 	<icon path="Assets/nme.svg" />

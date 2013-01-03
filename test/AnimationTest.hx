@@ -14,7 +14,10 @@ class AnimationTest extends haxe.unit.TestCase {
     g.loadSpritesheet(AllTests.testAnimation, new Vec(16, 16), new Vec(0, 0));
     g.animations.ticksPerFrame = 1;
 
-    Fathom.camera.setFocus(new Vec(flash.Lib.current.stage.stageWidth/2, flash.Lib.current.stage.stageHeight/2));
+//TODO when i have cam
+#if flash
+    Fathom.camera.setFocus(new Vec(Fathom.stage.stageWidth/2, Fathom.stage.stageHeight/2));
+#end
   }
 
   override public function tearDown() {
@@ -56,7 +59,6 @@ class AnimationTest extends haxe.unit.TestCase {
 
     for (x in 0...3) {
       g.update();
-      //Fathom.stage.addChild(new Bitmap(Graphic.takeScreenshot()));
       assertEquals(g.animations.currentFrame, 0);
       assertEquals(g.getPixel(0, 0), 0xFF0000);
     }

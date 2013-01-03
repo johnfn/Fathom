@@ -76,8 +76,8 @@ class AllTests extends Sprite {
         r.add(new GraphicTest());
         r.add(new EntityTest());
         r.add(new MapTest());
-#if flash9
         r.add(new AnimationTest());
+#if flash9
         r.add(new CameraTest());
         r.add(new ColorTest());
 #end
