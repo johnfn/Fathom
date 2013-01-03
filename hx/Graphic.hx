@@ -137,8 +137,6 @@ class Graphic implements IPositionable {
 
         var region:Rectangle = new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
 
-        trace(region.x + " " + region.y + " " + region.width + " " + region.height);
-
 #if flash
         texturedObject.texture = Texture.fromTexture(fullTexture, region);
 #else
@@ -188,19 +186,16 @@ class Graphic implements IPositionable {
         if (tileDimension == null) tileDimension = new Vec(fullTexture.nativeWidth, fullTexture.nativeHeight);
 
         texturedObject = new Image(fullTexture);
-
-        sprite.addChild(texturedObject);
+        texturedObject.width  = tileDimension.x;
+        texturedObject.height = tileDimension.y;
 #else
         fullTexture = spritesheetObj;
         texturedObject = new Bitmap(fullTexture);
 
         if (tileDimension == null) tileDimension = new Vec(fullTexture.width, fullTexture.height);
-
-        sprite.addChild(texturedObject);
 #end
 
-        texturedObject.width  = tileDimension.x;
-        texturedObject.height = tileDimension.y;
+        sprite.addChild(texturedObject);
 
         texturedObject.x = 0;
         texturedObject.y = 0;
