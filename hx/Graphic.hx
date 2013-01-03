@@ -41,11 +41,11 @@ typedef SpriteSheet = {
 class Graphic implements IPositionable {
 #if nme
     var texturedObject:Bitmap;
-    static var cachedAssets: ObjectHash<String, BitmapData> = new ObjectHash();
+    static var cachedAssets: SuperObjectHash<String, BitmapData> = new SuperObjectHash();
     var fullTexture : BitmapData;
 #else
     var texturedObject:Image;
-    static var cachedAssets: ObjectHash<String, Texture> = new ObjectHash();
+    static var cachedAssets: SuperObjectHash<String, Texture> = new SuperObjectHash();
     var fullTexture : Texture;
 #end
 

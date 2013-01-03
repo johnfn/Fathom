@@ -53,11 +53,11 @@ class Map extends Rect {
 
     public var collisionInfo : Array<Array<Bool>>;
     var topLeftCorner : Vec;
-    var exploredMaps : ObjectHash<String, Bool>;
+    var exploredMaps : SuperObjectHash<String, Bool>;
     var _graphics : Entity;
     // Mapping between colors and items.
-    var persistentItemMapping : ObjectHash<String, ItemDetail>;
-    var persistent : ObjectHash<String, Array<Entity>>;
+    var persistentItemMapping : SuperObjectHash<String, ItemDetail>;
+    var persistent : SuperObjectHash<String, Array<Entity>>;
     public var sizeVector : Vec;
 
     public function new(widthInTiles : Int, heightInTiles : Int, tileSize : Int) {
@@ -65,9 +65,9 @@ class Map extends Rect {
         tiles = [];
         collisionInfo = [];
         topLeftCorner = new Vec(0, 0);
-        exploredMaps = new ObjectHash();
-        persistentItemMapping = new ObjectHash();
-        persistent = new ObjectHash();
+        exploredMaps = new SuperObjectHash();
+        persistentItemMapping = new SuperObjectHash();
+        persistent = new SuperObjectHash();
         super(0, 0, widthInTiles * tileSize, heightInTiles * tileSize);
         Util.assert(widthInTiles == heightInTiles);
         this.sizeVector = new Vec(width, height);
@@ -142,7 +142,6 @@ class Map extends Rect {
 
     function updatePersistentItems(diff : Vec) : Void {
         hideCurrentPersistentItems();
-
         topLeftCorner.add(diff);
         addNewPersistentItems();
     }
@@ -307,13 +306,16 @@ class Map extends Rect {
         };
 
         // Cache every persistent item in the 2D array of tiles.
-        var persistingItems : Array<Dynamic> = persistent.get(topLeftCorner.asKey());
+        var persistingItems : Array<Entity> = persistent.get(topLeftCorner.asKey());
 
         for (e in persistingItems) {
             if(e.isStatic)  {
                 var xCoord : Int = Math.floor(e.x / this.tileSize);
                 var yCoord : Int = Math.floor(e.y / this.tileSize);
-                tiles[xCoord][yCoord] = e;
+
+                if (containsCoord(xCoord, yCoord)) {
+                    tiles[xCoord][yCoord] = e;
+                }
             }
         }
         exploredMaps.set(topLeftCorner.asKey(), true);
@@ -340,6 +342,10 @@ class Map extends Rect {
         var xPt : Int = Math.floor(other.x / this.tileSize);
         var yPt : Int = Math.floor(other.y / this.tileSize);
         return tiles[xPt][yPt] != null;
+    }
+
+    public function containsCoord(x: Int, y: Int): Bool {
+        return 0 <= x && x < widthInTiles && 0 <= y && y < heightInTiles;
     }
 
     public function collidesRect(other : Rect) : Bool {
@@ -385,7 +391,7 @@ class Map extends Rect {
         return this;
     }
 
-    static var cachedAssets : ObjectHash<String, Dynamic> = new ObjectHash();
+    static var cachedAssets : SuperObjectHash<String, Dynamic> = new SuperObjectHash();
 
     public function loadNewMap(diff : Vec) : Map {
         collisionInfo = Util.make2DArray(widthInTiles, heightInTiles, false);

@@ -13,7 +13,7 @@ class AnimationHandler {
     public var ticksPerFrame(getTicksPerFrame, setTicksPerFrame) : Int;
     public var currentFrame(getCurrentFrame, never): Int;
 
-    var animations : ObjectHash<String, Array<Array<Int>>>;
+    var animations : SuperObjectHash<String, Array<Array<Int>>>;
     //TODO -> public
     public var currentAnimation : String;
     var _currentFrame : Int;
@@ -23,7 +23,7 @@ class AnimationHandler {
     var andThenFn: Void -> Void;
 
     public function new(s : Graphic) {
-        animations = new ObjectHash();
+        animations = new SuperObjectHash();
         currentAnimation = "";
         _currentFrame = 0;
         currentTick = 0;

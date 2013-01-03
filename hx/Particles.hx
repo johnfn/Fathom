@@ -28,7 +28,7 @@ class Particles {
     var velYLow : Float;
     var velYHigh : Float;
     var stopParticleGen : Int;
-    var particleData : ObjectHash<Entity, ParticleData>;
+    var particleData : SuperObjectHash<Entity, ParticleData>;
     var animated : Bool;
     var animationFrames : Array<Array<Int>>;
 
@@ -53,7 +53,7 @@ class Particles {
         velYLow = 1;
         velYHigh = 4;
         stopParticleGen = -1;
-        particleData = new ObjectHash();
+        particleData = new SuperObjectHash();
         animated = false;
         this.baseMC = baseMC;
         particleEffects.push(this);

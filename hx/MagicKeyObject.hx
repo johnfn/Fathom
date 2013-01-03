@@ -63,7 +63,7 @@ class MagicKeyObject {
     }
 
     static function keysToKeyCodes() : Dynamic {
-        var res: ObjectHash<String, Int> = new ObjectHash();
+        var res: SuperObjectHash<String, Int> = new SuperObjectHash();
         res.set("Enter", 13);
         res.set("Space", 32);
         res.set("Left", 37);
@@ -96,8 +96,8 @@ class MagicKeyObject {
     }
 
     // You should never have to call this function.
-        // TODO: Move into Fathom, I guess.
-        // TODO: should there be a container...which i construct..? I'm confused.
+    // TODO: Move into Fathom, I guess.
+    // TODO: should there be a container...which i construct..? I'm confused.
     static public function _initializeKeyInput() : Void {
         Fathom.stage.addEventListener(KeyboardEvent.KEY_DOWN, _keyDown);
         Fathom.stage.addEventListener(KeyboardEvent.KEY_UP, _keyUp);

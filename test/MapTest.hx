@@ -21,18 +21,12 @@ class MapTest extends haxe.unit.TestCase {
   public static var constructedCount:Int = 0;
 
   override public function setup() {
-    // I'm not an idiot i promise
-    // TODO figure out the simpler way to write this.
-    var type = Type.getClass(new MapTest.SpecialThing());
-
-    Fathom.destroyAll(); // to accomodate for the entity i just made ;(
-
     m = new Map(2, 2, 2);
 
     m.fromImage(AllTests.testMap, [], [
       { color: "#ffffff", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
     , { color: "#0000ff", gfx: AllTests.testSprite, spritesheet: new Vec(1, 0) }
-    , { color: "#ff0000", spc: type, spritesheet: new Vec(1, 1) } //represented as green
+    , { color: "#ff0000", spc: MapTest.SpecialThing, spritesheet: new Vec(1, 1) } //represented as green
     ]);
 
     m.loadNewMap(new Vec(0, 0));
@@ -89,7 +83,7 @@ class MapTest extends haxe.unit.TestCase {
     assertEquals(Fathom.entities.select([Set.hasGroup("test")]).length, 0);
   }
 
-  public function testPersistentItem() {
+  public function testDontFreakOutForOutOfMapEntities() {
     var s:Entity;
 
     m.loadNewMapAbs(new Vec(0, 1));
@@ -103,5 +97,21 @@ class MapTest extends haxe.unit.TestCase {
     s = Fathom.entities.one([Set.hasGroup("test")]);
 
     assertDotEquals(s.vec(), new Vec(7, 7));
+  }
+
+  public function testPersistentItem() {
+    var s:Entity;
+
+    m.loadNewMapAbs(new Vec(0, 1));
+    s = Fathom.entities.one([Set.hasGroup("test")]);
+
+    s.setPos(new Vec(1, 1));
+
+    m.loadNewMapAbs(new Vec(0, 0));
+    m.loadNewMapAbs(new Vec(0, 1));
+
+    s = Fathom.entities.one([Set.hasGroup("test")]);
+
+    assertDotEquals(s.vec(), new Vec(1, 1));
   }
 }
