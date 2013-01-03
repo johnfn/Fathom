@@ -18,6 +18,120 @@ class SuperObjectHashTest extends haxe.unit.TestCase {
     }
   }
 
+  public function testNonPrimIter() {
+    var soh:SuperObjectHash<Array<Int>, Int> = new SuperObjectHash();
+
+    var keys:Array<Array<Int>> = [[0], [1], [2], [3], [4]];
+    var found:Array<Bool> = [false, false, false, false, false];
+
+    for (k in keys) {
+        soh.set(k, k[0]);
+    }
+
+    for (k in soh) {
+        found[k[0]] = true;
+    }
+
+    for (val in found) {
+        assertTrue(val);
+    }
+  }
+
+  public function testNonPrimValIter() {
+    var soh:SuperObjectHash<Array<Int>, Int> = new SuperObjectHash();
+
+    var keys:Array<Array<Int>> = [[0], [1], [2], [3], [4]];
+    var found:Array<Bool> = [false, false, false, false, false];
+
+    for (k in keys) {
+        soh.set(k, k[0]);
+    }
+
+    for (k in soh.values()) {
+        found[k] = true;
+    }
+
+    for (val in found) {
+        assertTrue(val);
+    }
+  }
+
+  public function testPrimIter() {
+    var soh:SuperObjectHash<Int, Int> = new SuperObjectHash();
+    var found:Array<Bool> = [false, false, false, false, false];
+
+    for (x in 0...5) {
+        soh.set(x, x);
+    }
+
+    for (k in soh) {
+        found[k] = true;
+    }
+
+    for (val in found) {
+        assertTrue(val);
+    }
+  }
+
+  public function testPrimValIter() {
+    var soh:SuperObjectHash<Int, Int> = new SuperObjectHash();
+    var found:Array<Bool> = [false, false, false, false, false];
+
+    for (x in 0...5) {
+        soh.set(x, x);
+    }
+
+    for (k in soh.values()) {
+        found[k] = true;
+    }
+
+    for (val in found) {
+        assertTrue(val);
+    }
+  }
+
+  public function testRemovePrim() {
+    var soh:SuperObjectHash<Int, Int> = new SuperObjectHash();
+
+    for (x in 0...5) {
+        soh.set(x, x);
+    }
+
+    soh.delete(0);
+    soh.delete(2);
+    soh.delete(4);
+
+    for (q in soh) {
+        if (q % 2 == 0) {
+            assertFalse(soh.exists(q));
+        } else {
+            assertTrue(soh.exists(q));
+        }
+    }
+  }
+
+  public function testRemoveNonPrim() {
+    var soh:SuperObjectHash<Array<Int>, Int> = new SuperObjectHash();
+    var keys:Array<Array<Int>> = [[0], [1], [2], [3], [4]];
+
+    for (x in keys) {
+        soh.set(x, x[0]);
+    }
+
+    soh.delete(keys[0]);
+    soh.delete(keys[2]);
+    soh.delete(keys[4]);
+
+    for (q in soh) {
+        if (q[0] % 2 == 0) {
+            assertFalse(soh.exists(q));
+        } else {
+            assertTrue(soh.exists(q));
+        }
+    }
+  }
+
+
   public function testWhyIsSetBreaking() {
     var soh:SuperObjectHash<Int, Bool> = new SuperObjectHash();
     soh.set(1, true);

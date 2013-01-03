@@ -68,7 +68,7 @@ class Set<T> {
     */
 
     public function extend(other : Set<T>) : Set<T> {
-        for (k in other.contents.keys()) {
+        for (k in other) {
             add(k);
         }
 

@@ -1,6 +1,7 @@
 #if nme
 import nme.display.Sprite;
 import nme.display.Shape;
+import nme.Assets;
 #else
 import starling.display.Sprite;
 import flash.display.BitmapData;
@@ -27,6 +28,11 @@ class AllTests extends Sprite {
 
   static function test() {
     //TODO: Figure out why I need this...
+#if nme
+    var g:Entity = new Entity(200, 200, 100, 100);
+    g.loadSpritesheet(Assets.loadBitmapData("test/testanimation.png"), new Vec(0, 0));
+#end
+    //g.setTile(0, 0);
 
     haxe.Timer.delay(function() {
 #if flash9
@@ -49,6 +55,8 @@ class AllTests extends Sprite {
 #end
 
         r.run();
+
+        //nme.Lib.close();
     }, 250);
 
   }

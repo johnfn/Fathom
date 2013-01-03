@@ -25,7 +25,7 @@ enum PrimType {
 // have the same Key, Val values as the ObjectHash we would extend at all times.
 class SuperObjectHash<Key, Val> {
 	var primKey:PrimType;
-	var backingHash:ObjectHash<Dynamic, Val>;
+	var backingHash:ObjectHash<Key, Val>;
 	var primitiveHashTable:Hash<Val>;
 
 	public function new() {
@@ -46,17 +46,21 @@ class SuperObjectHash<Key, Val> {
 		}
 	}
 
+	// Makes a primitive key hashable.
 	function hashPrimitiveKey(k: Key):String {
 		return Std.string(k);
 	}
 
+	// Turns a hashed key back into it's original value.
+	// We need to use `untyped` here because there's no way Haxe
+	// will trust us that it's really of type Key otherwise.
 	function grabPrimitiveValue(p: Dynamic): Key untyped {
 		switch (primKey) {
-			case IntType: return Std.parseInt(p);
+			case IntType:    return Std.parseInt(p);
 			case StringType: return p;
-			case FloatType: return Std.parseFloat(p);
-			case BoolType: return p == "true" ? true : false;
-			default: return p;
+			case FloatType:  return Std.parseFloat(p);
+			case BoolType:   return p == "true" ? true : false;
+			default:         return p;
 		}
 	}
 
@@ -94,17 +98,23 @@ class SuperObjectHash<Key, Val> {
 		if (primKey == DontKnow) setPrimitiveType(k);
 
 		if (primKey == NotPrimitive) {
-			backingHash.remove(k);
+			backingHash.delete(k);
 		} else {
 			primitiveHashTable.remove(hashPrimitiveKey(k));
 		}
 	}
 
-	// This one is a little harder because we have to sneakily
-	// modify the values on the fly.
-	public function keys(): Iterator<Key> untyped {
-		if (primKey == NotPrimitive) return backingHash.keys();
-		return primitiveHashTable.keys();
+	public function keys(): Iterator<Key> {
+		if (primKey == NotPrimitive) return backingHash.keys().iterator();
+
+		var keyItr:Iterator<String> = primitiveHashTable.keys();
+
+		// This one is a little harder because we have to sneakily
+		// modify the values on the fly.
+		return {
+			hasNext: function() return keyItr.hasNext(),
+			next: function() return grabPrimitiveValue(keyItr.next())
+		};
 	}
 
 	public function iterator():Iterator<Key> {
@@ -112,7 +122,16 @@ class SuperObjectHash<Key, Val> {
 	}
 
 	public function values():Iterator<Val> {
-		if (primKey == NotPrimitive) return backingHash.iterator();
+		if (primKey == NotPrimitive) {
+			//ObjectHash doesn't have a values() iterator, so we make one.
+			var keyItr:Iterator<Key> = backingHash.iterator();
+
+			return {
+				hasNext: function() return keyItr.hasNext(),
+				next: function() return backingHash.get(keyItr.next())
+			};
+		}
+
 		return primitiveHashTable.iterator();
 	}
 }

@@ -143,7 +143,7 @@ class Graphic implements IPositionable {
             animations.addAnimation("default", x, y, 1);
         }
 #else
-        Util.assert(false, "nope!");
+        trace("setTile hasn't been done yet.");
 #end
         return this;
     }
@@ -196,7 +196,8 @@ class Graphic implements IPositionable {
 
         setTile(Std.int(whichTile.x), Std.int(whichTile.y));
 #else
-        Util.assert(false, "Nope.");
+        texturedObject = new Bitmap(spritesheetClass);
+        sprite.add(texturedObject);
 #end
         return this;
     }
