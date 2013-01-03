@@ -21,12 +21,18 @@ class MapTest extends haxe.unit.TestCase {
   public static var constructedCount:Int = 0;
 
   override public function setup() {
+    // I'm not an idiot i promise
+    // TODO figure out the simpler way to write this.
+    var type = Type.getClass(new MapTest.SpecialThing());
+
+    Fathom.destroyAll(); // to accomodate for the entity i just made ;(
+
     m = new Map(2, 2, 2);
 
-    m.fromImage(AllTests.TestMap, [], [
-      { color: "#ffffff", gfx: AllTests.MyBitmapData, spritesheet: new Vec(0, 0) }
-    , { color: "#0000ff", gfx: AllTests.MyBitmapData, spritesheet: new Vec(1, 0) }
-    , { color: "#ff0000", gfx: SpecialThing, spritesheet: new Vec(1, 1) } //represented as green
+    m.fromImage(AllTests.testMap, [], [
+      { color: "#ffffff", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
+    , { color: "#0000ff", gfx: AllTests.testSprite, spritesheet: new Vec(1, 0) }
+    , { color: "#ff0000", spc: type, spritesheet: new Vec(1, 1) } //represented as green
     ]);
 
     m.loadNewMap(new Vec(0, 0));

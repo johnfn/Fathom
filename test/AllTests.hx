@@ -9,9 +9,7 @@ import flash.display.BitmapData;
 import flash.display.Bitmap;
 #end
 
-#if nme
-
-#else
+#if flash
 @:bitmap("testsprite.png") class MyBitmapData extends flash.display.BitmapData {}
 @:bitmap("testmap.png") class TestMap extends flash.display.BitmapData {}
 @:bitmap("testanimation.png") class TestAnimation extends flash.display.BitmapData {}
@@ -20,9 +18,19 @@ import flash.display.Bitmap;
 class AllTests extends Sprite {
   public static var stage;
 
+#if flash
+  public static var testSprite:BitmapData;
+  public static var testMap:BitmapData;
+  public static var testAnimation:BitmapData;
+#end
+
   public static function main() {
 
-#if flash9
+#if flash
+    testSprite = Type.createInstance(MyBitmapData, []);
+    testMap = Type.createInstance(TestMap, []);
+    testAnimation = Type.createInstance(TestAnimation, []);
+
     Fathom.initialize(flash.Lib.current.stage, test);
 #else
     nme.Lib.current.addChild(new AllTests());
@@ -48,11 +56,8 @@ class AllTests extends Sprite {
 #if nme
     var g:Entity = new Entity(200, 200, 100, 100);
     g.loadSpritesheet(Assets.getBitmapData("test/testanimation.png"));
-    g.HACK_sprite().x = 0;
-    g.HACK_sprite().y = 0;
-
-#end
     return;
+#end
     //g.setTile(0, 0);
 
     //TODO: Figure out why I need this...

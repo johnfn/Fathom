@@ -1,5 +1,5 @@
 //TODO...
-#if flash
+#if false
 
 import flash.display.Sprite;
 

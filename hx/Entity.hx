@@ -69,8 +69,6 @@ class Entity extends Graphic {
             this.sprite = d;
         }
 
-        trace(Fathom.container);
-
         //TODO: I had this idea about how parents should bubble down events to children.
         // All Entities are added to the container, except the container itself, which
         // has to be bootstrapped onto the Stage. If Fathom.container does not exist, `this`

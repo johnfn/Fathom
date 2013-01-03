@@ -101,7 +101,13 @@ class SuperObjectHash<Key, Val> {
 	}
 
 	public function keys(): Iterator<Key> {
-		if (primKey == NotPrimitive) return backingHash.keys();
+		if (primKey == NotPrimitive) {
+#if flash
+			return backingHash.keys().iterator();
+#else
+			return backingHash.keys();
+#end
+		}
 
 		var keyItr:Iterator<String> = primitiveHashTable.keys();
 

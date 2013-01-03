@@ -167,7 +167,7 @@ class Graphic implements IPositionable {
         Util.assert(tileDimension == null || !tileDimension.equals(new Vec(0, 0)), "tileDimension can't be 0 by 0!");
 
 #if flash
-        var classAsKey:String = Type.getClassName(spritesheetObj);
+        var classAsKey:String = Type.getClassName(Type.getClass(spritesheetObj));
         if (cachedAssets.exists(classAsKey)) {
             fullTexture = cachedAssets.get(classAsKey);
         } else {
@@ -250,7 +250,7 @@ class Graphic implements IPositionable {
         var result:BitmapData = new BitmapData(sw, sh, true);
 
 #if nme
-        result.draw(flash.Lib.current.stage);
+        result.draw(Fathom.stage);
 #else
         var support:RenderSupport = new RenderSupport();
         RenderSupport.clear(flash.Lib.current.stage.color, 1.0);

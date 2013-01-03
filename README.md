@@ -17,6 +17,6 @@ Fathom compiles to AS3 (via .swc), so you can use AS3 too. But you don't get tha
 
 Fathom is also tested! How cool is that.
 
-To run the AS3 tests, use `./as3tests`.
+To run the AS3 tests, use `./as3test`.
 
-To run the NME tests, use `./nmetests`.
+To run the NME tests, use `./nmetest`.

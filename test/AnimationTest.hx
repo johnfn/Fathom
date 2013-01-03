@@ -11,7 +11,7 @@ class AnimationTest extends haxe.unit.TestCase {
   // RED BLACK GREEN WHITE
   override public function setup() {
     g = new Entity(0, 0, 16, 16);
-    g.loadSpritesheet(AllTests.TestAnimation, new Vec(16, 16), new Vec(0, 0));
+    g.loadSpritesheet(AllTests.testAnimation, new Vec(16, 16), new Vec(0, 0));
     g.animations.ticksPerFrame = 1;
 
     Fathom.camera.setFocus(new Vec(flash.Lib.current.stage.stageWidth/2, flash.Lib.current.stage.stageHeight/2));

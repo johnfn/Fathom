@@ -6,7 +6,7 @@ class CameraTest extends haxe.unit.TestCase {
 
   override public function setup() {
     g = new Entity(0, 0, 100, 100);
-    g.loadSpritesheet(AllTests.TestAnimation, new Vec(16, 16), new Vec(0, 0));
+    g.loadSpritesheet(AllTests.testAnimation, new Vec(16, 16), new Vec(0, 0));
   }
 
   override public function tearDown() {

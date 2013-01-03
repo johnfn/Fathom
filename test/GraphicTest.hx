@@ -6,7 +6,7 @@ class GraphicTest extends haxe.unit.TestCase {
 
   override public function globalSetup() {
     g = new Entity(200, 200, 100, 100);
-    g.loadSpritesheet(AllTests.MyBitmapData, new Vec(2, 2));
+    g.loadSpritesheet(AllTests.testSprite, new Vec(2, 2));
     g.setTile(0, 0);
   }
 

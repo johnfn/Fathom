@@ -2,16 +2,16 @@
 import starling.core.Starling;
 import starling.events.Event;
 import starling.display.Sprite;
+import flash.display.Stage;
 #else
-import flash.events.Event;
-import flash.display.Sprite;
+import nme.display.Stage;
+import nme.events.Event;
+import nme.display.Sprite;
 #end
 
 #if profile
 import com.sociodox.theminer.TheMiner;
 #end
-
-import flash.display.Stage;
 
 using Lambda;
 

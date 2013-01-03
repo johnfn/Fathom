@@ -17,7 +17,11 @@ using Lambda;
 typedef ItemDetail = {
     var color: String;
     var spritesheet: Vec;
-    var gfx: Dynamic; //TODO - use type safety and BitmapData/Entity or something...
+
+    //TODO: Force one or the other by being clever
+
+    @:optional var gfx: BitmapData;
+    @:optional var spc: Dynamic; // TODO: Class<T: (Entity)> ?
 
     // Optional settings
 
@@ -96,17 +100,18 @@ class Map extends Rect {
         return (x < 0 || x >= width || y < 0 || y >= height);
     }
 
-    public function fromImage(mapClass : Class<Dynamic>, groundList : Array<String>, mappings : Array<ItemDetail>) : Map {
+    public function fromImage(bData: BitmapData, groundList : Array<String>, mappings : Array<ItemDetail>) : Map {
         // Load ground list
         this.grounds = groundList;
 
         // Load item mapping
         for (s in mappings) {
             this.persistentItemMapping.set(s.color, s);
+
+            Util.assert(s.spc != null || s.gfx != null, "Both SPC and GFX are null.");
         }
 
         // Load data from image.
-        var bData = Type.createInstance(mapClass, []);
         data = Util.make2DArray(bData.width, bData.height, null);
 
         for (x in 0...bData.width) {
@@ -146,7 +151,7 @@ class Map extends Rect {
         return grounds.has(c) && c != s;
     }
 
-    function fancyProcessing(itemData : ItemDetail, c : String, x : Int, y : Int) : Vec {
+    function fancyProcessing(itemData: ItemDetail, c : String, x : Int, y : Int) : Vec {
         var result : Vec = itemData.spritesheet.clone();
         if(itemData.roundOutEdges) {
             var locX : Int = Std.int(topLeftCorner.x) + x;
@@ -241,8 +246,7 @@ class Map extends Rect {
     }
 
     function isSpecial(itemData: ItemDetail): Bool {
-        var gfxName: String = Type.getClassName(Type.getSuperClass(itemData.gfx));
-        return gfxName.indexOf("BitmapData") == -1;
+        return itemData.gfx == null;
     }
 
     function addPersistentItem(c : Color, x : Int, y : Int) : Void {
@@ -253,7 +257,7 @@ class Map extends Rect {
             return;
         }
 
-        var itemData : ItemDetail = persistentItemMapping.get(c.toString());
+        var itemData: ItemDetail = persistentItemMapping.get(c.toString());
 
         // If the provided graphics are BitmapData, this is a static object.
         // We won't treat it specially in that case.
@@ -266,10 +270,13 @@ class Map extends Rect {
         }
 
         var e: Entity;
+
         if (isSpecial(itemData)) {
-            e = Type.createInstance(itemData.gfx, []).setPos(new Vec(x * tileSize, y * tileSize));
+            e = Type.createInstance(itemData.spc, []).setPos(new Vec(x * tileSize, y * tileSize));
         } else {
-            e = new Entity(x * tileSize, y * tileSize, tileSize, tileSize).loadSpritesheet(itemData.gfx, new Vec(tileSize, tileSize)).setTile(Std.int(ssLoc.x), Std.int(ssLoc.y));
+            e = new Entity(x * tileSize, y * tileSize, tileSize, tileSize)
+                .loadSpritesheet(itemData.gfx, new Vec(tileSize, tileSize))
+                .setTile(Std.int(ssLoc.x), Std.int(ssLoc.y));
         }
 
         persistent.get(topLeftCorner.asKey()).push(e);
