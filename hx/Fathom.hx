@@ -2,7 +2,7 @@
 import starling.core.Starling;
 import starling.events.Event;
 import starling.display.Sprite;
-import flash.display.Stage;
+import starling.display.Stage;
 #else
 import nme.display.Stage;
 import nme.events.Event;
@@ -89,24 +89,22 @@ class Fathom {
     }
 
     //TODO: Eventually main class should extend this or something...
-    static public function initialize(stage : Stage, cb: Void -> Void = null, FPS : Int = 30) : Void {
+    static public function initialize(cb: Void -> Void = null, FPS : Int = 30) : Void {
         // Inside of the Entity constructor, we assert Fathom.initialized, because all
         // MCs must be added to the container MC.
 
 #if flash
-        Fathom.starling = new Starling(RootEntity, stage);
+        Fathom.starling = new Starling(RootEntity, flash.Lib.current.stage);
     #if profile
         Fathom.starling.showStats = true;
     #end
         Fathom.starling.start();
 #end
 
-        Fathom.stage = stage;
         Fathom.initialized = true;
         Fathom.FPS = FPS;
         Fathom.cb = cb;
 
-        MagicKeyObject._initializeKeyInput();
         grid = new SpatialHash(Fathom.entities.select([]));
     }
 
@@ -255,6 +253,10 @@ class RootEntity extends Sprite {
 
         super();
 
+#if flash
+        Fathom.stage = Fathom.starling.stage;
+#end
+
         Fathom.sContainer = this;
 
         Fathom.container = Entity.fromDO(this).addGroup("container");
@@ -263,6 +265,7 @@ class RootEntity extends Sprite {
         Fathom._camera = new Camera(Fathom.stage).scaleBy(1).setEaseSpeed(3);
         Fathom.start();
         Fathom.cb();
+        MagicKeyObject._initializeKeyInput();
 
 #if profile
         flash.Lib.current.addChild(new TheMiner());

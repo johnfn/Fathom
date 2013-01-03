@@ -1,9 +1,8 @@
-import flash.display.Sprite;
-import flash.geom.Point;
-import flash.geom.Rectangle;
-import flash.display.BitmapData;
-import flash.display.Stage;
-
+#if flash
+import starling.display.Stage;
+#else
+import nme.display.Stage;
+#end
 /*
  *  Entity Space: the coordinates you use 99% of the time.
  *  Camera Space: the coordinates of the sprite, post camera transformations.

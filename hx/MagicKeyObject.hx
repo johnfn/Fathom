@@ -99,8 +99,8 @@ class MagicKeyObject {
         // TODO: Move into Fathom, I guess.
         // TODO: should there be a container...which i construct..? I'm confused.
     static public function _initializeKeyInput() : Void {
-        Fathom.stage.addEventListener(KeyboardEvent.KEY_DOWN, _keyDown, false, 0, true);
-        Fathom.stage.addEventListener(KeyboardEvent.KEY_UP, _keyUp, false, 0, true);
+        Fathom.stage.addEventListener(KeyboardEvent.KEY_DOWN, _keyDown);
+        Fathom.stage.addEventListener(KeyboardEvent.KEY_UP, _keyUp);
         var i : Int = 0;
         while(i < 255) {
             keyStates[i] = new KeyState();
@@ -113,10 +113,10 @@ class MagicKeyObject {
     }
 
     // This is very frustrating.
-        // This method is called from an onEnterFrame function. Everything will
-        // work correctly as long as this is called FPS times per second or so, as
-        // to properly flush the keys through.
-        static public function dealWithVariableKeyRepeatRates() : Void {
+    // This method is called from an onEnterFrame function. Everything will
+    // work correctly as long as this is called FPS times per second or so, as
+    // to properly flush the keys through.
+    static public function dealWithVariableKeyRepeatRates() : Void {
         var i : Int = 0;
         while(i < keyStates.length) {
             if(keyStates[i].state == KeyState.KEYSTATE_JUST_UP)  {

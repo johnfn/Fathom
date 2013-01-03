@@ -40,7 +40,7 @@ class EntityTest extends haxe.unit.TestCase {
       p = p.parent;
     }
 
-    assertEquals(p, Fathom.starling.stage);
+    assertEquals(p, Fathom.stage);
   }
 
   public function testAddRemove() {

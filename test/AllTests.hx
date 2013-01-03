@@ -36,7 +36,7 @@ class AllTests extends Sprite {
 #end
 
 #if flash
-    Fathom.initialize(flash.Lib.current.stage, test);
+    Fathom.initialize(test);
 #else
     nme.Lib.current.addChild(new AllTests());
 #end
@@ -49,7 +49,8 @@ class AllTests extends Sprite {
   }
 
   private function this_onAddedToStage(e):Void {
-    Fathom.initialize(stage);
+    Fathom.initialize();
+    Fathom.stage = this.stage;
     AllTests.stage = this;
     Fathom.container = Entity.fromDO(this).addGroup("container");
 
@@ -73,8 +74,8 @@ class AllTests extends Sprite {
         r.add(new RectTest());
         r.add(new VecTest());
         r.add(new GraphicTest());
-#if flash9
         r.add(new EntityTest());
+#if flash9
         r.add(new MapTest());
         r.add(new AnimationTest());
         r.add(new CameraTest());

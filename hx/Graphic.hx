@@ -86,6 +86,8 @@ class Graphic implements IPositionable {
     }
 
     public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
+        Util.assert(Fathom.stage != null, "Stage is null.");
+
         _depth = 0;
         fullTexture = null;
         tileWidth = -1;
