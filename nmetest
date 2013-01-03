@@ -1,2 +1,2 @@
 #!/bin/bash
-haxelib run nme test project.nmml mac
+haxelib run nme test project.nmml mac -debug
