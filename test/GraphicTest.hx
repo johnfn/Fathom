@@ -27,8 +27,6 @@ class GraphicTest extends haxe.unit.TestCase {
   }
 
   public function testImageLoading() {
-    g.setTile(0, 0);
-
     assertEquals(g.getPixel(0, 0), 0xffffff);
     assertEquals(g.getPixel(1, 1), 0xffffff);
     assertEquals(g.getPixel(0, 1), 0x000000);

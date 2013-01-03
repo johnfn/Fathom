@@ -48,7 +48,8 @@ class Util {
 	}
 
 	static public function printStackTrace() : Void {
-		Util.log(haxe.Stack.toString(haxe.Stack.exceptionStack()));
+		trace(haxe.Stack.callStack());
+		trace(haxe.Stack.toString(haxe.Stack.callStack()));
 	}
 
 	/* The reason for this wrapper method is to separate debugging messages

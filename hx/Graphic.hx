@@ -196,10 +196,8 @@ class Graphic implements IPositionable {
 
         setTile(Std.int(whichTile.x), Std.int(whichTile.y));
 #else
+        fullTexture = spritesheetObj;
         texturedObject = new Bitmap(spritesheetObj);
-
-        trace(texturedObject.width);
-        trace(texturedObject.height);
 
         sprite.addChild(texturedObject);
 #end
@@ -270,15 +268,12 @@ class Graphic implements IPositionable {
         return result;
     }
 
-#if debug
-
     /** This method should only be used for testing.
      *  Don't use it in an actual game!
      */
     public function getPixel(x:Int, y:Int): Int {
         return takeScreenshot().getPixel(Std.int(sprite.x) + x, Std.int(sprite.y) + y);
     }
-#end
 
     var facing : Int;
     // Pass in the x-coordinate of your velocity, and this'll orient

@@ -1,6 +1,7 @@
 #if nme
 import nme.display.Sprite;
 import nme.display.Bitmap;
+import nme.display.BitmapData;
 import nme.Assets;
 import nme.events.Event;
 #else
@@ -10,7 +11,7 @@ import flash.display.Bitmap;
 #end
 
 #if flash
-@:bitmap("testsprite.png") class MyBitmapData extends flash.display.BitmapData {}
+@:bitmap("testsprite.png") class TestSprite extends flash.display.BitmapData {}
 @:bitmap("testmap.png") class TestMap extends flash.display.BitmapData {}
 @:bitmap("testanimation.png") class TestAnimation extends flash.display.BitmapData {}
 #end
@@ -18,19 +19,23 @@ import flash.display.Bitmap;
 class AllTests extends Sprite {
   public static var stage;
 
-#if flash
   public static var testSprite:BitmapData;
   public static var testMap:BitmapData;
   public static var testAnimation:BitmapData;
-#end
 
   public static function main() {
 
 #if flash
-    testSprite = Type.createInstance(MyBitmapData, []);
-    testMap = Type.createInstance(TestMap, []);
+    testSprite    = Type.createInstance(TestSprite, []);
+    testMap       = Type.createInstance(TestMap, []);
     testAnimation = Type.createInstance(TestAnimation, []);
+#else
+    testSprite    = Assets.getBitmapData("test/testsprite.png");
+    testMap       = Assets.getBitmapData("test/testmap.png");
+    testAnimation = Assets.getBitmapData("test/testanimation.png");
+#end
 
+#if flash
     Fathom.initialize(flash.Lib.current.stage, test);
 #else
     nme.Lib.current.addChild(new AllTests());
@@ -53,11 +58,6 @@ class AllTests extends Sprite {
 #end
 
   static function test() {
-#if nme
-    var g:Entity = new Entity(200, 200, 100, 100);
-    g.loadSpritesheet(Assets.getBitmapData("test/testanimation.png"));
-    return;
-#end
     //g.setTile(0, 0);
 
     //TODO: Figure out why I need this...
@@ -72,8 +72,8 @@ class AllTests extends Sprite {
         r.add(new SuperObjectHashTest());
         r.add(new RectTest());
         r.add(new VecTest());
-#if flash9
         r.add(new GraphicTest());
+#if flash9
         r.add(new EntityTest());
         r.add(new MapTest());
         r.add(new AnimationTest());
