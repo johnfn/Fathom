@@ -83,27 +83,6 @@ class Hooks {
             entity.vel.y = Math.min(entity.vel.y, 0);
     }
 
-    /*
-    static public function fpsCounter() : Void -> String {
-        // With thanks to http://kaioa.com/node/83
-        var last : UInt = Math.round(Sys.time() / 1000)();
-        var ticks : UInt = 0;
-        var text : String = "--.- FPS";
-        return (function() : String {
-            var now : UInt = Math.round(Sys.time() / 1000)();
-            var delta : UInt = now - last;
-            ticks++;
-            if(delta >= 1000)  {
-                var fps : Float = ticks / delta * 1000;
-                text = fps.toFixed(1) + " FPS";
-                ticks = 0;
-                last = now;
-            }
-            return text;
-        });
-    }
-    */
-
     static public function flicker(who : Entity, duration : Int = 20, cb : Void -> Void = null) : Void -> Void {
         var counter : Int = 0;
         var fn: Void -> Void = null;

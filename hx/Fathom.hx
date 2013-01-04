@@ -17,41 +17,32 @@ using Lambda;
 
 class Fathom {
     static public var camera(getCamera, never) : Camera;
-    static public var paused(getPaused, never) : Bool;
     static public var scaleX(getScaleX, never) : Float;
     static public var scaleY(getScaleY, never) : Float;
     static public var currentMode(getCurrentMode, never) : Int;
-    static public var showingFPS(never, setShowingFPS) : Bool;
 
 #if flash
     static public var starling:Starling;
 #end
-    static public var cb:Void -> Void;
 
-    static var fpsFn : Void -> String;
     static public var _camera : Camera;
-    //TODO
-    static var _currentMode : Int = 0;
-    static public function getCamera() : Camera {
-        return _camera;
-    }
-
     static public var mapRef : Map;
-    //static public var fpsTxt : Text;
     static public var entities : Set<Entity> = new Set([]);
     static public var container : Entity;
     static public var initialized : Bool = false;
     static public var stage : Stage;
     static public var grid : SpatialHash;
-    static public var modes : Array<Int> = [Fathom._currentMode];
-    static var _paused : Bool = false;
+    static public var modes : Array<Int> = [0];
+
+    static private var fpsFn : Void -> String;
+    static private var cb:Void -> Void;
 
     public function new() {
         throw ("You can't initialize a Fathom object. Use Fathom.initialize() instead.");
     }
 
-    static public function getPaused() : Bool {
-        return _paused;
+    static public function getCamera() : Camera {
+        return _camera;
     }
 
     static public function getScaleX() : Float {
@@ -67,7 +58,7 @@ class Fathom {
     }
 
     // TODO this stuff should go in Mode.as
-        static public function pushMode(mode : Int) : Void {
+    static public function pushMode(mode : Int) : Void {
         modes.push(mode);
     }
 
@@ -77,11 +68,6 @@ class Fathom {
 
     static public function replaceMode(mode : Int) : Void {
         modes[modes.length - 1] = mode;
-    }
-
-    static public function setShowingFPS(b : Bool) : Bool {
-        //fpsTxt.visible = b;
-        return b;
     }
 
     //TODO: Eventually main class should extend this or something...
@@ -129,15 +115,12 @@ class Fathom {
     // see if any individual square of the grid contains more than one item in
     // it.
     static function moveEverything() : Void {
-        var active: Entity -> Bool = function(e : Entity) : Bool {
+        var active: Entity -> Bool = function(e: Entity) : Bool {
             return e.modes().has(currentMode);
         };
 
         var list : Set<MovingEntity> = movingEntities().filter(active);
 
-        // TODO: Optimization: You shouldn't have to recreate this
-        // hash every loop.
-        //grid = new SpatialHash(Fathom.entities.select());
         // Move every non-static entity.
         for(e in list) {
             var oldVelX : Float = e.vel.x;
@@ -195,10 +178,6 @@ class Fathom {
         });
     }
 
-    static function updateFPS() : Void {
-        //fpsTxt.text = fpsFn();
-    }
-
     static function update(event : Event) : Void {
         // We copy the entity list so that it doesn't change while we're
         // iterating through it.
@@ -207,7 +186,6 @@ class Fathom {
         // be reflected until the next update cycle.
         var cachedMode : Int = currentMode;
 
-        updateFPS();
         moveEverything();
         for (e in list) {
             if (!e.modes().has(cachedMode)) {
