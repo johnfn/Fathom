@@ -23,8 +23,6 @@ class Fathom {
     static public var currentMode(getCurrentMode, never) : Int;
     static public var showingFPS(never, setShowingFPS) : Bool;
 
-    static public var sContainer:Sprite;
-
 #if flash
     static public var starling:Starling;
 #end
@@ -109,7 +107,7 @@ class Fathom {
     }
 
     static public function start(): Void {
-        sContainer.addEventListener(Event.ENTER_FRAME, update);
+        Fathom.stage.addEventListener(Event.ENTER_FRAME, update);
     }
 
     static public function destroyAll(): Void {
@@ -119,7 +117,7 @@ class Fathom {
     /* This stops everything. The only conceivable use would be
        possibly for some sort of end game situation. */
     static public function stop() : Void {
-        sContainer.removeEventListener(Event.ENTER_FRAME, update);
+        Fathom.stage.removeEventListener(Event.ENTER_FRAME, update);
 #if flash
         Fathom.starling.stop();
 #end
@@ -256,8 +254,6 @@ class RootEntity extends Sprite {
 #if flash
         Fathom.stage = Fathom.starling.stage;
 #end
-
-        Fathom.sContainer = this;
 
         Fathom.container = Entity.fromDO(this).addGroup("container");
 
