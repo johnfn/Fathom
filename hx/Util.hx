@@ -34,8 +34,7 @@ class Util {
 		return 0;
 	}
 
-	// TODO: Rename -> clamp
-	static public function bind(x : Float, low : Float, high : Float) : Float {
+	static public function clamp(x : Float, low : Float, high : Float) : Float {
 		if(x < low)
 			return low;
 		if(x > high)

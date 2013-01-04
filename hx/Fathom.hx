@@ -137,7 +137,7 @@ class Fathom {
             while (onceThrough || oldVelX != 0) {
                 // Attempt to resolve as much of dy as possible on every tick.
                 while (oldVelY != 0) {
-                    var amtY : Float = Util.bind(oldVelY, -1, 1);
+                    var amtY : Float = Util.clamp(oldVelY, -1, 1);
                     e.y += amtY;
                     oldVelY -= amtY;
                     if(grid.collides(e))  {
@@ -152,7 +152,7 @@ class Fathom {
                 }
 
                 onceThrough = false;
-                var amtX : Float = Util.bind(oldVelX, -1, 1);
+                var amtX : Float = Util.clamp(oldVelX, -1, 1);
                 e.x += amtX;
                 oldVelX -= amtX;
                 if(grid.collides(e))  {

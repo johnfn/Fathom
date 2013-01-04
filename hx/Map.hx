@@ -18,10 +18,8 @@ typedef ItemDetail = {
     var color: String;
     var spritesheet: Vec;
 
-    //TODO: Force one or the other by being clever
-
     @:optional var gfx: BitmapData;
-    @:optional var spc: Dynamic; // TODO: Class<T: (Entity)> ?
+    @:optional var spc: Dynamic;
 
     // Optional settings
 
