@@ -28,8 +28,6 @@ class Fathom {
 #end
     static public var cb:Void -> Void;
 
-    static var gameloopID : Int;
-    static var FPS : Int = 0;
     static var fpsFn : Void -> String;
     static public var _camera : Camera;
     //TODO
@@ -87,7 +85,7 @@ class Fathom {
     }
 
     //TODO: Eventually main class should extend this or something...
-    static public function initialize(cb: Void -> Void = null, FPS : Int = 30) : Void {
+    static public function initialize(cb: Void -> Void = null) : Void {
         // Inside of the Entity constructor, we assert Fathom.initialized, because all
         // MCs must be added to the container MC.
 
@@ -100,7 +98,6 @@ class Fathom {
 #end
 
         Fathom.initialized = true;
-        Fathom.FPS = FPS;
         Fathom.cb = cb;
 
         grid = new SpatialHash(Fathom.entities.select([]));
