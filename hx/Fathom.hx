@@ -25,7 +25,6 @@ class Fathom {
     static public var starling:Starling;
 #end
 
-    static public var _camera : Camera;
     static public var mapRef : Map;
     static public var entities : Set<Entity> = new Set([]);
     static public var container : Entity;
@@ -36,6 +35,7 @@ class Fathom {
     static public var cb:Void -> Void;
 
     static private var fpsFn : Void -> String;
+    static private var _camera : Camera;
 
     public function new() {
         throw ("You can't initialize a Fathom object. Use Fathom.initialize() instead.");
@@ -79,6 +79,7 @@ class Fathom {
 
         grid = new SpatialHash(Fathom.entities.select([]));
 #if flash
+        Fathom.cb = cb;
         Fathom.starling = new Starling(RootEntity, flash.Lib.current.stage);
     #if profile
         Fathom.starling.showStats = true;
@@ -91,7 +92,6 @@ class Fathom {
         MagicKeyObject._initializeKeyInput();
         cb();
 #end
-        Fathom.cb = cb;
     }
 
     static public function start(): Void {
@@ -219,6 +219,10 @@ class Fathom {
         camera.update();
         MagicKeyObject.dealWithVariableKeyRepeatRates(); //TODO
     }
+
+    static public function initCam(): Void {
+        Fathom._camera = new Camera(Fathom.stage).scaleBy(1).setEaseSpeed(3);
+    }
 }
 
 class RootEntity extends Sprite {
@@ -238,7 +242,7 @@ class RootEntity extends Sprite {
         Fathom.container = Entity.fromDO(this).addGroup("container");
 
         // Can't initialize the Cam until the container is initialized...
-        Fathom._camera = new Camera(Fathom.stage).scaleBy(1).setEaseSpeed(3);
+        Fathom.initCam();
         Fathom.start();
         Fathom.cb();
         MagicKeyObject._initializeKeyInput();

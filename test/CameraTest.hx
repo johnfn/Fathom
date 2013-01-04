@@ -14,7 +14,7 @@ class CameraTest extends haxe.unit.TestCase {
   }
 
   public function testBasic() {
-    Fathom._camera.setFocus(new Vec(Std.int(Fathom.stage.stageWidth / 2), Std.int(Fathom.stage.stageHeight / 2)));
+    Fathom.camera.setFocus(new Vec(Std.int(Fathom.stage.stageWidth / 2), Std.int(Fathom.stage.stageHeight / 2)));
     var bd:BitmapData = Graphic.takeScreenshot();
 
     assertEquals(bd.getPixel(0, 0), 0xff0000);
@@ -24,21 +24,19 @@ class CameraTest extends haxe.unit.TestCase {
     trace("SW");
     trace(Fathom.stage.stageWidth);
 
-    Fathom._camera.setFocus(new Vec(Std.int(Fathom.stage.stageWidth / 2), Std.int(Fathom.stage.stageHeight / 2)));
-    trace(Fathom._camera.getFocus());
+    Fathom.camera.setFocus(new Vec(Std.int(Fathom.stage.stageWidth / 2), Std.int(Fathom.stage.stageHeight / 2)));
 
     g.setPos(new Vec(5, 5));
-    Fathom._camera.update();
+    Fathom.camera.update();
 
     assertEquals(g.HACK_sprite().x, 5);
     assertEquals(g.HACK_sprite().y, 5);
   }
 
   public function failingTestMove2() {
-    Fathom._camera.setFocus(new Vec(Std.int(Fathom.stage.stageWidth / 2), Std.int(Fathom.stage.stageHeight / 2)));
+    Fathom.camera.setFocus(new Vec(Std.int(Fathom.stage.stageWidth / 2), Std.int(Fathom.stage.stageHeight / 2)));
 
     g.setPos(new Vec(5, 5));
-    //Fathom._camera.update();
 
     assertEquals(g.HACK_sprite().x, 5);
     assertEquals(g.HACK_sprite().y, 5);
