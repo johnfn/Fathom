@@ -21,7 +21,11 @@ class CameraTest extends haxe.unit.TestCase {
   }
 
   public function testMove() {
+    trace("SW");
+    trace(Fathom.stage.stageWidth);
+
     Fathom._camera.setFocus(new Vec(Std.int(Fathom.stage.stageWidth / 2), Std.int(Fathom.stage.stageHeight / 2)));
+    trace(Fathom._camera.getFocus());
 
     g.setPos(new Vec(5, 5));
     Fathom._camera.update();

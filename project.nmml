@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	
-	<meta title="Fathom Tests" package="com.joshuagranick.haxe.actuateexample" version="1.0.0" company="Fathom" />
+	<meta title="Fathom Tests" package="com.fathom" version="0.0.0" company="Fathom" />
 	<app main="AllTests" path="Export" />
 	
 	<source path="hx" />
@@ -10,6 +10,9 @@
 	<haxelib name="nme" />
 	
 	<assets path="test" include="*" exclude="nme.svg" />
+
+  <window width="500" height="500" background="0xFFFFFF" fps="30" />
+    
 
   <haxeflag name="-D" value="dbg" />
 	

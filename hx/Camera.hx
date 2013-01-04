@@ -50,7 +50,7 @@ class Camera extends Rect {
         easeRate = 1;
         FOLLOW_MODE_NONE = 0;
         FOLLOW_MODE_SLIDE = 1;
-        followMode = FOLLOW_MODE_SLIDE;
+        followMode = FOLLOW_MODE_NONE;
         isFocused = false;
         Util.assert(stage.stageWidth == stage.stageHeight, "Non-square dimensions not supported for Cam. Sorry :(");
 
@@ -158,10 +158,14 @@ class Camera extends Rect {
     }
 
     // Sets the center of the Camera to look at `loc`.
-    public function setFocus(loc : Vec) : Void {
+    public function setFocus(loc: Vec): Void {
         this.isFocused = true;
         goalFocalX = (isBound()) ? bind(loc.x, focalBoundingRect.x, focalBoundingRect.right) : loc.x;
         goalFocalY = (isBound()) ? bind(loc.y, focalBoundingRect.y, focalBoundingRect.bottom) : loc.x;
+    }
+
+    public function getFocus(): Vec {
+        return new Vec(goalFocalX, goalFocalY);
     }
 
     /* Force the camera to go snap to the desired focal point, ignoring any
@@ -195,7 +199,7 @@ class Camera extends Rect {
     }
 
     function easeXY() : Void {
-        if(followMode == FOLLOW_MODE_SLIDE)  {
+        if (followMode == FOLLOW_MODE_SLIDE)  {
             if(Math.abs(goalFocalX - _focalX) > .0000001)  {
                 focalX = _focalX + (goalFocalX - _focalX) / (CAM_LAG / this.easeRate);
             } else  {
@@ -210,7 +214,7 @@ class Camera extends Rect {
 
             return;
         }
-        if(followMode == FOLLOW_MODE_NONE)  {
+        if (followMode == FOLLOW_MODE_NONE)  {
             focalX = goalFocalX;
             focalY = goalFocalY;
             return;

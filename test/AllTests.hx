@@ -54,6 +54,9 @@ class AllTests extends Sprite {
     AllTests.stage = this;
     Fathom.container = Entity.fromDO(this).addGroup("container");
 
+    Fathom._camera = new Camera(Fathom.stage).scaleBy(1).setEaseSpeed(3);
+    MagicKeyObject._initializeKeyInput();
+
     test();
   }
 #end
@@ -63,9 +66,7 @@ class AllTests extends Sprite {
 
     //TODO: Figure out why I need this...
     haxe.Timer.delay(function() {
-#if flash9
-        Fathom.camera.setFocus(new Vec(flash.Lib.current.stage.stageWidth/2, flash.Lib.current.stage.stageHeight/2));
-#end
+        Fathom.camera.setFocus(new Vec(Fathom.stage.stageWidth/2, Fathom.stage.stageHeight/2));
 
         var r = new haxe.unit.TestRunner();
 
@@ -77,10 +78,8 @@ class AllTests extends Sprite {
         r.add(new EntityTest());
         r.add(new MapTest());
         r.add(new AnimationTest());
-#if flash9
         r.add(new CameraTest());
         r.add(new ColorTest());
-#end
 
         r.run();
 
