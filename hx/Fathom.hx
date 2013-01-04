@@ -33,9 +33,9 @@ class Fathom {
     static public var stage : Stage;
     static public var grid : SpatialHash;
     static public var modes : Array<Int> = [0];
+    static public var cb:Void -> Void;
 
     static private var fpsFn : Void -> String;
-    static private var cb:Void -> Void;
 
     public function new() {
         throw ("You can't initialize a Fathom object. Use Fathom.initialize() instead.");
@@ -75,18 +75,23 @@ class Fathom {
         // Inside of the Entity constructor, we assert Fathom.initialized, because all
         // MCs must be added to the container MC.
 
+        Fathom.initialized = true;
+
+        grid = new SpatialHash(Fathom.entities.select([]));
 #if flash
         Fathom.starling = new Starling(RootEntity, flash.Lib.current.stage);
     #if profile
         Fathom.starling.showStats = true;
     #end
         Fathom.starling.start();
+#else
+        Fathom.stage = nme.Lib.current.stage;
+        Fathom.container = Entity.fromDO(Fathom.stage).addGroup("container");
+        Fathom._camera = new Camera(Fathom.stage).scaleBy(1).setEaseSpeed(3);
+        MagicKeyObject._initializeKeyInput();
+        cb();
 #end
-
-        Fathom.initialized = true;
         Fathom.cb = cb;
-
-        grid = new SpatialHash(Fathom.entities.select([]));
     }
 
     static public function start(): Void {

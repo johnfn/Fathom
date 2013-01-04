@@ -1,9 +1,11 @@
 import Util;
 #if nme
 import nme.display.BitmapData;
+import nme.display.DisplayObjectContainer;
 import nme.display.Sprite;
 #else
 import flash.display.BitmapData;
+import starling.display.DisplayObjectContainer;
 import starling.display.Sprite;
 #end
 
@@ -51,7 +53,7 @@ class Entity extends Graphic {
         return _currentlyInFathom = v;
     }
 
-    public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1, d:Sprite = null) {
+    public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1, d:DisplayObjectContainer = null) {
         if(!Fathom.initialized)  {
             throw "Fathom.initialize() has not been called. Failing.";
         }
@@ -79,7 +81,7 @@ class Entity extends Graphic {
         }
     }
 
-    public static function fromDO(d:Sprite):Entity {
+    public static function fromDO(d:DisplayObjectContainer):Entity {
         return new Entity(0, 0, 20, 20, d);
     }
 

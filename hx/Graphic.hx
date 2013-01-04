@@ -49,7 +49,7 @@ class Graphic implements IPositionable {
     var fullTexture : Texture;
 #end
 
-    var sprite:Sprite;
+    var sprite:DisplayObjectContainer;
 
     public var spriteX(getSpriteX, never) : Int;
     public var spriteY(getSpriteY, never) : Int;

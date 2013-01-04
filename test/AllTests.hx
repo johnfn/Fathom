@@ -35,35 +35,10 @@ class AllTests extends Sprite {
     testAnimation = Assets.getBitmapData("test/testanimation.png");
 #end
 
-#if flash
     Fathom.initialize(test);
-#else
-    nme.Lib.current.addChild(new AllTests());
-#end
   }
-
-#if nme
-  public function new () {
-    super ();
-    addEventListener(Event.ADDED_TO_STAGE, this_onAddedToStage);
-  }
-
-  private function this_onAddedToStage(e):Void {
-    Fathom.initialize();
-    Fathom.stage = this.stage;
-    AllTests.stage = this;
-    Fathom.container = Entity.fromDO(this).addGroup("container");
-
-    Fathom._camera = new Camera(Fathom.stage).scaleBy(1).setEaseSpeed(3);
-    MagicKeyObject._initializeKeyInput();
-
-    test();
-  }
-#end
 
   static function test() {
-    //g.setTile(0, 0);
-
     //TODO: Figure out why I need this...
     haxe.Timer.delay(function() {
         Fathom.camera.setFocus(new Vec(Fathom.stage.stageWidth/2, Fathom.stage.stageHeight/2));
@@ -82,8 +57,6 @@ class AllTests extends Sprite {
         r.add(new ColorTest());
 
         r.run();
-
-        //nme.Lib.close();
     }, 250);
 
   }
