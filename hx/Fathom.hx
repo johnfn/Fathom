@@ -225,6 +225,7 @@ class Fathom {
     }
 }
 
+#if flash
 class RootEntity extends Sprite {
     private static var count:Int = 0;
 
@@ -249,3 +250,4 @@ class RootEntity extends Sprite {
 #end
     }
 }
+#end

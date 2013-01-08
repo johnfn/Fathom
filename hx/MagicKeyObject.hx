@@ -1,5 +1,10 @@
+#if flash
 import starling.events.Event;
 import starling.events.KeyboardEvent;
+#else
+import nme.events.Event;
+import nme.events.KeyboardEvent;
+#end
 
 using StringTools;
 
