@@ -87,7 +87,7 @@ class Util {
 
 			untyped {
 				for (k in td) {
-					result += k + ": " + o + ",";
+					result += k + ": " + td.get(k) + ",";
 				}
 			}
 
@@ -95,6 +95,17 @@ class Util {
 #else
 			result = "WHAT IN GODS NAME HAPPENED HERE.";
 #end
+		} else if (Util.className(o) == "SuperObjectHash") {
+			var soh:SuperObjectHash<Dynamic, Dynamic> = cast(o, SuperObjectHash<Dynamic, Dynamic>);
+			result = "{ ";
+
+			untyped {
+				for (k in soh) {
+					result += k + ": " + soh.get(k) + ",";
+				}
+			}
+
+			result += "}";
 		} else if(Util.className(o) == "Array")  {
 			var arr : Array<Dynamic> = try cast(o, Array<Dynamic>) catch(e:Dynamic) null;
 			result = "[";
