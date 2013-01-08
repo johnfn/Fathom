@@ -1,6 +1,7 @@
-import flash.display.Sprite;
-import flash.events.Event;
-import flash.events.KeyboardEvent;
+import starling.events.Event;
+import starling.events.KeyboardEvent;
+
+using StringTools;
 
 class MagicKeyObject {
     public var A(getA, never): Bool; function getA() { return getProperty("A"); }
@@ -30,66 +31,63 @@ class MagicKeyObject {
     public var Y(getY, never): Bool; function getY() { return getProperty("Y"); }
     public var Z(getZ, never): Bool; function getZ() { return getProperty("Z"); }
 
-  public var Enter(getEnter, never): Bool; function getEnter() { return getProperty("Enter"); }
-  public var Space(getSpace, never): Bool; function getSpace() { return getProperty("Space"); }
-  public var Left(getLeft, never): Bool;   function getLeft()  { return getProperty("Left"); }
-  public var Up(getUp, never): Bool;       function getUp()    { return getProperty("Up"); }
-  public var Right(getRight, never): Bool; function getRight() { return getProperty("Right"); }
-  public var Down(getDown, never): Bool;   function getDown()  { return getProperty("Down"); }
+    public var Enter(getEnter, never): Bool; function getEnter() { return getProperty("Enter"); }
+    public var Space(getSpace, never): Bool; function getSpace() { return getProperty("Space"); }
+    public var Left(getLeft, never): Bool;   function getLeft()  { return getProperty("Left"); }
+    public var Up(getUp, never): Bool;       function getUp()    { return getProperty("Up"); }
+    public var Right(getRight, never): Bool; function getRight() { return getProperty("Right"); }
+    public var Down(getDown, never): Bool;   function getDown()  { return getProperty("Down"); }
 
-    static var Key : Dynamic = keysToKeyCodes();
+    static var codeToKey: SuperObjectHash<Int, String> = keysToKeyCodes();
     var type : Int;
-    var otherType : Int;
-    static var keyStates : Array<Dynamic> = [];
-    function new(type : Int) {
+    var similarType : Int;
+    static var keyStates: SuperObjectHash<String, KeyState>;
+
+    function new(type: Int) {
         this.type = type;
-        if(this.type == KeyState.KEYSTATE_DOWN)  {
-            this.otherType = KeyState.KEYSTATE_JUST_DOWN;
+        if(this.type == KeyState.KEYSTATE_DOWN) {
+            this.similarType = KeyState.KEYSTATE_JUST_DOWN;
+        } else if(this.type == KeyState.KEYSTATE_UP)  {
+            this.similarType = KeyState.KEYSTATE_JUST_UP;
+        } else {
+            this.similarType = this.type;
         }
-
-        else if(this.type == KeyState.KEYSTATE_UP)  {
-            this.otherType = KeyState.KEYSTATE_JUST_UP;
-        }
-
-        else  {
-            this.otherType = this.type;
-        }
-
     }
 
-    function getProperty(which : Dynamic) : Dynamic {
-        which = Reflect.field(Key, Std.string(which));
-        return (keyStates[which].state == type || keyStates[which].state == otherType);
+    function getProperty(which : String) : Bool {
+        var s:KeyState = keyStates.get(which.toUpperCase());
+        return (s.state == type || s.state == similarType);
     }
 
-    static function keysToKeyCodes() : Dynamic {
-        var res: SuperObjectHash<String, Int> = new SuperObjectHash();
-        res.set("Enter", 13);
-        res.set("Space", 32);
-        res.set("Left", 37);
-        res.set("Up", 38);
-        res.set("Right", 39);
-        res.set("Down", 40);
+    static function keysToKeyCodes() : SuperObjectHash<Int, String> {
+        var res: SuperObjectHash<Int, String> = new SuperObjectHash();
+        res.set(13, "Enter");
+        res.set(32, "Space");
+        res.set(37, "Left");
+        res.set(38, "Up");
+        res.set(39, "Right");
+        res.set(40, "Down");
 
         // Add A - Z.
-        var k : Int = 65;
-        while(k <= 65 + 26) {
-            res.set(String.fromCharCode(k), k);
-            k++;
+        for (k in 65...(65 + 26 + 1)) {
+            res.set(k, String.fromCharCode(k));
         }
-;
         return res;
     }
 
     static function _keyDown(event : KeyboardEvent) : Void {
-        var keystate : KeyState = keyStates[event.keyCode];
+        var keyName: String = codeToKey.get(event.keyCode).toUpperCase();
+        var keystate : KeyState = keyStates.get(keyName);
+
         if(keystate.state != KeyState.KEYSTATE_JUST_DOWN && keystate.state != KeyState.KEYSTATE_DOWN)  {
             keystate.state = KeyState.KEYSTATE_JUST_DOWN;
         }
     }
 
     static function _keyUp(event : KeyboardEvent) : Void {
-        var keystate : KeyState = keyStates[event.keyCode];
+        var keyName: String = codeToKey.get(event.keyCode).toUpperCase();
+        var keystate : KeyState = keyStates.get(keyName);
+
         if(keystate.state != KeyState.KEYSTATE_JUST_UP && keystate.state != KeyState.KEYSTATE_UP)  {
             keystate.state = KeyState.KEYSTATE_JUST_UP;
         }
@@ -99,13 +97,16 @@ class MagicKeyObject {
     // TODO: Move into Fathom, I guess.
     // TODO: should there be a container...which i construct..? I'm confused.
     static public function _initializeKeyInput() : Void {
+        keyStates = new SuperObjectHash();
         Fathom.stage.addEventListener(KeyboardEvent.KEY_DOWN, _keyDown);
         Fathom.stage.addEventListener(KeyboardEvent.KEY_UP, _keyUp);
-        var i : Int = 0;
-        while(i < 255) {
-            keyStates[i] = new KeyState();
-            i++;
+
+        for (f in Type.getInstanceFields(MagicKeyObject)) {
+            if (f.startsWith("get_")) {
+                keyStates.set(f.substr(4).toUpperCase(), new KeyState());
+            }
         }
+
         Util.KeyDown = new MagicKeyObject(KeyState.KEYSTATE_DOWN);
         Util.KeyJustDown = new MagicKeyObject(KeyState.KEYSTATE_JUST_DOWN);
         Util.KeyUp = new MagicKeyObject(KeyState.KEYSTATE_UP);
@@ -117,22 +118,19 @@ class MagicKeyObject {
     // work correctly as long as this is called FPS times per second or so, as
     // to properly flush the keys through.
     static public function dealWithVariableKeyRepeatRates() : Void {
-        var i : Int = 0;
-        while(i < keyStates.length) {
-            if(keyStates[i].state == KeyState.KEYSTATE_JUST_UP)  {
-                keyStates[i].state = KeyState.KEYSTATE_UP;
+        for (k in keyStates.values()) {
+            if(k.state == KeyState.KEYSTATE_JUST_UP)  {
+                k.state = KeyState.KEYSTATE_UP;
             }
-            if(keyStates[i].state == KeyState.KEYSTATE_JUST_DOWN)  {
-                keyStates[i].state = KeyState.KEYSTATE_DOWN;
+            if(k.state == KeyState.KEYSTATE_JUST_DOWN)  {
+                k.state = KeyState.KEYSTATE_DOWN;
             }
-            i++;
         }
     }
-
 }
 
+//TODO: Can replace with enum.
 class KeyState {
-
     static public var KEYSTATE_JUST_DOWN : Int = 0;
     static public var KEYSTATE_DOWN : Int = 1;
     static public var KEYSTATE_JUST_UP : Int = 2;

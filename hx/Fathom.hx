@@ -235,10 +235,7 @@ class RootEntity extends Sprite {
 
         super();
 
-#if flash
         Fathom.stage = Fathom.starling.stage;
-#end
-
         Fathom.container = Entity.fromDO(this).addGroup("container");
 
         // Can't initialize the Cam until the container is initialized...
