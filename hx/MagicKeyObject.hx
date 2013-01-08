@@ -83,6 +83,11 @@ class MagicKeyObject {
     }
 
     static function _keyDown(event : KeyboardEvent) : Void {
+        if (!codeToKey.exists(event.keyCode)) {
+            trace("key " + event.keyCode + " not supported");
+            return;
+        }
+
         var keyName: String = codeToKey.get(event.keyCode).toUpperCase();
         var keystate : KeyState = keyStates.get(keyName);
 
@@ -92,6 +97,11 @@ class MagicKeyObject {
     }
 
     static function _keyUp(event : KeyboardEvent) : Void {
+        if (!codeToKey.exists(event.keyCode)) {
+            trace("key " + event.keyCode + " not supported");
+            return;
+        }
+
         var keyName: String = codeToKey.get(event.keyCode).toUpperCase();
         var keystate : KeyState = keyStates.get(keyName);
 

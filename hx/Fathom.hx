@@ -91,6 +91,7 @@ class Fathom {
         Fathom._camera = new Camera(Fathom.stage).scaleBy(1).setEaseSpeed(3);
         MagicKeyObject._initializeKeyInput();
         cb();
+        Fathom.start();
 #end
     }
 
