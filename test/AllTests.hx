@@ -55,6 +55,7 @@ class AllTests extends Sprite {
         r.add(new AnimationTest());
         r.add(new CameraTest());
         r.add(new ColorTest());
+        r.add(new KeyTest());
 
         r.run();
     }, 250);

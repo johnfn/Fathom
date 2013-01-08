@@ -43,6 +43,7 @@ class MagicKeyObject {
     public var Right(getRight, never): Bool; function getRight() { return getProperty("Right"); }
     public var Down(getDown, never): Bool;   function getDown()  { return getProperty("Down"); }
 
+    //TODO: Replace with charCode
     static var codeToKey: SuperObjectHash<Int, String> = keysToKeyCodes();
     var type : Int;
     var similarType : Int;
