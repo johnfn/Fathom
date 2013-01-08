@@ -41,23 +41,23 @@ class AllTests extends Sprite {
   static function test() {
     //TODO: Figure out why I need this...
     haxe.Timer.delay(function() {
-        Fathom.camera.setFocus(new Vec(Fathom.stage.stageWidth/2, Fathom.stage.stageHeight/2));
+      Fathom.camera.setFocus(new Vec(Fathom.stage.stageWidth/2, Fathom.stage.stageHeight/2));
 
-        var r = new haxe.unit.TestRunner();
+      var r = new haxe.unit.TestRunner();
 
-        r.add(new SetTest());
-        r.add(new SuperObjectHashTest());
-        r.add(new RectTest());
-        r.add(new VecTest());
-        r.add(new GraphicTest());
-        r.add(new EntityTest());
-        r.add(new MapTest());
-        r.add(new AnimationTest());
-        r.add(new CameraTest());
-        r.add(new ColorTest());
-        r.add(new KeyTest());
+      r.add(new SetTest());
+      r.add(new SuperObjectHashTest());
+      r.add(new RectTest());
+      r.add(new VecTest());
+      r.add(new GraphicTest());
+      r.add(new EntityTest());
+      r.add(new MapTest());
+      r.add(new AnimationTest());
+      r.add(new CameraTest());
+      r.add(new ColorTest());
+      r.add(new KeyTest());
 
-        r.run();
+      r.run();
     }, 250);
 
   }

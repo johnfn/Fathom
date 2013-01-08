@@ -9,42 +9,42 @@ import nme.events.KeyboardEvent;
 using StringTools;
 
 class MagicKeyObject {
-    public var A(getA, never): Bool; function getA() { return getProperty("A"); }
-    public var B(getB, never): Bool; function getB() { return getProperty("B"); }
-    public var C(getC, never): Bool; function getC() { return getProperty("C"); }
-    public var D(getD, never): Bool; function getD() { return getProperty("D"); }
-    public var E(getE, never): Bool; function getE() { return getProperty("E"); }
-    public var F(getF, never): Bool; function getF() { return getProperty("F"); }
-    public var G(getG, never): Bool; function getG() { return getProperty("G"); }
-    public var H(getH, never): Bool; function getH() { return getProperty("H"); }
-    public var I(getI, never): Bool; function getI() { return getProperty("I"); }
-    public var J(getJ, never): Bool; function getJ() { return getProperty("J"); }
-    public var K(getK, never): Bool; function getK() { return getProperty("K"); }
-    public var L(getL, never): Bool; function getL() { return getProperty("L"); }
-    public var M(getM, never): Bool; function getM() { return getProperty("M"); }
-    public var N(getN, never): Bool; function getN() { return getProperty("N"); }
-    public var O(getO, never): Bool; function getO() { return getProperty("O"); }
-    public var P(getP, never): Bool; function getP() { return getProperty("P"); }
-    public var Q(getQ, never): Bool; function getQ() { return getProperty("Q"); }
-    public var R(getR, never): Bool; function getR() { return getProperty("R"); }
-    public var S(getS, never): Bool; function getS() { return getProperty("S"); }
-    public var T(getT, never): Bool; function getT() { return getProperty("T"); }
-    public var U(getU, never): Bool; function getU() { return getProperty("U"); }
-    public var V(getV, never): Bool; function getV() { return getProperty("V"); }
-    public var W(getW, never): Bool; function getW() { return getProperty("W"); }
-    public var X(getX, never): Bool; function getX() { return getProperty("X"); }
-    public var Y(getY, never): Bool; function getY() { return getProperty("Y"); }
-    public var Z(getZ, never): Bool; function getZ() { return getProperty("Z"); }
+    public var A(getA, never): Bool; function getA() { return checkKey("A"); }
+    public var B(getB, never): Bool; function getB() { return checkKey("B"); }
+    public var C(getC, never): Bool; function getC() { return checkKey("C"); }
+    public var D(getD, never): Bool; function getD() { return checkKey("D"); }
+    public var E(getE, never): Bool; function getE() { return checkKey("E"); }
+    public var F(getF, never): Bool; function getF() { return checkKey("F"); }
+    public var G(getG, never): Bool; function getG() { return checkKey("G"); }
+    public var H(getH, never): Bool; function getH() { return checkKey("H"); }
+    public var I(getI, never): Bool; function getI() { return checkKey("I"); }
+    public var J(getJ, never): Bool; function getJ() { return checkKey("J"); }
+    public var K(getK, never): Bool; function getK() { return checkKey("K"); }
+    public var L(getL, never): Bool; function getL() { return checkKey("L"); }
+    public var M(getM, never): Bool; function getM() { return checkKey("M"); }
+    public var N(getN, never): Bool; function getN() { return checkKey("N"); }
+    public var O(getO, never): Bool; function getO() { return checkKey("O"); }
+    public var P(getP, never): Bool; function getP() { return checkKey("P"); }
+    public var Q(getQ, never): Bool; function getQ() { return checkKey("Q"); }
+    public var R(getR, never): Bool; function getR() { return checkKey("R"); }
+    public var S(getS, never): Bool; function getS() { return checkKey("S"); }
+    public var T(getT, never): Bool; function getT() { return checkKey("T"); }
+    public var U(getU, never): Bool; function getU() { return checkKey("U"); }
+    public var V(getV, never): Bool; function getV() { return checkKey("V"); }
+    public var W(getW, never): Bool; function getW() { return checkKey("W"); }
+    public var X(getX, never): Bool; function getX() { return checkKey("X"); }
+    public var Y(getY, never): Bool; function getY() { return checkKey("Y"); }
+    public var Z(getZ, never): Bool; function getZ() { return checkKey("Z"); }
 
-    public var Enter(getEnter, never): Bool; function getEnter() { return getProperty("Enter"); }
-    public var Space(getSpace, never): Bool; function getSpace() { return getProperty("Space"); }
-    public var Left(getLeft, never): Bool;   function getLeft()  { return getProperty("Left"); }
-    public var Up(getUp, never): Bool;       function getUp()    { return getProperty("Up"); }
-    public var Right(getRight, never): Bool; function getRight() { return getProperty("Right"); }
-    public var Down(getDown, never): Bool;   function getDown()  { return getProperty("Down"); }
+    public var Enter(getEnter, never): Bool; function getEnter() { return checkKey("Enter"); }
+    public var Space(getSpace, never): Bool; function getSpace() { return checkKey("Space"); }
+    public var Left(getLeft, never): Bool;   function getLeft()  { return checkKey("Left"); }
+    public var Up(getUp, never): Bool;       function getUp()    { return checkKey("Up"); }
+    public var Right(getRight, never): Bool; function getRight() { return checkKey("Right"); }
+    public var Down(getDown, never): Bool;   function getDown()  { return checkKey("Down"); }
 
     //TODO: Replace with charCode
-    static var codeToKey: SuperObjectHash<Int, String> = keysToKeyCodes();
+    static var codeToKey: IntHash<String> = keysToKeyCodes();
     var type : Int;
     var similarType : Int;
     static var keyStates: SuperObjectHash<String, KeyState>;
@@ -60,13 +60,13 @@ class MagicKeyObject {
         }
     }
 
-    function getProperty(which : String) : Bool {
+    function checkKey(which : String) : Bool {
         var s:KeyState = keyStates.get(which.toUpperCase());
         return (s.state == type || s.state == similarType);
     }
 
-    static function keysToKeyCodes() : SuperObjectHash<Int, String> {
-        var res: SuperObjectHash<Int, String> = new SuperObjectHash();
+    static function keysToKeyCodes() : IntHash<String> {
+        var res: IntHash<String> = new IntHash();
         res.set(13, "Enter");
         res.set(32, "Space");
         res.set(37, "Left");
@@ -78,6 +78,7 @@ class MagicKeyObject {
         for (k in 65...(65 + 26 + 1)) {
             res.set(k, String.fromCharCode(k));
         }
+
         return res;
     }
 
@@ -108,8 +109,8 @@ class MagicKeyObject {
         Fathom.stage.addEventListener(KeyboardEvent.KEY_UP, _keyUp);
 
         for (f in Type.getInstanceFields(MagicKeyObject)) {
-            if (f.startsWith("get_")) {
-                keyStates.set(f.substr(4).toUpperCase(), new KeyState());
+            if (f.startsWith("get") && !f.startsWith("get_")) {
+                keyStates.set(f.substr(3).toUpperCase(), new KeyState());
             }
         }
 

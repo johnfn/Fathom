@@ -199,6 +199,17 @@ class SuperObjectHashTest extends haxe.unit.TestCase {
     }
   }
 
+  public function testIntToString() {
+    var soh:SuperObjectHash<Int, String> = new SuperObjectHash();
+    soh.set(1, "a");
+    soh.set(2, "b");
+    soh.set(3, "c");
+
+    assertEquals(soh.get(1), "a");
+    assertEquals(soh.get(2), "b");
+    assertEquals(soh.get(3), "c");
+  }
+
   public function testPrimitiveDupes() {
     var soh:SuperObjectHash<Int, Int> = new SuperObjectHash();
 
