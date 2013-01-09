@@ -156,6 +156,7 @@ class Fathom {
                 var amtX : Float = Util.clamp(oldVelX, -1, 1);
                 e.x += amtX;
                 oldVelX -= amtX;
+
                 if(grid.collides(e))  {
                     var xColliders : Set<Entity> = grid.getColliders(e);
                     e.xColl.extend(xColliders);

@@ -6,6 +6,7 @@ import nme.display.Loader;
 import nme.net.URLRequest;
 import nme.events.Event;
 #end
+import neko.vm.Thread;
 
 class ReloadedGraphic extends Bitmap {
   var url: String;
@@ -15,11 +16,10 @@ class ReloadedGraphic extends Bitmap {
   	super();
 
     this.url = url;
-    Fathom.stage.addChild(this);
 
     this.loader = new Loader();
     this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadComplete);
-    this.loader.load(new URLRequest(url));
+  	Thread.create(beginLoad);
   }
 
   // Returns true if the two BitmapDatas are equal, false otherwise.
@@ -41,6 +41,10 @@ class ReloadedGraphic extends Bitmap {
     return true;
   }
 
+  function beginLoad() {
+    this.loader.load(new URLRequest(url));
+  }
+
   function loadComplete(e:Event) {
     var loadedBitmap:Bitmap = cast(e.currentTarget.loader.content, Bitmap);
 
@@ -49,7 +53,7 @@ class ReloadedGraphic extends Bitmap {
     }
 
     haxe.Timer.delay(function() {
-      this.loader.load(new URLRequest(url));
-    }, 250);
+    	Thread.create(beginLoad);
+    }, 1000);
   }
 }

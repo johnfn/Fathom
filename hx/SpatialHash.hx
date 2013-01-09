@@ -48,8 +48,9 @@ class SpatialHash {
 
     /* Return the coordinates that the provided entity hashes to. Could be more than
        one coordinate. An entity with size exactly the gridsize, positioned exactly
-       on a grid, will only exist in one coordinate. */    function getCoords(e : Entity) : Array<Dynamic> {
-        var result : Array<Dynamic> = [];
+       on a grid, will only exist in one coordinate. */
+    function getCoords(e : Entity) : Array<Vec> {
+        var result : Array<Vec> = [];
         var endSlotX : Int = Math.floor((e.x + e.width) / gridWidth);
         if((e.x + e.width) % gridWidth == 0) endSlotX--;
 
@@ -78,11 +79,15 @@ class SpatialHash {
     }
 
     /* Returns whether the entity e collides with any object in the hash,
-       excluding itself. */    public function collides(e : Entity) : Bool {
+       excluding itself. */
+    public function collides(e : Entity) : Bool {
         var coords : Array<Dynamic> = getCoords(e);
         var i : Int = 0;
         while(i < coords.length) {
-            var arr : Array<Dynamic> = grid[coords[i].x][coords[i].y];
+            if (coords[i].x >= grid.length || coords[i].y >= grid[i].length ||
+                coords[i].x < 0 || coords[i].y < 0) continue;
+
+            var arr : Array<Dynamic> = grid[coords[i].getX()][coords[i].getY()];
             var j : Int = 0;
             while(j < arr.length) {
                 if(arr[j] == e)
@@ -106,7 +111,7 @@ class SpatialHash {
         var coords : Array<Dynamic> = getCoords(e);
         var i : Int = 0;
         while(i < coords.length) {
-            var arr : Array<Dynamic> = grid[coords[i].x][coords[i].y];
+            var arr : Array<Dynamic> = grid[coords[i].getX()][coords[i].getY()];
             var j : Int = 0;
             while(j < arr.length) {
                 if(arr[j] == e)

@@ -15,7 +15,7 @@ class Vec implements IPositionable {
     }
 
     public function getX() : Float {
-        return _x;
+        return this._x;
     }
 
     public function setX(val : Float) : Float {
@@ -23,7 +23,7 @@ class Vec implements IPositionable {
     }
 
     public function getY() : Float {
-        return _y;
+        return this._y;
     }
 
     public function setY(val : Float) : Float {

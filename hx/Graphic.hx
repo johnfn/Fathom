@@ -129,7 +129,7 @@ class Graphic implements IPositionable {
 #if flash
         texturedObject.texture = Texture.fromTexture(fullTexture, region);
 #else
-        var bd:BitmapData = new BitmapData(tileWidth, tileHeight, true, 0);
+        var bd:BitmapData = new BitmapData(tileWidth, tileHeight);
         bd.copyPixels(fullTexture, region, new Point(0, 0), null, null, true);
 
         texturedObject.bitmapData = bd;
@@ -201,7 +201,13 @@ class Graphic implements IPositionable {
     }
 
     public function loadHotSwapImage(path: String) {
-        hotswapped = new ReloadedGraphic(path);
+        if (hotswapped == null) {
+            hotswapped = new ReloadedGraphic(path);
+            sprite.addChild(hotswapped);
+        } else {
+            Util.assert(false, "haven't figured this out TODO");
+        }
+
         return this;
     }
 
