@@ -131,6 +131,7 @@ class Fathom {
         for(e in list) {
             var oldVelX : Float = e.vel.x;
             var oldVelY : Float = e.vel.y;
+
             var onceThrough : Bool = true;
             e.xColl = new Set<Entity>();
             e.yColl = new Set<Entity>();

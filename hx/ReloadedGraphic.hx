@@ -6,7 +6,8 @@ import nme.display.Loader;
 import nme.net.URLRequest;
 import nme.events.Event;
 #end
-import neko.vm.Thread;
+import cpp.vm.Thread;
+//import neko.vm.Thread;
 
 class ReloadedGraphic extends Bitmap {
   var url: String;
