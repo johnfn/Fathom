@@ -43,6 +43,7 @@ class Graphic implements IPositionable {
     var texturedObject:Bitmap;
     static var cachedAssets: SuperObjectHash<String, BitmapData> = new SuperObjectHash();
     var fullTexture : BitmapData;
+    var hotswapped: ReloadedGraphic;
 #else
     var texturedObject:Image;
     static var cachedAssets: SuperObjectHash<String, Texture> = new SuperObjectHash();
@@ -196,6 +197,11 @@ class Graphic implements IPositionable {
 
         setTile(Std.int(whichTile.x), Std.int(whichTile.y));
 
+        return this;
+    }
+
+    public function loadHotSwapImage(path: String) {
+        hotswapped = new ReloadedGraphic(path);
         return this;
     }
 

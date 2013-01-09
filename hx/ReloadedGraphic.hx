@@ -7,15 +7,15 @@ import nme.net.URLRequest;
 import nme.events.Event;
 #end
 
-class ReloadedGraphic {
+class ReloadedGraphic extends Bitmap {
   var url: String;
   var loader: Loader;
-  var b:Bitmap;
 
   public function new(url: String) {
-    this.b = new Bitmap();
+  	super();
+
     this.url = url;
-    Fathom.stage.addChild(b);
+    Fathom.stage.addChild(this);
 
     this.loader = new Loader();
     this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadComplete);
@@ -44,8 +44,8 @@ class ReloadedGraphic {
   function loadComplete(e:Event) {
     var loadedBitmap:Bitmap = cast(e.currentTarget.loader.content, Bitmap);
 
-    if (b.bitmapData == null || !compare(b.bitmapData, loadedBitmap.bitmapData)) {
-      b.bitmapData = loadedBitmap.bitmapData;
+    if (bitmapData == null || !compare(bitmapData, loadedBitmap.bitmapData)) {
+      bitmapData = loadedBitmap.bitmapData;
     }
 
     haxe.Timer.delay(function() {
