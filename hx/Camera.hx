@@ -161,7 +161,7 @@ class Camera extends Rect {
     public function setFocus(loc: Vec): Void {
         this.isFocused = true;
         goalFocalX = (isBound()) ? bind(loc.x, focalBoundingRect.x, focalBoundingRect.right) : loc.x;
-        goalFocalY = (isBound()) ? bind(loc.y, focalBoundingRect.y, focalBoundingRect.bottom) : loc.x;
+        goalFocalY = (isBound()) ? bind(loc.y, focalBoundingRect.y, focalBoundingRect.bottom) : loc.y;
     }
 
     public function getFocus(): Vec {
