@@ -58,8 +58,6 @@ class Entity extends Graphic {
             throw "Fathom.initialize() has not been called. Failing.";
         }
 
-        trace("new entity " + x + ", " + y);
-
         entityChildren = [];
         events = [];
         isFlickering = false;
@@ -239,6 +237,10 @@ class Entity extends Graphic {
     // We do some casting so you don't have to.
     public override function loadSpritesheet(spritesheetClass: BitmapData, tileDimension : Vec = null, whichTile : Vec = null) : Entity {
         return cast(super.loadSpritesheet(spritesheetClass, tileDimension, whichTile), Entity);
+    }
+
+    public override function loadHotSwapImage(path: String) {
+        return cast(super.loadHotSwapImage(path), Entity);
     }
 
     public override function setTile(x : Int, y : Int) : Entity {

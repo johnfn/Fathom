@@ -1,13 +1,13 @@
-#if nme
+#if cpp
 import nme.display.BitmapData;
 import nme.display.Bitmap;
 import nme.display.Sprite;
 import nme.display.Loader;
 import nme.net.URLRequest;
 import nme.events.Event;
-#end
+import nme.geom.Rectangle;
+import nme.geom.Point;
 import cpp.vm.Thread;
-//import neko.vm.Thread;
 
 class ReloadedGraphic extends Bitmap {
   var url: String;
@@ -50,7 +50,19 @@ class ReloadedGraphic extends Bitmap {
     var loadedBitmap:Bitmap = cast(e.currentTarget.loader.content, Bitmap);
 
     if (bitmapData == null || !compare(bitmapData, loadedBitmap.bitmapData)) {
-      bitmapData = loadedBitmap.bitmapData;
+      if (bitmapData == null) {
+      	var b:Bitmap = new Bitmap(loadedBitmap.bitmapData);
+      	b.x = 50;
+      	b.y = 50;
+      	Fathom.stage.addChild(b);
+
+      	bitmapData = loadedBitmap.bitmapData;
+      } else {
+	      var rect:Rectangle = new Rectangle(0, 0, this.width, this.height);
+	      var point:Point = new Point(0, 0);
+
+	      this.bitmapData.copyPixels(loadedBitmap.bitmapData, rect, point);
+	    }
     }
 
     haxe.Timer.delay(function() {
@@ -58,3 +70,11 @@ class ReloadedGraphic extends Bitmap {
     }, 1000);
   }
 }
+
+#else
+class ReloadedGraphic extends Bitmap {
+  public function new(url: String) {
+
+  }
+}
+#end

@@ -277,7 +277,6 @@ class Map extends Rect {
             e = new Entity(x * tileSize, y * tileSize, tileSize, tileSize)
                 .loadSpritesheet(itemData.gfx, new Vec(tileSize, tileSize))
                 .setTile(Std.int(ssLoc.x), Std.int(ssLoc.y));
-            trace(x + ", " + y + " got " + ssLoc);
         }
 
         persistent.get(topLeftCorner.asKey()).push(e);
