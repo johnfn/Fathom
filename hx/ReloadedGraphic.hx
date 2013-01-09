@@ -1,16 +1,24 @@
+#if nme
+import nme.display.BitmapData;
+import nme.display.Bitmap;
+import nme.display.Sprite;
+import nme.display.Loader;
+import nme.net.URLRequest;
+import nme.events.Event;
+#end
+
 class ReloadedGraphic {
   var url: String;
   var loader: Loader;
-  var oldData: BitmapData;
   var b:Bitmap;
 
   public function new(url: String) {
     this.b = new Bitmap();
     this.url = url;
-    this.oldData = null;
+    Fathom.stage.addChild(b);
 
     this.loader = new Loader();
-    loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadComplete);
+    this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadComplete);
     this.loader.load(new URLRequest(url));
   }
 
@@ -36,10 +44,8 @@ class ReloadedGraphic {
   function loadComplete(e:Event) {
     var loadedBitmap:Bitmap = cast(e.currentTarget.loader.content, Bitmap);
 
-    if (oldData == null || !compare(oldData, loadedBitmap.bitmapData)) {
+    if (b.bitmapData == null || !compare(b.bitmapData, loadedBitmap.bitmapData)) {
       b.bitmapData = loadedBitmap.bitmapData;
-      Fathom.stage.addChild(loadedBitmap);
-      oldData = loadedBitmap.bitmapData;
     }
 
     haxe.Timer.delay(function() {
