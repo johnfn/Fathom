@@ -13,11 +13,6 @@ class AnimationTest extends haxe.unit.TestCase {
     g = new Entity(0, 0, 16, 16);
     g.loadSpritesheet(AllTests.testAnimation, new Vec(16, 16), new Vec(0, 0));
     g.animations.ticksPerFrame = 1;
-
-//TODO when i have cam
-#if flash
-    Fathom.camera.setFocus(new Vec(Fathom.stage.stageWidth/2, Fathom.stage.stageHeight/2));
-#end
   }
 
   override public function tearDown() {

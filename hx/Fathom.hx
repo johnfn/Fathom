@@ -16,7 +16,6 @@ import com.sociodox.theminer.TheMiner;
 using Lambda;
 
 class Fathom {
-    static public var camera(getCamera, never) : Camera;
     static public var scaleX(getScaleX, never) : Float;
     static public var scaleY(getScaleY, never) : Float;
     static public var currentMode(getCurrentMode, never) : Int;
@@ -35,14 +34,9 @@ class Fathom {
     static public var cb:Void -> Void;
 
     static private var fpsFn : Void -> String;
-    static private var _camera : Camera;
 
     public function new() {
         throw ("You can't initialize a Fathom object. Use Fathom.initialize() instead.");
-    }
-
-    static public function getCamera() : Camera {
-        return _camera;
     }
 
     static public function getScaleX() : Float {
@@ -88,7 +82,6 @@ class Fathom {
 #else
         Fathom.stage = nme.Lib.current.stage;
         Fathom.container = Entity.fromDO(Fathom.stage).addGroup("container");
-        Fathom._camera = new Camera(Fathom.stage).scaleBy(1).setEaseSpeed(3);
         MagicKeyObject._initializeKeyInput();
         cb();
         Fathom.start();
@@ -219,12 +212,7 @@ class Fathom {
             mapRef.update();
         }
 
-        camera.update();
         MagicKeyObject.dealWithVariableKeyRepeatRates(); //TODO
-    }
-
-    static public function initCam(): Void {
-        Fathom._camera = new Camera(Fathom.stage).scaleBy(1).setEaseSpeed(3);
     }
 }
 
@@ -243,7 +231,6 @@ class RootEntity extends Sprite {
         Fathom.container = Entity.fromDO(this).addGroup("container");
 
         // Can't initialize the Cam until the container is initialized...
-        Fathom.initCam();
         Fathom.start();
         Fathom.cb();
         MagicKeyObject._initializeKeyInput();

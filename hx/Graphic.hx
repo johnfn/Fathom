@@ -52,20 +52,10 @@ class Graphic implements IPositionable {
 
     var sprite:DisplayObjectContainer;
 
-    public var spriteX(getSpriteX, never) : Int;
-    public var spriteY(getSpriteY, never) : Int;
-    public var cameraSpaceScaleX(getCameraSpaceScaleX, never) : Float;
-    public var cameraSpaceScaleY(getCameraSpaceScaleY, never) : Float;
     public var depth(getDepth, setDepth) : Int;
-    public var cameraSpaceX(getCameraSpaceX, setCameraSpaceX) : Float;
-    public var cameraSpaceY(getCameraSpaceY, setCameraSpaceY) : Float;
     public var numChildren(getNumChildren, never): Int;
     public var visible(getVisible, setVisible): Bool;
 
-    // The location of the entity, before camera transformations.
-    var entitySpacePos : Rect;
-    // The location of the entity, after camera transformations.
-    public var cameraSpacePos : Rect;
     public var animations : AnimationHandler;
     var spritesheet : SpriteSheet;
     // TODO: Rename
@@ -97,9 +87,6 @@ class Graphic implements IPositionable {
         spritesheet = {x: 0, y: 0};
 
         sprite = new Sprite();
-
-        cameraSpacePos = new Rect(0, 0, 0, 0);
-        entitySpacePos = new Rect(0, 0, 0, 0);
 
         animations = new AnimationHandler(this);
     }
@@ -200,6 +187,7 @@ class Graphic implements IPositionable {
         return this;
     }
 
+#if cpp
     public function loadHotSwapImage(path: String) {
         if (hotswapped == null) {
             hotswapped = new ReloadedGraphic(path);
@@ -210,6 +198,7 @@ class Graphic implements IPositionable {
 
         return this;
     }
+#end
 
     // In the case that your Graphic is just one big static image, you can use loadImage().
     public function loadImage(imgClass : Dynamic) : Graphic {
@@ -221,25 +210,6 @@ class Graphic implements IPositionable {
         x = v.x;
         y = v.y;
         return this;
-    }
-
-    /*
-    public function getPixels(): Bitmap {
-        return pixels;
-    }
-
-    public function setPixels(p: Bitmap): Bitmap {
-        return pixels = p;
-    }
-    */
-
-    // These two are in Camera space.
-    public function getCameraSpaceScaleX() : Float {
-        return scaleX;
-    }
-
-    public function getCameraSpaceScaleY() : Float {
-        return scaleY;
     }
 
     public static function takeScreenshot(): BitmapData {
@@ -294,9 +264,6 @@ class Graphic implements IPositionable {
     }
 
     public function add(p : IPositionable) : Graphic {
-        Util.assert(Fathom.stage.scaleX == 1, "Haven't considered scaled stages.");
-        Util.assert(Fathom.stage.scaleY == 1, "Haven't considered scaled stages.");
-
         x += p.x;
         y += p.y;
 
@@ -310,8 +277,6 @@ class Graphic implements IPositionable {
 
     /*
     public function destroy():void {
-        entitySpacePos = null;
-        cameraSpacePos = null;
         animations = null;
         pixels = null;
         spritesheet = null;
@@ -332,76 +297,47 @@ class Graphic implements IPositionable {
     }
 
     public function setScaleX(v: Float): Float {
-        sprite.scaleX = v;
-
-        return sprite.scaleX;
+        return sprite.scaleX = v;
     }
 
     public function setScaleY(v: Float): Float {
-        sprite.scaleY = v;
-
-        return sprite.scaleY;
+        return sprite.scaleY = v;
     }
 
     public function setX(val : Float) : Float {
-        return entitySpacePos.x = val;
+        return sprite.x = val;
     }
 
     public function getX() : Float {
-        return entitySpacePos.x;
+        return sprite.x;
     }
 
     public function setY(val : Float) : Float {
-        return entitySpacePos.y = val;
+        return sprite.y = val;
     }
 
     public function getY() : Float {
-        return entitySpacePos.y;
-    }
-
-    public function setCameraSpaceX(val : Float) : Float {
-        cameraSpacePos.x = val;
-        sprite.x = cameraSpacePos.x;
-        return val;
-    }
-
-    public function getCameraSpaceX() : Float {
-        return cameraSpacePos.x;
-    }
-
-    public function setCameraSpaceY(val : Float) : Float {
-        cameraSpacePos.y = val;
-        sprite.y = cameraSpacePos.y;
-        return val;
-    }
-
-    public function getCameraSpaceY() : Float {
-        return cameraSpacePos.y;
-    }
-
-    public function setWidth(val : Float) : Float {
-        entitySpacePos.width = val;
-        cameraSpacePos.width = val;
-        return val;
-    }
-
-    public function getWidth() : Float {
-        return entitySpacePos.width;
+        return sprite.y;
     }
 
     public function setHeight(val : Float) : Float {
-        entitySpacePos.height = val;
-        cameraSpacePos.height = val;
-        return val;
+        return sprite.height = val;
     }
 
     public function getHeight() : Float {
-        return entitySpacePos.height;
+        return sprite.height;
+    }
+
+    public function setWidth(val : Float) : Float {
+        return sprite.width = val;
+    }
+
+    public function getWidth() : Float {
+        return sprite.width;
     }
 
     public function setAlpha(val : Float) : Float {
-        sprite.alpha = val;
-        return val;
+        return sprite.alpha = val;
     }
 
     public function getAlpha() : Float {
@@ -409,11 +345,11 @@ class Graphic implements IPositionable {
     }
 
     public function rect() : Rect {
-        return new Rect(entitySpacePos.x, entitySpacePos.y, width, height);
+        return new Rect(x, y, width, height);
     }
 
     public function vec() : Vec {
-        return new Vec(entitySpacePos.x, entitySpacePos.y);
+        return new Vec(x, y);
     }
 
     public function getNumChildren(): Int {

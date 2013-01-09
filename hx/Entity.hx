@@ -239,9 +239,11 @@ class Entity extends Graphic {
         return cast(super.loadSpritesheet(spritesheetClass, tileDimension, whichTile), Entity);
     }
 
+#if cpp
     public override function loadHotSwapImage(path: String) {
         return cast(super.loadHotSwapImage(path), Entity);
     }
+#end
 
     public override function setTile(x : Int, y : Int) : Entity {
         return cast(super.setTile(x, y), Entity);
