@@ -58,6 +58,8 @@ class Entity extends Graphic {
             throw "Fathom.initialize() has not been called. Failing.";
         }
 
+        trace("new entity " + x + ", " + y);
+
         entityChildren = [];
         events = [];
         isFlickering = false;
@@ -65,7 +67,11 @@ class Entity extends Graphic {
         uid = ++counter;
         _isStatic = true;
         groupSet = new Set(["persistent"]);
-        super(x, y, width, height);
+        super();
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
 
         if (d != null) {
             this.sprite = d;

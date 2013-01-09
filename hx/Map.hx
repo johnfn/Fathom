@@ -18,6 +18,8 @@ typedef ItemDetail = {
     var color: String;
     var spritesheet: Vec;
 
+    // One of these two is required.
+
     @:optional var gfx: BitmapData;
     @:optional var spc: Dynamic;
 
@@ -43,11 +45,12 @@ class Map extends Rect {
     var bogusmapentry : Entity;
     var grounds : Array<String>;
     var _tileSize : Int;
-    var data : Array<Array<Color>>;
-    // Color data from the map.
 
-    var tiles : Array<Array<Entity>>;
+    // Color data from the map.
+    var data : Array<Array<Color>>;
+
     // Cached array of collideable tiles.
+    var tiles : Array<Array<Entity>>;
 
     public var collisionInfo : Array<Array<Bool>>;
     var topLeftCorner : Vec;
@@ -274,6 +277,7 @@ class Map extends Rect {
             e = new Entity(x * tileSize, y * tileSize, tileSize, tileSize)
                 .loadSpritesheet(itemData.gfx, new Vec(tileSize, tileSize))
                 .setTile(Std.int(ssLoc.x), Std.int(ssLoc.y));
+            trace(x + ", " + y + " got " + ssLoc);
         }
 
         persistent.get(topLeftCorner.asKey()).push(e);

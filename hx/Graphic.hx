@@ -85,7 +85,7 @@ class Graphic implements IPositionable {
         return sprite;
     }
 
-    public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
+    public function new() {
         Util.assert(Fathom.stage != null, "Stage is null.");
 
         _depth = 0;
@@ -96,23 +96,9 @@ class Graphic implements IPositionable {
         spritesheet = {x: 0, y: 0};
 
         sprite = new Sprite();
-        sprite.x = x;
-        sprite.y = y;
 
-        if (height == -1) height = width;
-
-        cameraSpacePos = new Rect(0, 0, width, height);
-        entitySpacePos = new Rect(x, y, width, height);
-        this.x = x;
-        this.y = y;
-
-        if (height != -1) {
-            this.height = height;
-        }
-
-        if (width != -1) {
-            this.width = width;
-        }
+        cameraSpacePos = new Rect(0, 0, 0, 0);
+        entitySpacePos = new Rect(0, 0, 0, 0);
 
         animations = new AnimationHandler(this);
     }
@@ -383,6 +369,7 @@ class Graphic implements IPositionable {
 
     public function setWidth(val : Float) : Float {
         entitySpacePos.width = val;
+        cameraSpacePos.width = val;
         return val;
     }
 
@@ -392,6 +379,7 @@ class Graphic implements IPositionable {
 
     public function setHeight(val : Float) : Float {
         entitySpacePos.height = val;
+        cameraSpacePos.height = val;
         return val;
     }
 

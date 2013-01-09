@@ -1,5 +1,6 @@
 import flash.display.BitmapData;
 import Graphic;
+import flash.display.Bitmap;
 
 using Lambda;
 
@@ -39,7 +40,15 @@ class MapTest extends haxe.unit.TestCase {
     Fathom.destroyAll();
   }
 
+  // Can't tell why this fails. Everything looks fine to me.
   public function testMapLoad() {
+    /*
+    var b:Bitmap = new Bitmap(Graphic.takeScreenshot());
+    b.x = 200;
+    b.y = 200;
+    Fathom.stage.addChild(b);
+    */
+
     assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0x0000ff);
   }
 
