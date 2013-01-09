@@ -263,12 +263,6 @@ class Graphic implements IPositionable {
 
         Starling.context.drawToBitmapData(result);
 #end
-        /*
-        var b:Bitmap = new Bitmap(result);
-        Fathom.stage.addChild(b);
-        b.x = 200;
-        b.y = 200;
-        */
 
         return result;
     }
