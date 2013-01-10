@@ -149,7 +149,6 @@ class CameraFocus {
 		return {
 			distX : _focusCurrentLoc.x - _focusLastLoc.x,
 			distY : _focusCurrentLoc.y - _focusLastLoc.y,
-
 		};
 	}
 

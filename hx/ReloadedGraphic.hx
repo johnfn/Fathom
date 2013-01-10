@@ -9,18 +9,44 @@ import nme.geom.Rectangle;
 import nme.geom.Point;
 import cpp.vm.Thread;
 
+typedef ReloadedData = {
+  // BitmapData that everyone else holds a reference to.
+  var masterBitmapData: BitmapData;
+  var finishedLoading: Bool;
+  var waiters: Array<ReloadedGraphic>;
+  var loader: Loader;
+}
+
 class ReloadedGraphic extends Bitmap {
   var url: String;
   var loader: Loader;
 
+  static var urlData: SuperObjectHash<String, ReloadedData> = null;
+
   public function new(url: String) {
   	super();
-
     this.url = url;
 
-    this.loader = new Loader();
-    this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadComplete);
-  	Thread.create(beginLoad);
+    if (urlData == null) {
+      urlData = new SuperObjectHash();
+    }
+
+    if (urlData.exists(url)) {
+      if (urlData.get(url).finishedLoading) {
+        var data:BitmapData = cast(urlData.get(url).loader.content, Bitmap).bitmapData;
+        var rect:Rectangle = new Rectangle(0, 0, data.width, data.height);
+        var point:Point = new Point(0, 0);
+
+        this.bitmapData.copyPixels(data, rect, point);
+      }
+
+      urlData.get(url).waiters.push(this);
+    } else {
+      loader = new Loader();
+      urlData.set(url, {masterBitmapData: null, finishedLoading: false, waiters: [this], loader: loader});
+      loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadComplete);
+    	Thread.create(beginLoad);
+    }
   }
 
   // Returns true if the two BitmapDatas are equal, false otherwise.
@@ -48,21 +74,15 @@ class ReloadedGraphic extends Bitmap {
 
   function loadComplete(e:Event) {
     var loadedBitmap:Bitmap = cast(e.currentTarget.loader.content, Bitmap);
+    var rect:Rectangle = new Rectangle(0, 0, this.width, this.height);
+    var point:Point = new Point(0, 0);
+
+    urlData.get(url).finishedLoading = true;
 
     if (bitmapData == null || !compare(bitmapData, loadedBitmap.bitmapData)) {
-      if (bitmapData == null) {
-      	var b:Bitmap = new Bitmap(loadedBitmap.bitmapData);
-      	b.x = 50;
-      	b.y = 50;
-      	Fathom.stage.addChild(b);
-
-      	bitmapData = loadedBitmap.bitmapData;
-      } else {
-	      var rect:Rectangle = new Rectangle(0, 0, this.width, this.height);
-	      var point:Point = new Point(0, 0);
-
-	      this.bitmapData.copyPixels(loadedBitmap.bitmapData, rect, point);
-	    }
+      for (waiter in urlData.get(url).waiters) {
+        waiter.bitmapData = loadedBitmap.bitmapData;
+      }
     }
 
     haxe.Timer.delay(function() {
