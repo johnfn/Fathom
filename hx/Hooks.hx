@@ -32,7 +32,7 @@ class Hooks {
 
     //TODO: Not a Hook.
         static public function hasLeftMap(who : Entity, map : Map) : Bool {
-        if(who.absX < 0 || who.absY < 0 || who.absX > map.width - who.width || who.absY > map.height - who.width)  {
+        if(who.x < 0 || who.y < 0 || who.x > map.width - who.width || who.y > map.height - who.width)  {
             return true;
         }
         return false;
