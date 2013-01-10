@@ -252,7 +252,7 @@ class CameraFocus {
 		if(Std.is(_focusTarget, DisplayObject) && _focusTarget.parent == null)
 			return;
 		// detect if it is tracking behind(or swaping to) the focus target
-		if(Math.round((_focusTarget.x - _focusTracker.x) * (_focusTarget.y - _focusTracker.y)) == 0)  {
+		if (Math.round(_focusTarget.x-_focusTracker.x) == 0 && Math.round(_focusTarget.y-_focusTracker.y) == 0) {
 			_tempStep = trackStep;
 			_step = _tempStep;
 			_focusTracker.x = _focusTarget.x;
@@ -381,10 +381,6 @@ class CameraFocus {
 	}
 
 	function positionStageContainer() : Void {
-		trace(_stageContainer);
-		trace(_focusPosition);
-		trace(globalTrackerLoc);
-
 		_stageContainer.x += _focusPosition.x - globalTrackerLoc.x;
 		_stageContainer.y += _focusPosition.y - globalTrackerLoc.y;
 	}
