@@ -28,6 +28,7 @@ class EntityTest extends haxe.unit.TestCase {
     assertEquals(e3.parent, Fathom.container);
   }
 
+  /*
   public function testLocalToGlobal() {
     e2.addChild(e3);
     e1.addChild(e2);
@@ -41,10 +42,11 @@ class EntityTest extends haxe.unit.TestCase {
     e3.x = 100;
     e3.y = 200;
 
-    assertDotEquals(e1.localToGlobal(e2), new Vec(11, 22));
-    assertDotEquals(e1.localToGlobal(e3), new Vec(111, 222));
-    assertDotEquals(e2.localToGlobal(e3), new Vec(110, 220));
+    assertDotEquals(e1.localToGlobal(e2), new Point(11, 22));
+    assertDotEquals(e1.localToGlobal(e3), new Point(111, 222));
+    assertDotEquals(e2.localToGlobal(e3), new Point(110, 220));
   }
+  */
 
   public function testGroups() {
     assertEquals(Fathom.entities.one([Set.hasGroup("a")]), e1);
@@ -52,13 +54,13 @@ class EntityTest extends haxe.unit.TestCase {
   }
 
   public function testOnStage() {
-    var p = e1.HACK_sprite().parent;
+    var p = e1.parent;
 
     while (p.parent != null) {
       p = p.parent;
     }
 
-    assertEquals(p, Fathom.stage);
+    assertEquals(p, Fathom.actualStage);
   }
 
   public function testAddRemove() {
@@ -69,9 +71,9 @@ class EntityTest extends haxe.unit.TestCase {
     assertEquals(e2.parent, e1);
     assertEquals(e3.parent, e2);
 
-    assertEquals(e1.HACK_sprite().parent, Fathom.container.HACK_sprite());
-    assertEquals(e2.HACK_sprite().parent, e1.HACK_sprite());
-    assertEquals(e3.HACK_sprite().parent, e2.HACK_sprite());
+    assertEquals(e1.parent, Fathom.container);
+    assertEquals(e2.parent, e1);
+    assertEquals(e3.parent, e2);
     e1.removeFromFathom();
 
     assertFalse(e1.inFathom);

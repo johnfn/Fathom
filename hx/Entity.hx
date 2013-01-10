@@ -2,11 +2,13 @@ import Util;
 #if nme
 import nme.display.BitmapData;
 import nme.display.DisplayObjectContainer;
+import nme.display.DisplayObject;
 import nme.display.Sprite;
 #else
 import flash.display.BitmapData;
 import starling.display.DisplayObjectContainer;
 import starling.display.Sprite;
+import starling.display.DisplayObject;
 #end
 
 using Lambda;
@@ -31,10 +33,8 @@ class Entity extends Graphic {
     // Allows for a fast check to see if this entity moves.
     var _isStatic : Bool;
     var _currentlyInFathom: Bool = false;
-    var _parent: Entity = null;
 
     public var inFathom(getInFathom, setInFathom): Bool;
-    public var parent(getParent, setParent): Entity;
 
     public function getIsStatic() : Bool {
         return _isStatic;
@@ -143,27 +143,33 @@ class Entity extends Graphic {
         y = Fathom.stage.height / 2 - this.height / 2;
     }
 
-    public function addChild(child : Entity) : Entity {
+    public override function addChild(child : DisplayObject) : DisplayObject {
         Util.assert(entityChildren != null, "You need to call super() before addChild().");
-        Util.assert(!entityChildren.has(child), "Already has that child.");
+        if (Std.is(child, Entity)) {
+            Util.assert(!entityChildren.has(cast(child, Entity)), "Already has that child.");
+            entityChildren.push(cast(child, Entity));
+        }
 
-        child.parent = this;
-        sprite.addChild(child.sprite);
-        entityChildren.push(child);
-
-        return child;
+        return super.addChild(child);
     }
 
-    // Remove child: The child entity does not belong to this entity as a child.
-    // It continues to exist in the game.
-    public function removeChild(child : Entity) : Entity {
-        if(Std.is(child, Entity))
-            Util.assert(entityChildren.has(child), "Doesn't have that child.");
+    /**
+     * Remove child: The child entity does not belong to this entity as a child.
+     * It continues to exist in the game.
+     *
+     * Note: removeChild has an optional `dispose` parameter if you're using flash.
+     * This is because starling.display.Sprite#removeChild has this parameter. Since
+     * nme.display.Sprite does *not* have this parameter, it is highly recommended not
+     * to use it - you're just going to break cross platform compatibility. I can't get
+     * rid of it completely because I have to override the removeChild function.
+     */
+    public override function removeChild(child : DisplayObject #if flash , dispose: Bool = false #end) : DisplayObject {
+        if(Std.is(child, Entity)) {
+            Util.assert(entityChildren.has(cast(child, Entity)), "Doesn't have that child.");
+            entityChildren.remove(cast(child, Entity));
+        }
 
-        child.parent = null;
-        entityChildren.remove(child);
-        sprite.removeChild(child.sprite);
-        return child;
+        return super.removeChild(child #if flash , dispose #end);
     }
 
     /* This makes the entity disappear, but stay in memory. Think of a
@@ -294,22 +300,8 @@ class Entity extends Graphic {
         return [0];
     }
 
-    public function localToGlobal(child: Entity): Vec {
-        var result: Vec = child.vec();
-
-        while (child != this) {
-            child = child.parent;
-
-            Util.assert(child != null, "In Entity#localToGlobal, child is not a grandchild of caller.");
-
-            result.add(child.vec());
-        }
-
-        return result;
-    }
-
     public function getAbsX() : Float {
-        var p : Entity = this;
+        var p : DisplayObjectContainer = this;
         var result : Float = 0;
         while(p != null) {
             result += p.x;
@@ -320,7 +312,7 @@ class Entity extends Graphic {
     }
 
     public function getAbsY() : Float {
-        var p : Entity = this;
+        var p : DisplayObjectContainer = this;
         var result : Float = 0;
         while(p != null) {
             result += p.y;
@@ -333,14 +325,6 @@ class Entity extends Graphic {
     public function raiseToTop() : Void {
         Util.assert(this.parent != null, "raiseToTop called with no parent.");
         sprite.parent.setChildIndex(sprite, sprite.parent.numChildren - 1);
-    }
-
-    public function getParent(): Entity {
-        return _parent;
-    }
-
-    private function setParent(p: Entity): Entity {
-        return _parent = p;
     }
 }
 

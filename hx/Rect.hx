@@ -6,9 +6,9 @@ class Rect extends Vec, implements IPositionable {
 	public var right(getRight, setRight) : Float;
 	public var bottom(getBottom, setBottom) : Float;
 
-	var _width : Float  = 0;
+	var _width  : Float  = 0;
 	var _height : Float = 0;
-	var _right : Float  = 0;
+	var _right  : Float  = 0;
 	var _bottom : Float = 0;
 
 	public function new(x : Float, y : Float, width : Float, height : Float = -1) {
@@ -24,17 +24,8 @@ class Rect extends Vec, implements IPositionable {
 		this.bottom = this.y + this.height;
 	}
 
-	override public function setX(val : Float) : Float {
-		return _x = val;
-	}
-
-	override public function setY(val : Float) : Float {
-		return _y = val;
-	}
-
 	public function setWidth(val : Float) : Float {
-		_width = val;
-		return val;
+		return _width = val;
 	}
 
 	public function getWidth() : Float {
@@ -42,8 +33,7 @@ class Rect extends Vec, implements IPositionable {
 	}
 
 	public function setHeight(val : Float) : Float {
-		_height = val;
-		return val;
+		return _height = val;
 	}
 
 	public function getHeight() : Float {
@@ -78,9 +68,9 @@ class Rect extends Vec, implements IPositionable {
 	/* Is i contained entirely within this Rect?
      *
      * This is NOT a collision detection test. This is a contains test. */
-    public function containsRect(r: Rect): Bool {
+  public function containsRect(r: Rect): Bool {
 		return x <= r.x && r.x < right && x <= r.right && r.right < right && y <= r.bottom && r.bottom < right && y <= r.y && r.y < right;
-    }
+  }
 
     /* Makes this rect SIZE bigger on each side. */
 	public function makeBigger(size : Int) : Rect {

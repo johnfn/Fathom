@@ -38,7 +38,7 @@ typedef SpriteSheet = {
  *  Animation support with `animation`.
  */
 
-class Graphic implements IPositionable {
+class Graphic extends Sprite, implements IPositionable {
 #if nme
     var texturedObject:Bitmap;
     static var cachedAssets: SuperObjectHash<String, BitmapData> = new SuperObjectHash();
@@ -53,8 +53,6 @@ class Graphic implements IPositionable {
     var sprite:DisplayObjectContainer;
 
     public var depth(getDepth, setDepth) : Int;
-    public var numChildren(getNumChildren, never): Int;
-    public var visible(getVisible, setVisible): Bool;
 
     public var animations : AnimationHandler;
     var spritesheet : SpriteSheet;
@@ -62,19 +60,6 @@ class Graphic implements IPositionable {
     var _depth : Int;
     var tileWidth : Int;
     var tileHeight : Int;
-
-    public var height(getHeight, setHeight): Float;
-    public var width(getWidth, setWidth): Float;
-    public var x(getX, setX): Float;
-    public var y(getY, setY): Float;
-    public var scaleX(getScaleX, setScaleX): Float;
-    public var scaleY(getScaleY, setScaleY): Float;
-    public var alpha(getAlpha, setAlpha): Float;
-
-    //TODO, obviously...
-    public function HACK_sprite():DisplayObjectContainer {
-        return sprite;
-    }
 
     public function new() {
         Util.assert(Fathom.stage != null, "Stage is null.");
@@ -86,17 +71,9 @@ class Graphic implements IPositionable {
         facing = 1;
         spritesheet = {x: 0, y: 0};
 
-        sprite = new Sprite();
+        super();
 
         animations = new AnimationHandler(this);
-    }
-
-    public function addEventListener(etype, f: Event -> Void) {
-        texturedObject.addEventListener(etype, f);
-    }
-
-    public function removeEventListener(etype, f: Event -> Void) {
-        texturedObject.removeEventListener(etype, f);
     }
 
     public function toString(): String {
@@ -171,7 +148,7 @@ class Graphic implements IPositionable {
         if (tileDimension == null) tileDimension = new Vec(fullTexture.width, fullTexture.height);
 #end
 
-        sprite.addChild(texturedObject);
+        addChild(texturedObject);
 
         texturedObject.x = 0;
         texturedObject.y = 0;
@@ -191,7 +168,7 @@ class Graphic implements IPositionable {
     public function loadHotSwapImage(path: String) {
         if (hotswapped == null) {
             hotswapped = new ReloadedGraphic(path);
-            sprite.addChild(hotswapped);
+            addChild(hotswapped);
         } else {
             Util.assert(false, "haven't figured this out TODO");
         }
@@ -239,7 +216,7 @@ class Graphic implements IPositionable {
      *  Don't use it in an actual game!
      */
     public function getPixel(x:Int, y:Int): Int {
-        return takeScreenshot().getPixel(Std.int(sprite.x) + x, Std.int(sprite.y) + y);
+        return takeScreenshot().getPixel(Std.int(x) + x, Std.int(y) + y);
     }
 
     var facing : Int;
@@ -270,11 +247,6 @@ class Graphic implements IPositionable {
         return this;
     }
 
-    // TODO visibility. this is required for Map currently
-    public function removeChildAt(idx: Int): Void {
-        sprite.removeChildAt(idx);
-    }
-
     /*
     public function destroy():void {
         animations = null;
@@ -286,63 +258,6 @@ class Graphic implements IPositionable {
         fullTexture = null;
     }
     */
-    // Uninteresting getters and setters.
-
-    public function getScaleX(): Float {
-        return sprite.scaleX;
-    }
-
-    public function getScaleY(): Float {
-        return sprite.scaleY;
-    }
-
-    public function setScaleX(v: Float): Float {
-        return sprite.scaleX = v;
-    }
-
-    public function setScaleY(v: Float): Float {
-        return sprite.scaleY = v;
-    }
-
-    public function setX(val : Float) : Float {
-        return sprite.x = val;
-    }
-
-    public function getX() : Float {
-        return sprite.x;
-    }
-
-    public function setY(val : Float) : Float {
-        return sprite.y = val;
-    }
-
-    public function getY() : Float {
-        return sprite.y;
-    }
-
-    public function setHeight(val : Float) : Float {
-        return sprite.height = val;
-    }
-
-    public function getHeight() : Float {
-        return sprite.height;
-    }
-
-    public function setWidth(val : Float) : Float {
-        return sprite.width = val;
-    }
-
-    public function getWidth() : Float {
-        return sprite.width;
-    }
-
-    public function setAlpha(val : Float) : Float {
-        return sprite.alpha = val;
-    }
-
-    public function getAlpha() : Float {
-        return sprite.alpha;
-    }
 
     public function rect() : Rect {
         return new Rect(x, y, width, height);
@@ -352,16 +267,22 @@ class Graphic implements IPositionable {
         return new Vec(x, y);
     }
 
-    public function getNumChildren(): Int {
-        return sprite.numChildren;
+    /* IPositionable */
+
+    public function getX(): Float {
+        return x;
     }
 
-    public function getVisible(): Bool {
-        return sprite.visible;
+    public function getY(): Float {
+        return y;
     }
 
-    public function setVisible(val: Bool): Bool {
-        return sprite.visible = val;
+    public function setX(val: Float): Float {
+        return x = val;
+    }
+
+    public function setY(val: Float): Float {
+        return y = val;
     }
 }
 
