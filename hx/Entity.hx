@@ -294,6 +294,20 @@ class Entity extends Graphic {
         return [0];
     }
 
+    public function localToGlobal(child: Entity): Vec {
+        var result: Vec = child.vec();
+
+        while (child != this) {
+            child = child.parent;
+
+            Util.assert(child != null, "In Entity#localToGlobal, child is not a grandchild of caller.");
+
+            result.add(child.vec());
+        }
+
+        return result;
+    }
+
     public function getAbsX() : Float {
         var p : Entity = this;
         var result : Float = 0;

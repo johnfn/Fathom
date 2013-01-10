@@ -4,6 +4,7 @@ import starling.events.Event;
 import starling.display.Sprite;
 import starling.display.Stage;
 import starling.display.DisplayObjectContainer;
+import flash.geom.Point;
 #else
 import nme.display.Stage;
 import nme.events.Event;
@@ -95,7 +96,7 @@ class Fathom {
         cb();
         Fathom.start();
 
-        Fathom.camera = new CameraFocus(Fathom.actualStage, Fathom.stage, new Point(20, 0), []);
+        Fathom.camera = new CameraFocus(Fathom.actualStage, Fathom.stage, new Point(0, 0), []);
 #end
     }
 
@@ -240,13 +241,14 @@ class RootEntity extends Sprite {
         super();
 
         Fathom.actualStage = Fathom.starling.stage;
-        Fathom.stage = new DisplayObjectContainer();
+        Fathom.stage = new Sprite();
         Fathom.actualStage.addChild(Fathom.stage);
 
         Fathom.container = Entity.fromDO(this).addGroup("container");
 
         // Can't initialize the Cam until the container is initialized...
         Fathom.start();
+        Fathom.camera = new CameraFocus(Fathom.actualStage, Fathom.stage, new Point(0, 0), []);
         Fathom.cb();
         MagicKeyObject._initializeKeyInput();
 

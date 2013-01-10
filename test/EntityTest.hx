@@ -28,6 +28,24 @@ class EntityTest extends haxe.unit.TestCase {
     assertEquals(e3.parent, Fathom.container);
   }
 
+  public function testLocalToGlobal() {
+    e2.addChild(e3);
+    e1.addChild(e2);
+
+    e1.x = 1;
+    e1.y = 2;
+
+    e2.x = 10;
+    e2.y = 20;
+
+    e3.x = 100;
+    e3.y = 200;
+
+    assertDotEquals(e1.localToGlobal(e2), new Vec(11, 22));
+    assertDotEquals(e1.localToGlobal(e3), new Vec(111, 222));
+    assertDotEquals(e2.localToGlobal(e3), new Vec(110, 220));
+  }
+
   public function testGroups() {
     assertEquals(Fathom.entities.one([Set.hasGroup("a")]), e1);
     assertEquals(Fathom.entities.one([Set.hasGroup("b")]), e2);
