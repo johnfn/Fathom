@@ -10,11 +10,9 @@ import nme.geom.Point;
 import cpp.vm.Thread;
 
 typedef ReloadedData = {
-  // BitmapData that everyone else holds a reference to.
-  var masterBitmapData: BitmapData;
-  var finishedLoading: Bool;
   var waiters: Array<ReloadedGraphic>;
   var loader: Loader;
+  var url: String;
 }
 
 class ReloadedGraphic extends Bitmap {
@@ -29,23 +27,16 @@ class ReloadedGraphic extends Bitmap {
 
     if (urlData == null) {
       urlData = new SuperObjectHash();
+
+      constantlyReload();
     }
 
     if (urlData.exists(url)) {
-      if (urlData.get(url).finishedLoading) {
-        var data:BitmapData = cast(urlData.get(url).loader.content, Bitmap).bitmapData;
-        var rect:Rectangle = new Rectangle(0, 0, data.width, data.height);
-        var point:Point = new Point(0, 0);
-
-        this.bitmapData.copyPixels(data, rect, point);
-      }
-
       urlData.get(url).waiters.push(this);
     } else {
       loader = new Loader();
-      urlData.set(url, {masterBitmapData: null, finishedLoading: false, waiters: [this], loader: loader});
+      urlData.set(url, {url: url, waiters: [this], loader: loader});
       loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadComplete);
-    	Thread.create(beginLoad);
     }
   }
 
@@ -68,26 +59,29 @@ class ReloadedGraphic extends Bitmap {
     return true;
   }
 
-  function beginLoad() {
-    this.loader.load(new URLRequest(url));
+  static function constantlyReload() {
+    Thread.create(function() {
+
+      for (val in urlData.values()) {
+        val.loader.load(new URLRequest(val.url));
+      }
+
+      haxe.Timer.delay(function() {
+        constantlyReload();
+      }, 1000);
+    });
   }
 
   function loadComplete(e:Event) {
     var loadedBitmap:Bitmap = cast(e.currentTarget.loader.content, Bitmap);
-    var rect:Rectangle = new Rectangle(0, 0, this.width, this.height);
+    var rect:Rectangle = new Rectangle(0, 0, loadedBitmap.width, loadedBitmap.height);
     var point:Point = new Point(0, 0);
 
-    urlData.get(url).finishedLoading = true;
-
-    if (bitmapData == null || !compare(bitmapData, loadedBitmap.bitmapData)) {
-      for (waiter in urlData.get(url).waiters) {
+    for (waiter in urlData.get(url).waiters) {
+      if (waiter.bitmapData == null || !compare(waiter.bitmapData, loadedBitmap.bitmapData)) {
         waiter.bitmapData = loadedBitmap.bitmapData;
       }
     }
-
-    haxe.Timer.delay(function() {
-    	Thread.create(beginLoad);
-    }, 1000);
   }
 }
 
