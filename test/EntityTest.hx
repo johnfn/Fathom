@@ -23,9 +23,9 @@ class EntityTest extends haxe.unit.TestCase {
     assertTrue(Fathom.entities.select([]).has(e1));
     assertTrue(Fathom.entities.select([]).has(e2));
 
-    assertEquals(e1.parent, Fathom.container);
-    assertEquals(e2.parent, Fathom.container);
-    assertEquals(e3.parent, Fathom.container);
+    assertEquals(e1.parent, Fathom.stage);
+    assertEquals(e2.parent, Fathom.stage);
+    assertEquals(e3.parent, Fathom.stage);
   }
 
   /*
@@ -67,11 +67,11 @@ class EntityTest extends haxe.unit.TestCase {
     e2.addChild(e3);
     e1.addChild(e2);
 
-    assertEquals(e1.parent, Fathom.container);
+    assertEquals(e1.parent, Fathom.stage);
     assertEquals(e2.parent, e1);
     assertEquals(e3.parent, e2);
 
-    assertEquals(e1.parent, Fathom.container);
+    assertEquals(e1.parent, Fathom.stage);
     assertEquals(e2.parent, e1);
     assertEquals(e3.parent, e2);
     e1.removeFromFathom();

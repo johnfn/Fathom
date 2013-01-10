@@ -53,7 +53,7 @@ class Entity extends Graphic {
         return _currentlyInFathom = v;
     }
 
-    public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1, d:DisplayObjectContainer = null) {
+    public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
         if(!Fathom.initialized)  {
             throw "Fathom.initialize() has not been called. Failing.";
         }
@@ -71,22 +71,13 @@ class Entity extends Graphic {
         this.width = width;
         this.height = height;
 
-        if (d != null) {
-            this.sprite = d;
-        }
-
-        //TODO: I had this idea about how parents should bubble down events to children.
-        // All Entities are added to the container, except the container itself, which
-        // has to be bootstrapped onto the Stage. If Fathom.container does not exist, `this`
-        // must be the container.
-        if(Fathom.container != null)  {
-            Fathom.container.addChild(this);
+        // All Entities are added to the stage, except the stage itself, which
+        // is bootstrapped onto the flash.display.Stage in Fathom. If Fathom.stage == null,
+        // this is the stage.
+        if(Fathom.stage != null)  {
+            Fathom.stage.addChild(this);
             addToFathom();
         }
-    }
-
-    public static function fromDO(d:DisplayObjectContainer):Entity {
-        return new Entity(0, 0, 20, 20, d);
     }
 
     public function withDepth(d : Int) : Entity {
@@ -324,7 +315,7 @@ class Entity extends Graphic {
 
     public function raiseToTop() : Void {
         Util.assert(this.parent != null, "raiseToTop called with no parent.");
-        sprite.parent.setChildIndex(sprite, sprite.parent.numChildren - 1);
+        parent.setChildIndex(this, this.parent.numChildren - 1);
     }
 }
 

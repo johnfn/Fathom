@@ -50,8 +50,6 @@ class Graphic extends Sprite, implements IPositionable {
     var fullTexture : Texture;
 #end
 
-    var sprite:DisplayObjectContainer;
-
     public var depth(getDepth, setDepth) : Int;
 
     public var animations : AnimationHandler;
@@ -62,8 +60,6 @@ class Graphic extends Sprite, implements IPositionable {
     var tileHeight : Int;
 
     public function new() {
-        Util.assert(Fathom.stage != null, "Stage is null.");
-
         _depth = 0;
         fullTexture = null;
         tileWidth = -1;

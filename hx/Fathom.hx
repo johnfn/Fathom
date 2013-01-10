@@ -30,7 +30,6 @@ class Fathom {
 
     static public var mapRef : Map;
     static public var entities : Set<Entity> = new Set([]);
-    static public var container : Entity;
     static public var initialized : Bool = false;
     static public var stage : Sprite;
     static public var actualStage: Stage;
@@ -47,11 +46,11 @@ class Fathom {
     }
 
     static public function getScaleX() : Float {
-        return container.scaleX;
+        return stage.scaleX;
     }
 
     static public function getScaleY() : Float {
-        return container.scaleY;
+        return stage.scaleY;
     }
 
     static public function getCurrentMode() : Int {
@@ -88,10 +87,9 @@ class Fathom {
         Fathom.starling.start();
 #else
         Fathom.actualStage = nme.Lib.current.stage;
-        Fathom.stage = new Sprite();
+        Fathom.stage = new Entity();
         Fathom.actualStage.addChild(Fathom.stage);
 
-        Fathom.container = Entity.fromDO(Fathom.stage).addGroup("container");
         MagicKeyObject._initializeKeyInput();
         Fathom.start();
         Fathom.camera = new CameraFocus(Fathom.actualStage, Fathom.stage, new Point(0, 0), []);
@@ -241,10 +239,8 @@ class RootEntity extends Sprite {
         super();
 
         Fathom.actualStage = Fathom.starling.stage;
-        Fathom.stage = new Sprite();
+        Fathom.stage = new Entity();
         Fathom.actualStage.addChild(Fathom.stage);
-
-        Fathom.container = Entity.fromDO(this).addGroup("container");
 
         // Can't initialize the Cam until the container is initialized...
         Fathom.start();

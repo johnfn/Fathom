@@ -87,7 +87,7 @@ class SpatialHash {
             if (coords[i].x >= grid.length || coords[i].y >= grid[i].length ||
                 coords[i].x < 0 || coords[i].y < 0) continue;
 
-            var arr : Array<Dynamic> = grid[coords[i].getX()][coords[i].getY()];
+            var arr : Array<Dynamic> = grid[coords[i].x][coords[i].y];
             var j : Int = 0;
             while(j < arr.length) {
                 if(arr[j] == e)
@@ -111,7 +111,7 @@ class SpatialHash {
         var coords : Array<Dynamic> = getCoords(e);
         var i : Int = 0;
         while(i < coords.length) {
-            var arr : Array<Dynamic> = grid[coords[i].getX()][coords[i].getY()];
+            var arr : Array<Dynamic> = grid[coords[i].x][coords[i].y];
             var j : Int = 0;
             while(j < arr.length) {
                 if(arr[j] == e)
