@@ -41,11 +41,12 @@ class GraphicTest extends haxe.unit.TestCase {
     assertEquals(g.getSpriteX(), 1);
     assertEquals(g.getSpriteY(), 2);
 
+    Graphic.showScreenshot();
+
     g.setTile(0, 1);
 
     assertEquals(g.getSpriteX(), 0);
     assertEquals(g.getSpriteY(), 1);
-
   }
 
   public function testSetTile() {

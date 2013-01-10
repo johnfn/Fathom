@@ -31,7 +31,7 @@ class Fathom {
     static public var mapRef : Map;
     static public var entities : Set<Entity> = new Set([]);
     static public var initialized : Bool = false;
-    static public var stage : Sprite;
+    static public var stage : Entity;
     static public var actualStage: Stage;
     static public var grid : SpatialHash;
     static public var modes : Array<Int> = [0];

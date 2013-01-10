@@ -208,6 +208,16 @@ class Graphic extends Sprite, implements IPositionable {
         return result;
     }
 
+    public static function showScreenshot(): Void {
+        var bd:BitmapData = takeScreenshot();
+#if flash
+        var img = new Image(Texture.fromBitmapData(bd));
+        img.x = 200;
+        img.y = 200;
+        Fathom.stage.addChild(img);
+#end
+    }
+
     /** This method should only be used for testing.
      *  Don't use it in an actual game!
      */
