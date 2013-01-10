@@ -155,11 +155,15 @@ class CameraFocus {
 
 	function getGlobalTrackerLoc() : Point {
 		var loc : Point;
-		if(Std.is(_focusTarget, Point))
-			loc = _stageContainer.localToGlobal(_focusTracker)
-		else if(Std.is(_focusTarget, DisplayObject))
+		if(Std.is(_focusTarget, Point)) {
+			loc = _stageContainer.localToGlobal(_focusTracker);
+		} else if(Std.is(_focusTarget, DisplayObject)) {
 			loc = _focusTarget.parent.localToGlobal(_focusTracker);
-		else {
+		} else if (Std.is(_focusTarget, Entity)) untyped {
+			var v:Vec = Fathom.container.localToGlobal(_focusTarget);
+			loc = new Point(v.x, v.y);
+			//loc = new Point(_focusTarget.vec().x, _focusTarget.vec().y);
+		} else {
 			Util.assert(false, "Unsupported type for CameraFocus to follow: " + Type.getClassName(_focusTarget));
 			return null;
 		}
@@ -378,6 +382,10 @@ class CameraFocus {
 	}
 
 	function positionStageContainer() : Void {
+		trace(_stageContainer);
+		trace(_focusPosition);
+		trace(globalTrackerLoc);
+
 		_stageContainer.x += _focusPosition.x - globalTrackerLoc.x;
 		_stageContainer.y += _focusPosition.y - globalTrackerLoc.y;
 	}

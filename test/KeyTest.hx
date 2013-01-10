@@ -19,7 +19,7 @@ class KeyTest extends haxe.unit.TestCase {
     Fathom.stage.dispatchEvent(aDown);
 
     assertTrue(Util.KeyDown.A);
-    Fathom.stage.dispatchEvent(aUp);
+    Fathom.actualStage.dispatchEvent(aUp);
     assertFalse(Util.KeyDown.A);
   }
 }

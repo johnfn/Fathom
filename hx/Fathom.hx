@@ -93,10 +93,10 @@ class Fathom {
 
         Fathom.container = Entity.fromDO(Fathom.stage).addGroup("container");
         MagicKeyObject._initializeKeyInput();
-        cb();
         Fathom.start();
-
         Fathom.camera = new CameraFocus(Fathom.actualStage, Fathom.stage, new Point(0, 0), []);
+
+        cb();
 #end
     }
 
