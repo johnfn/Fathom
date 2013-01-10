@@ -3,10 +3,13 @@ import starling.core.Starling;
 import starling.events.Event;
 import starling.display.Sprite;
 import starling.display.Stage;
+import starling.display.DisplayObjectContainer;
 #else
 import nme.display.Stage;
 import nme.events.Event;
 import nme.display.Sprite;
+import nme.display.DisplayObjectContainer;
+import nme.geom.Point;
 #end
 
 #if profile
@@ -28,10 +31,13 @@ class Fathom {
     static public var entities : Set<Entity> = new Set([]);
     static public var container : Entity;
     static public var initialized : Bool = false;
-    static public var stage : Stage;
+    static public var stage : Sprite;
+    static public var actualStage: Stage;
     static public var grid : SpatialHash;
     static public var modes : Array<Int> = [0];
     static public var cb:Void -> Void;
+
+    static public var camera: CameraFocus;
 
     static private var fpsFn : Void -> String;
 
@@ -80,11 +86,16 @@ class Fathom {
     #end
         Fathom.starling.start();
 #else
-        Fathom.stage = nme.Lib.current.stage;
+        Fathom.actualStage = nme.Lib.current.stage;
+        Fathom.stage = new Sprite();
+        Fathom.actualStage.addChild(Fathom.stage);
+
         Fathom.container = Entity.fromDO(Fathom.stage).addGroup("container");
         MagicKeyObject._initializeKeyInput();
         cb();
         Fathom.start();
+
+        Fathom.camera = new CameraFocus(Fathom.actualStage, Fathom.stage, new Point(20, 0), []);
 #end
     }
 
@@ -213,6 +224,7 @@ class Fathom {
         }
 
         MagicKeyObject.dealWithVariableKeyRepeatRates(); //TODO
+        Fathom.camera.update();
     }
 }
 
@@ -227,7 +239,10 @@ class RootEntity extends Sprite {
 
         super();
 
-        Fathom.stage = Fathom.starling.stage;
+        Fathom.actualStage = Fathom.starling.stage;
+        Fathom.stage = new DisplayObjectContainer();
+        Fathom.actualStage.addChild(Fathom.stage);
+
         Fathom.container = Entity.fromDO(this).addGroup("container");
 
         // Can't initialize the Cam until the container is initialized...

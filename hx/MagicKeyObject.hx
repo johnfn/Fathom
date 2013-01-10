@@ -115,8 +115,8 @@ class MagicKeyObject {
     // TODO: should there be a container...which i construct..? I'm confused.
     static public function _initializeKeyInput() : Void {
         keyStates = new SuperObjectHash();
-        Fathom.stage.addEventListener(KeyboardEvent.KEY_DOWN, _keyDown);
-        Fathom.stage.addEventListener(KeyboardEvent.KEY_UP, _keyUp);
+        Fathom.actualStage.addEventListener(KeyboardEvent.KEY_DOWN, _keyDown);
+        Fathom.actualStage.addEventListener(KeyboardEvent.KEY_UP, _keyUp);
 
         for (f in Type.getInstanceFields(MagicKeyObject)) {
             if (f.startsWith("get") && !f.startsWith("get_")) {

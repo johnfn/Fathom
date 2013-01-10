@@ -215,8 +215,8 @@ class Graphic implements IPositionable {
     public static function takeScreenshot(): BitmapData {
         var sw:Int, sh: Int;
 
-        sw = Fathom.stage.stageWidth;
-        sh = Fathom.stage.stageHeight;
+        sw = Fathom.actualStage.stageWidth;
+        sh = Fathom.actualStage.stageHeight;
 
         var result:BitmapData = new BitmapData(sw, sh, true);
 

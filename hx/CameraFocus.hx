@@ -1,13 +1,40 @@
-package com.joeonmars.camerafocus;
-
-import com.joeonmars.camerafocus.events.*;
+#if flash
 import flash.geom.Point;
-import flash.utils.Dictionary;
-import starling.core.Starling;
 import starling.display.DisplayObject;
 import starling.display.Stage;
+import starling.events.Event;
+#else
+import nme.geom.Point;
+import nme.display.DisplayObject;
+import nme.display.Stage;
+import nme.events.Event;
+#end
 
-class StarlingCameraFocus {
+class CameraFocusEvent extends Event {
+	public static var HIT_BOUNDARY:String = 'hitBoundary';
+	public static var SWAP_STARTED:String = 'swapStarted';
+	public static var SWAP_FINISHED:String = 'swapFinished';
+	public static var ZOOM_STARTED:String = 'zoomStarted';
+	public static var ZOOM_FINISHED:String = 'zoomFinished';
+	public static var SHAKE_STARTED:String = 'shakeStarted';
+	public static var SHAKE_FINISHED:String = 'shakeFinished';
+
+	public var boundary:String;
+
+	public function new(type:String, bubbles:Bool=false) {
+		super(type, bubbles);
+	}
+}
+
+typedef Layer = {
+	var name: String;
+	var instance: Graphic;
+	var ratio: Float;
+	@optional var ox: Float;
+	@optional var oy: Float;
+}
+
+class CameraFocus {
 	public var focusTarget(getFocusTarget, setFocusTarget) : Dynamic;
 	public var zoomFactor(getZoomFactor, never) : Float;
 	var focusDist(getFocusDist, never) : Dynamic;
@@ -23,9 +50,9 @@ class StarlingCameraFocus {
 	var _focusDistX : Float;
 	var _focusDistY : Float;
 	var _focusTarget : Dynamic;
-	var _layersInfo : Dictionary;
+	var _layersInfo : SuperObjectHash<String, Layer>;
 	// each object(layer) contains keys of 'name', 'instance', 'ratio'
-		var _boundaryLayer : DisplayObject;
+	var _boundaryLayer : DisplayObject;
 	var _switch : Bool;
 	var _targetLastX : Float;
 	var _targetLastY : Float;
@@ -35,11 +62,11 @@ class StarlingCameraFocus {
 	var _intensity : Float;
 	var _shakeTimer : Int;
 	var _shakeDecay : Float;
-	public var trackStep : UInt;
-	public var swapStep : UInt;
-	public var zoomStep : UInt;
-	var _tempStep : UInt;
-	var _step : UInt;
+	public var trackStep : Int;
+	public var swapStep : Int;
+	public var zoomStep : Int;
+	var _tempStep : Int;
+	var _step : Int;
 	public var ignoreLeftBound : Bool;
 	public var ignoreRightBound : Bool;
 	public var ignoreTopBound : Bool;
@@ -56,10 +83,12 @@ class StarlingCameraFocus {
 	var _zoomFinishedEvent : CameraFocusEvent;
 	var _shakeStartedEvent : CameraFocusEvent;
 	var _shakeFinishedEvent : CameraFocusEvent;
-	public function new(aStage : Stage, aStageContainer : DisplayObject, aFocusTarget : Dynamic, aLayersInfo : Array<Dynamic>, aAutoStart : Bool = false) {
+	public function new(aStage : Stage, aStageContainer : DisplayObject, aFocusTarget : Dynamic, aLayersInfo : Array<Layer> = null, aAutoStart : Bool = true) {
+		if (aLayersInfo == null) aLayersInfo = [];
+
 		_stage = aStage;
 		_stageContainer = aStageContainer;
-		_layersInfo = new Dictionary();
+		_layersInfo = new SuperObjectHash();
 		focusTarget = aFocusTarget;
 		_focusPosition = new Point();
 		_focusTracker = new Point();
@@ -73,7 +102,7 @@ class StarlingCameraFocus {
 		for(obj in aLayersInfo/* AS3HX WARNING could not determine type for var: obj exp: EIdent(aLayersInfo) type: Array<Dynamic>*/) {
 			obj.ox = obj.instance.x;
 			obj.oy = obj.instance.y;
-			_layersInfo[obj.name] = obj;
+			_layersInfo.set(obj.name, obj);
 		}
 
 		_targetLastX = _targetCurrentX = focusTarget.x;
@@ -98,7 +127,7 @@ class StarlingCameraFocus {
 		_zoomFinishedEvent = new CameraFocusEvent(CameraFocusEvent.ZOOM_FINISHED);
 		_shakeStartedEvent = new CameraFocusEvent(CameraFocusEvent.SHAKE_STARTED);
 		_shakeFinishedEvent = new CameraFocusEvent(CameraFocusEvent.SHAKE_FINISHED);
-		if(aAutoStart) 
+		if(aAutoStart)
 			start()
 		else pause();
 	}
@@ -126,10 +155,14 @@ class StarlingCameraFocus {
 
 	function getGlobalTrackerLoc() : Point {
 		var loc : Point;
-		if(Std.is(_focusTarget, Point)) 
+		if(Std.is(_focusTarget, Point))
 			loc = _stageContainer.localToGlobal(_focusTracker)
-		else if(Std.is(_focusTarget, DisplayObject)) 
+		else if(Std.is(_focusTarget, DisplayObject))
 			loc = _focusTarget.parent.localToGlobal(_focusTracker);
+		else {
+			Util.assert(false, "Unsupported type for CameraFocus to follow: " + Type.getClassName(_focusTarget));
+			return null;
+		}
 		return loc;
 	}
 
@@ -170,30 +203,30 @@ class StarlingCameraFocus {
 	}
 
 	public function jumpToFocus(aFocusTarget : Dynamic = null) : Void {
-		if(aFocusTarget == null) 
+		if(aFocusTarget == null)
 			aFocusTarget = _focusTarget;
 		_focusCurrentLoc.x = _focusLastLoc.x = _focusTracker.x = _focusTarget.x;
 		_focusCurrentLoc.y = _focusLastLoc.y = _focusTracker.y = _focusTarget.y;
 		swapFocus(aFocusTarget, 1);
 	}
 
-	public function swapFocus(aFocusTarget : Dynamic, aSwapStep : UInt = 10, aZoom : Bool = false, aZoomFactor : Float = 1, aZoomStep : Int = 10) : Void {
+	public function swapFocus(aFocusTarget : Dynamic, aSwapStep : Int = 10, aZoom : Bool = false, aZoomFactor : Float = 1, aZoomStep : Int = 10) : Void {
 		_focusTarget = aFocusTarget;
-		swapStep = Math.max(1, aSwapStep);
+		swapStep = Std.int(Math.max(1, aSwapStep));
 		_tempStep = trackStep;
 		_step = swapStep;
 		isSwaping = true;
-		if(enableCallBack) 
+		if(enableCallBack)
 			_stage.dispatchEvent(_swapStartedEvent);
-		if(aZoom) 
+		if(aZoom)
 			zoomFocus(aZoomFactor, aZoomStep);
 	}
 
-	public function zoomFocus(aZoomFactor : Float, aZoomStep : UInt = 10) : Void {
+	public function zoomFocus(aZoomFactor : Float, aZoomStep : Int = 10) : Void {
 		_zoomFactor = Math.max(0, aZoomFactor);
-		zoomStep = Math.max(1, aZoomStep);
+		zoomStep = Std.int(Math.max(1, aZoomStep));
 		isZooming = true;
-		if(enableCallBack) 
+		if(enableCallBack)
 			_stage.dispatchEvent(_zoomStartedEvent);
 	}
 
@@ -202,18 +235,18 @@ class StarlingCameraFocus {
 		_shakeTimer = aShakeTimer;
 		_shakeDecay = aIntensity / aShakeTimer;
 		isShaking = true;
-		if(enableCallBack) 
+		if(enableCallBack)
 			_stage.dispatchEvent(_shakeStartedEvent);
 	}
 
 	public function update() : Void {
 		// if paused then ignore the following code
-		if(!_switch) 
+		if(!_switch)
 			return;
 		// if focusTarget is set to null or not existing on stage, ignore the following code
-		if(_focusTarget == null) 
+		if(_focusTarget == null)
 			return;
-		if(Std.is(_focusTarget, DisplayObject && _focusTarget.parent == null)) 
+		if(Std.is(_focusTarget, DisplayObject) && _focusTarget.parent == null)
 			return;
 		// detect if it is tracking behind(or swaping to) the focus target
 		if(Math.round((_focusTarget.x - _focusTracker.x) * (_focusTarget.y - _focusTracker.y)) == 0)  {
@@ -223,13 +256,11 @@ class StarlingCameraFocus {
 			_focusTracker.y = _focusTarget.y;
 			if(isSwaping)  {
 				isSwaping = false;
-				if(enableCallBack) 
+				if(enableCallBack)
 					_stage.dispatchEvent(_swapFinishedEvent);
 			}
 			isFocused = true;
-		}
-
-		else  {
+		} else  {
 			isFocused = false;
 		}
 ;
@@ -253,7 +284,7 @@ class StarlingCameraFocus {
 			if(Math.abs(_stageContainer.scaleX - _zoomFactor) < .01)  {
 				isZooming = false;
 				_stageContainer.scaleX = _stageContainer.scaleY = _zoomFactor;
-				if(enableCallBack) 
+				if(enableCallBack)
 					_stage.dispatchEvent(_zoomFinishedEvent);
 			}
 ;
@@ -270,7 +301,7 @@ class StarlingCameraFocus {
 				if(_shakeTimer <= 0)  {
 					_shakeTimer = 0;
 					isShaking = false;
-					if(enableCallBack) 
+					if(enableCallBack)
 						_stage.dispatchEvent(_shakeFinishedEvent);
 				}
 
@@ -293,7 +324,7 @@ class StarlingCameraFocus {
 			right : false,
 
 		};
-		if(_boundaryLayer == null) 
+		if(_boundaryLayer == null)
 			return testResult;
 		var stageBoundaryUpperLeft : Point = _boundaryLayer.parent.localToGlobal(new Point(_boundaryLayer.x, _boundaryLayer.y));
 		var stageBoundaryLowerRight : Point = _boundaryLayer.parent.localToGlobal(new Point(_boundaryLayer.x + _boundaryLayer.width, _boundaryLayer.y + _boundaryLayer.height));
@@ -353,20 +384,20 @@ class StarlingCameraFocus {
 
 	function positionParallax(aTestResult : Dynamic) : Void {
 		var testResult : Dynamic = aTestResult;
-		var layer : DisplayObject;
+		var layer : Graphic;
 		var layerOX : Float;
 		var layerOY : Float;
 		var ratio : Float;
-		for(value in _layersInfo/* AS3HX WARNING could not determine type for var: value exp: EIdent(_layersInfo) type: Dictionary*/) {
+		for(value in _layersInfo.values()) {
 			layer = value.instance;
 			layerOX = value.ox;
 			layerOY = value.oy;
 			ratio = value.ratio;
 			var distX : Float = (_focusCurrentLoc.x - _focusOrientation.x) * ratio;
 			var distY : Float = (_focusCurrentLoc.y - _focusOrientation.y) * ratio;
-			if((!testResult.left && distX < 0) || (!testResult.right && distX > 0)) 
+			if((!testResult.left && distX < 0) || (!testResult.right && distX > 0))
 				layer.x = layerOX + distX;
-			if((!testResult.top && distY < 0) || (!testResult.bottom && distY > 0)) 
+			if((!testResult.top && distY < 0) || (!testResult.bottom && distY > 0))
 				layer.y = layerOY + distY;
 		}
 
