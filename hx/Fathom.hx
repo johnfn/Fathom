@@ -51,6 +51,10 @@ class Fathom {
 #if flash
         Fathom.starling = new Starling(RootEntity, flash.Lib.current.stage);
         Fathom.starling.start();
+    #if profile
+        Fathom.starling.showStats = true;
+        flash.Lib.current.addChild(new TheMiner());
+    #end
 #else
         Fathom._postInitialize();
 #end
@@ -60,10 +64,6 @@ class Fathom {
     static public function _postInitialize(): Void {
 #if flash
         Fathom.actualStage = Fathom.starling.stage;
-    #if profile
-        Fathom.starling.showStats = true;
-        flash.Lib.current.addChild(new TheMiner());
-    #end
 #else
         Fathom.actualStage = nme.Lib.current.stage;
 #end
@@ -214,11 +214,9 @@ class RootEntity extends Sprite {
         if (++count != 1) {
             throw "THERE CAN ONLY BE ONE.";
         }
-
         super();
 
         Fathom._postInitialize();
-
     }
 }
 #end

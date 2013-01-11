@@ -86,7 +86,7 @@ class ReloadedGraphic extends Bitmap {
 }
 
 #else
-class ReloadedGraphic extends Bitmap {
+class ReloadedGraphic extends nme.display.Bitmap {
   public function new(url: String) {
 
   }

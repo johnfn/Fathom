@@ -1,12 +1,4 @@
-#if nme
-import nme.display.Sprite;
-import nme.display.DisplayObjectContainer;
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.geom.Point;
-import nme.geom.Rectangle;
-import nme.events.Event;
-#else
+#if flash
 import starling.display.Image;
 import starling.core.Starling;
 import starling.textures.Texture;
@@ -18,6 +10,14 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import starling.events.Event;
 import starling.core.RenderSupport;
+#else
+import nme.display.Sprite;
+import nme.display.DisplayObjectContainer;
+import nme.display.Bitmap;
+import nme.display.BitmapData;
+import nme.geom.Point;
+import nme.geom.Rectangle;
+import nme.events.Event;
 #end
 
 import Hooks;
@@ -39,15 +39,15 @@ typedef SpriteSheet = {
  */
 
 class Graphic extends Sprite {
-#if nme
+#if flash
+    var texturedObject:Image;
+    static var cachedAssets: SuperObjectHash<String, Texture> = new SuperObjectHash();
+    var fullTexture : Texture;
+#else
     var texturedObject:Bitmap;
     static var cachedAssets: SuperObjectHash<String, BitmapData> = new SuperObjectHash();
     var fullTexture : BitmapData;
     var hotswapped: ReloadedGraphic;
-#else
-    var texturedObject:Image;
-    static var cachedAssets: SuperObjectHash<String, Texture> = new SuperObjectHash();
-    var fullTexture : Texture;
 #end
 
     public var depth(getDepth, setDepth) : Int;
@@ -72,7 +72,7 @@ class Graphic extends Sprite {
         animations = new AnimationHandler(this);
     }
 
-    public #if nme override #end function toString(): String {
+    public #if !flash override #end function toString(): String {
         return "[Graphic]";
     }
 
@@ -193,9 +193,7 @@ class Graphic extends Sprite {
 
         var result:BitmapData = new BitmapData(sw, sh, true);
 
-#if nme
-        result.draw(Fathom.stage);
-#else
+#if flash
         var support:RenderSupport = new RenderSupport();
         RenderSupport.clear(flash.Lib.current.stage.color, 1.0);
         support.setOrthographicProjection(0, 0, sw, sh);
@@ -203,6 +201,8 @@ class Graphic extends Sprite {
         support.finishQuadBatch();
 
         Starling.context.drawToBitmapData(result);
+#else
+        result.draw(Fathom.stage);
 #end
 
         return result;

@@ -1,14 +1,14 @@
 import Util;
-#if nme
-import nme.display.BitmapData;
-import nme.display.DisplayObjectContainer;
-import nme.display.DisplayObject;
-import nme.display.Sprite;
-#else
+#if flash
 import flash.display.BitmapData;
 import starling.display.DisplayObjectContainer;
 import starling.display.Sprite;
 import starling.display.DisplayObject;
+#else
+import nme.display.BitmapData;
+import nme.display.DisplayObjectContainer;
+import nme.display.DisplayObject;
+import nme.display.Sprite;
 #end
 
 using Lambda;
