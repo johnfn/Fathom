@@ -76,26 +76,37 @@ class Fathom {
         // MCs must be added to the container MC.
 
         Fathom.initialized = true;
-
-        grid = new SpatialHash(Fathom.entities.select([]));
-#if flash
         Fathom.cb = cb;
+#if flash
         Fathom.starling = new Starling(RootEntity, flash.Lib.current.stage);
-    #if profile
-        Fathom.starling.showStats = true;
-    #end
         Fathom.starling.start();
 #else
+        Fathom._postInitialize();
+#end
+
+    }
+
+    static public function _postInitialize(): Void {
+#if flash
+        Fathom.actualStage = Fathom.starling.stage;
+    #if profile
+        Fathom.starling.showStats = true;
+        flash.Lib.current.addChild(new TheMiner());
+    #end
+#else
         Fathom.actualStage = nme.Lib.current.stage;
+#end
         Fathom.stage = new Entity();
         Fathom.actualStage.addChild(Fathom.stage);
+        Fathom.grid = new SpatialHash(Fathom.entities.select([]));
 
         MagicKeyObject._initializeKeyInput();
         Fathom.start();
         Fathom.camera = new CameraFocus(Fathom.actualStage, Fathom.stage, new Point(Fathom.actualStage.stageWidth / 2, Fathom.actualStage.stageHeight / 2), []);
 
-        cb();
-#end
+        if (cb != null) {
+            cb();
+        }
     }
 
     static public function start(): Void {
@@ -110,9 +121,6 @@ class Fathom {
        possibly for some sort of end game situation. */
     static public function stop() : Void {
         Fathom.stage.removeEventListener(Event.ENTER_FRAME, update);
-#if flash
-        Fathom.starling.stop();
-#end
     }
 
     static public function anythingAt(x : Int, y : Int) : Bool {
@@ -238,19 +246,8 @@ class RootEntity extends Sprite {
 
         super();
 
-        Fathom.actualStage = Fathom.starling.stage;
-        Fathom.stage = new Entity();
-        Fathom.actualStage.addChild(Fathom.stage);
+        Fathom._postInitialize();
 
-        // Can't initialize the Cam until the container is initialized...
-        Fathom.start();
-        Fathom.camera = new CameraFocus(Fathom.actualStage, Fathom.stage, new Point(Fathom.actualStage.stageWidth / 2, Fathom.actualStage.stageHeight / 2), []);
-        Fathom.cb();
-        MagicKeyObject._initializeKeyInput();
-
-#if profile
-        flash.Lib.current.addChild(new TheMiner());
-#end
     }
 }
 #end
