@@ -19,9 +19,9 @@ class EntityTest extends haxe.unit.TestCase {
   }
 
   public function testBasic() {
-    assertEquals(Fathom.entities.select([]).length, 3);
-    assertTrue(Fathom.entities.select([]).has(e1));
-    assertTrue(Fathom.entities.select([]).has(e2));
+    assertEquals(Fathom.entities.get([]).length, 3);
+    assertTrue(Fathom.entities.get([]).has(e1));
+    assertTrue(Fathom.entities.get([]).has(e2));
 
     assertEquals(e1.parent, Fathom.stage);
     assertEquals(e2.parent, Fathom.stage);

@@ -69,7 +69,7 @@ class Fathom {
 #end
         Fathom.stage = new Entity();
         Fathom.actualStage.addChild(Fathom.stage);
-        Fathom.grid = new SpatialHash(Fathom.entities.select([]));
+        Fathom.grid = new SpatialHash(Fathom.entities.get([]));
 
         MagicKeyObject._initializeKeyInput();
         Fathom.start();
@@ -161,7 +161,7 @@ class Fathom {
     }
 
     static function movingEntities() : Set<MovingEntity> {
-        return Fathom.entities.select([function(e : Entity) : Bool {
+        return Fathom.entities.get([function(e : Entity) : Bool {
             return !e.isStatic;
         }]).map(function(e: Entity): MovingEntity {
             return cast(e, MovingEntity);

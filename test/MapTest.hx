@@ -77,7 +77,7 @@ class MapTest extends haxe.unit.TestCase {
 
     assertEquals(constructedCount, 1);
 
-    assertEquals(Fathom.entities.select([Set.hasGroup("test")]).length, 1);
+    assertEquals(Fathom.entities.get([Set.hasGroup("test")]).length, 1);
     var s:Entity = Fathom.entities.one([Set.hasGroup("test")]);
 
     assertEquals(s.x, 0);
@@ -89,7 +89,7 @@ class MapTest extends haxe.unit.TestCase {
     m.loadNewMapAbs(new Vec(0, 0));
 
     assertEquals(constructedCount, 0);
-    assertEquals(Fathom.entities.select([Set.hasGroup("test")]).length, 0);
+    assertEquals(Fathom.entities.get([Set.hasGroup("test")]).length, 0);
   }
 
   public function testDontFreakOutForOutOfMapEntities() {

@@ -33,7 +33,7 @@ class MovingEntity extends Entity {
     }
 
     public function touchingSet(criteria: Array<Entity -> Bool>) : Set<Entity> {
-        return new Set<Entity>(xColl.clone().extend(yColl).toArray()).select(criteria);
+        return new Set<Entity>(xColl.clone().extend(yColl).toArray()).get(criteria);
     }
 
     public function isBlocked() : Bool {

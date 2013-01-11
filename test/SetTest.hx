@@ -8,23 +8,23 @@ class SetTest extends haxe.unit.TestCase {
     s.add(5);
     s.add(1);
 
-    assertEquals(s.has(1), true);
-    assertEquals(s.has(5), true);
+    assertEquals(s.exists(1), true);
+    assertEquals(s.exists(5), true);
     assertEquals(s.length, 2);
   }
 
-  public function testHas() {
+  public function testExists() {
     var s:Set<Int> = new Set<Int>();
     for (x in 0...100) {
       s.add(x);
     }
 
     for (x in 0...100) {
-      assertTrue(s.has(x));
+      assertTrue(s.exists(x));
     }
 
     for (x in 101...200) {
-      assertFalse(s.has(x));
+      assertFalse(s.exists(x));
     }
   }
 
@@ -90,7 +90,7 @@ class SetTest extends haxe.unit.TestCase {
     var result:Set<Int> = (new Set<Int>([1,2,3])).concat(4,5,6);
 
     for (x in 1...6) {
-      assertTrue(result.has(x));
+      assertTrue(result.exists(x));
     }
   }
 
@@ -101,12 +101,12 @@ class SetTest extends haxe.unit.TestCase {
     var result:Set<Int> = Set.merge<Int>(s1, s2);
 
     for (x in 0...8) {
-      assertTrue(result.has(x));
+      assertTrue(result.exists(x));
     }
 
     s1.extend(s2);
     for (x in 0...8) {
-      assertTrue(s1.has(x));
+      assertTrue(s1.exists(x));
     }
   }
   */
@@ -118,7 +118,7 @@ class SetTest extends haxe.unit.TestCase {
     s1.extend(s2);
 
     for (x in 1...6) {
-      assertTrue(s1.has(x));
+      assertTrue(s1.exists(x));
     }
   }
 
@@ -127,16 +127,16 @@ class SetTest extends haxe.unit.TestCase {
 
     s = s.filter(function(e:Int) { return (e % 2) == 0; });
 
-    assertTrue(s.has(0));
-    assertTrue(s.has(2));
-    assertTrue(s.has(4));
-    assertTrue(s.has(6));
-    assertTrue(s.has(8));
+    assertTrue(s.exists(0));
+    assertTrue(s.exists(2));
+    assertTrue(s.exists(4));
+    assertTrue(s.exists(6));
+    assertTrue(s.exists(8));
 
-    assertFalse(s.has(1));
-    assertFalse(s.has(3));
-    assertFalse(s.has(5));
-    assertFalse(s.has(7));
+    assertFalse(s.exists(1));
+    assertFalse(s.exists(3));
+    assertFalse(s.exists(5));
+    assertFalse(s.exists(7));
   }
 
   public function testLength() {

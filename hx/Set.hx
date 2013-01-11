@@ -24,14 +24,14 @@ class Set<T> {
         if (length != other.length) return false;
 
         for (x in this) {
-            if (!other.has(x)) return false;
+            if (!other.exists(x)) return false;
         }
 
         return true;
     }
 
     public function add(item : T) : Void {
-        if (!has(item)) {
+        if (!exists(item)) {
           _length++;
         }
 
@@ -39,7 +39,7 @@ class Set<T> {
     }
 
     public function remove(item : T) : Void {
-        if(!has(item))  {
+        if(!exists(item))  {
             throw "Set#remove called on non-existant item";
         }
 
@@ -47,7 +47,7 @@ class Set<T> {
         _length--;
     }
 
-    public function has(item : T) : Bool {
+    public function exists(item : T) : Bool {
         return contents.exists(item);
     }
 
@@ -158,7 +158,7 @@ class Set<T> {
         return contents.iterator();
     }
 
-    public function select(criteria: Array<T -> Bool>) : Set<T> {
+    public function get(criteria: Array<T -> Bool>) : Set<T> {
         var eList : Set<T> = clone();
 
         for (crit in criteria) {
@@ -184,7 +184,7 @@ class Set<T> {
     }
 
     public function one(criteria:Array<T -> Bool>) : T {
-        var results : Set<T> = select(criteria);
+        var results : Set<T> = get(criteria);
         if(results.length == 0)  {
             throw ("Set<Entity>#one called with criteria " + criteria.toString() + ", but no results found.");
         } else if(results.length > 1)  {
@@ -201,26 +201,26 @@ class Set<T> {
     }
 
     public function all(criteria:Array<T -> Bool>) : Bool {
-        return this.length == this.select(criteria).length;
+        return this.length == this.get(criteria).length;
     }
 
     public function any(criteria: Array<T -> Bool>) : Bool {
-        return this.select(criteria).length > 0;
+        return this.get(criteria).length > 0;
     }
 
     public function none(criteria: Array<T -> Bool>) : Bool {
-        return this.select(criteria).length == 0;
+        return this.get(criteria).length == 0;
     }
 
     public static function hasGroup(g: String) : Entity -> Bool {
         return function(e:Entity): Bool {
-            return e.groups().has(g);
+            return e.groups().exists(g);
         }
     }
 
     public static function doesntHaveGroup(g: String) : Entity -> Bool {
         return function(e:Entity): Bool {
-            return !e.groups().has(g);
+            return !e.groups().exists(g);
         }
     }
 
