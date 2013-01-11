@@ -38,7 +38,7 @@ typedef SpriteSheet = {
  *  Animation support with `animation`.
  */
 
-class Graphic extends Sprite, implements IPositionable {
+class Graphic extends Sprite {
 #if nme
     var texturedObject:Bitmap;
     static var cachedAssets: SuperObjectHash<String, BitmapData> = new SuperObjectHash();
@@ -179,9 +179,9 @@ class Graphic extends Sprite, implements IPositionable {
         return this;
     }
 
-    public function setPos(v : IPositionable) : Graphic {
-        x = v.x;
-        y = v.y;
+    public function setPos(newX: Int, newY: Int): Graphic {
+        this.x = newX;
+        this.y = newY;
         return this;
     }
 

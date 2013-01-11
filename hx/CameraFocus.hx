@@ -159,7 +159,7 @@ class CameraFocus {
 		} else if(Std.is(_focusTarget, DisplayObject)) {
 			loc = _focusTarget.parent.localToGlobal(_focusTracker);
 		} else if (Std.is(_focusTarget, Entity)) untyped {
-			var v:Vec = Fathom.container.localToGlobal(_focusTarget);
+			var v:Vec = Fathom.stage.localToGlobal(_focusTarget);
 			loc = new Point(v.x, v.y);
 			//loc = new Point(_focusTarget.vec().x, _focusTarget.vec().y);
 		} else {

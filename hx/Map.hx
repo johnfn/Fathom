@@ -272,7 +272,7 @@ class Map extends Rect {
         var e: Entity;
 
         if (isSpecial(itemData)) {
-            e = Type.createInstance(itemData.spc, []).setPos(new Vec(x * tileSize, y * tileSize));
+            e = Type.createInstance(itemData.spc, []).setPos(x * tileSize, y * tileSize);
         } else {
             e = new Entity(x * tileSize, y * tileSize, tileSize, tileSize)
                 .loadSpritesheet(itemData.gfx, new Vec(tileSize, tileSize))
@@ -333,7 +333,7 @@ class Map extends Rect {
             persistent.set(newMapLoc.asKey(), []);
         }
         persistent.get(newMapLoc.asKey()).push(leftScreen);
-        leftScreen.setPos(newItemLoc);
+        leftScreen.setPos(Std.int(newItemLoc.x), Std.int(newItemLoc.y));
         leftScreen.removeFromFathom();
     }
 

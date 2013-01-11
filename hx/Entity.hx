@@ -246,8 +246,8 @@ class Entity extends Graphic {
         return cast(super.setTile(x, y), Entity);
     }
 
-    public override function setPos(v : IPositionable) : Entity {
-        return cast(super.setPos(v), Entity);
+    public override function setPos(x: Int, y: Int) : Entity {
+        return cast(super.setPos(x, y), Entity);
     }
 
 

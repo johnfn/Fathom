@@ -98,7 +98,7 @@ class MapTest extends haxe.unit.TestCase {
     m.loadNewMapAbs(new Vec(0, 1));
     s = Fathom.entities.one([Set.hasGroup("test")]);
 
-    s.setPos(new Vec(7, 7));
+    s.setPos(7, 7);
 
     m.loadNewMapAbs(new Vec(0, 0));
     m.loadNewMapAbs(new Vec(0, 1));
@@ -114,7 +114,7 @@ class MapTest extends haxe.unit.TestCase {
     m.loadNewMapAbs(new Vec(0, 1));
     s = Fathom.entities.one([Set.hasGroup("test")]);
 
-    s.setPos(new Vec(1, 1));
+    s.setPos(1, 1);
 
     m.loadNewMapAbs(new Vec(0, 0));
     m.loadNewMapAbs(new Vec(0, 1));
