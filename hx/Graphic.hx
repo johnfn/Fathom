@@ -76,20 +76,26 @@ class Graphic extends Sprite {
     // Set this entities graphics to be the sprite at (x, y) on the provided spritesheet.
     // TODO: Implicit assumption that bitmap faces right.
     public function setTile(spriteX: Int, spriteY: Int) : Graphic {
-        Util.assert(fullTexture != null, "The spritesheet is null.");
-
         spritesheet.x = spriteX;
         spritesheet.y = spriteY;
 
         var region:Rectangle = new Rectangle(spriteX * tileWidth, spriteY * tileHeight, tileWidth, tileHeight);
 
 #if flash
+        Util.assert(fullTexture != null, "The spritesheet is null.");
+
         texturedObject.texture = Texture.fromTexture(fullTexture, region);
 #else
-        var bd:BitmapData = new BitmapData(tileWidth, tileHeight);
-        bd.copyPixels(fullTexture, region, new Point(0, 0), null, null, true);
+        if (hotswapped != null) {
+            hotswapped.setTile(spriteX, spriteY);
+        } else {
+            Util.assert(fullTexture != null, "The spritesheet is null.");
 
-        texturedObject.bitmapData = bd;
+            var bd:BitmapData = new BitmapData(tileWidth, tileHeight);
+            bd.copyPixels(fullTexture, region, new Point(0, 0), null, null, true);
+
+            texturedObject.bitmapData = bd;
+        }
 #end
 
         if(!animations.hasAnimation("default"))  {

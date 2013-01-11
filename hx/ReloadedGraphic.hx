@@ -7,6 +7,7 @@ import nme.net.URLRequest;
 import nme.events.Event;
 import nme.geom.Rectangle;
 import nme.geom.Point;
+import nme.display.Shape;
 import cpp.vm.Thread;
 
 typedef ReloadedData = {
@@ -18,6 +19,7 @@ typedef ReloadedData = {
 class ReloadedGraphic extends Bitmap {
   var url: String;
   var loader: Loader;
+  var maskedShape: Shape;
 
   static var urlData: SuperObjectHash<String, ReloadedData> = null;
 
@@ -31,6 +33,12 @@ class ReloadedGraphic extends Bitmap {
       constantlyReload();
     }
 
+    maskedShape = new Shape();
+    maskedShape.graphics.beginFill(0);
+    maskedShape.graphics.drawRect(0, 0, 25, 25);
+    maskedShape.graphics.endFill();
+    this.mask = maskedShape;
+
     if (urlData.exists(url)) {
       urlData.get(url).waiters.push(this);
     } else {
@@ -38,6 +46,16 @@ class ReloadedGraphic extends Bitmap {
       urlData.set(url, {url: url, waiters: [this], loader: loader});
       loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadComplete);
     }
+  }
+
+  public function setTile(tileX: Int, tileY: Int): Void {
+    if (this.parent != null && this.mask.parent == null) {
+      this.parent.addChild(maskedShape);
+    }
+
+    // Let the mask do the hard work for us.
+    this.x = -tileX * 25;
+    this.y = -tileY * 25;
   }
 
   // Returns true if the two BitmapDatas are equal, false otherwise.
