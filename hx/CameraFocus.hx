@@ -162,6 +162,10 @@ class CameraFocus {
 			var v:Vec = Fathom.stage.localToGlobal(_focusTarget);
 			loc = new Point(v.x, v.y);
 			//loc = new Point(_focusTarget.vec().x, _focusTarget.vec().y);
+		} else if (Std.is(_focusTarget, Vec)) {
+			var v:Vec = cast(_focusTarget, Vec);
+			loc = Fathom.stage.localToGlobal(new Point(v.x, v.y));
+			//loc = new Point(_focusTarget.vec().x, _focusTarget.vec().y);
 		} else {
 			Util.assert(false, "Unsupported type for CameraFocus to follow: " + Type.getClassName(_focusTarget));
 			return null;

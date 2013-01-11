@@ -1,53 +1,60 @@
+#if flash
 import flash.display.BitmapData;
-import Graphic;
+import flash.geom.Point;
+#else
+import nme.display.BitmapData;
+import nme.geom.Point;
+#end
 
 class CameraTest extends haxe.unit.TestCase {
   var g:Entity;
 
-  override public function setup() {
-    g = new Entity(0, 0, 100, 100);
+  override public function globalSetup() {
+    g = new Entity(-8, -8, 100, 100); // Centered at the origin
     g.loadSpritesheet(AllTests.testAnimation, new Vec(16, 16), new Vec(0, 0));
+    Fathom.camera.setFocusTarget(new Point(0, 0));
+
+    for (x in 0...500) {
+      Fathom.camera.update();
+    }
   }
 
-  override public function tearDown() {
+  override public function globalTeardown() {
     Fathom.destroyAll();
+    Fathom.camera.setFocusTarget(new Point(Fathom.actualStage.stageWidth/2, Fathom.actualStage.stageHeight/2));
+
+    for (x in 0...500) {
+      Fathom.camera.update();
+    }
   }
 
   public function testBasic() {
-    Fathom.camera.setFocus(new Vec(Std.int(Fathom.stage.stageWidth / 2), Std.int(Fathom.stage.stageHeight / 2)));
     var bd:BitmapData = Graphic.takeScreenshot();
 
-    assertEquals(bd.getPixel(0, 0), 0xff0000);
+    assertEquals(bd.getPixel(Std.int(Fathom.actualStage.stageWidth / 2), Std.int(Fathom.actualStage.stageHeight / 2)), 0xff0000);
   }
 
-  public function testMove() {
-    Fathom.camera.setFocus(new Vec(Std.int(Fathom.stage.stageWidth / 2), Std.int(Fathom.stage.stageHeight / 2)));
+  public function testCanFollowEntity() {
+    Fathom.camera.setFocusTarget(g);
 
-    g.setPos(new Vec(5, 5));
-    Fathom.camera.update();
+    for (x in 0...4) {
+      assertDoesNotThrow(function() Fathom.camera.update());
+    }
 
-    assertEquals(g.HACK_sprite().x, 5);
-    assertEquals(g.HACK_sprite().y, 5);
+    var bd:BitmapData = Graphic.takeScreenshot();
+    assertEquals(bd.getPixel(Std.int(Fathom.actualStage.stageWidth / 2), Std.int(Fathom.actualStage.stageHeight / 2)), 0xff0000);
   }
 
-  public function failingTestMove2() {
-    Fathom.camera.setFocus(new Vec(Std.int(Fathom.stage.stageWidth / 2), Std.int(Fathom.stage.stageHeight / 2)));
+  public function testCanFollowVec() {
+    Fathom.camera.setFocusTarget(new Vec(0, 0));
 
-    g.setPos(new Vec(5, 5));
+    for (x in 0...4) {
+      assertDoesNotThrow(function() Fathom.camera.update());
+    }
 
-    assertEquals(g.HACK_sprite().x, 5);
-    assertEquals(g.HACK_sprite().y, 5);
+    var bd:BitmapData = Graphic.takeScreenshot();
+    assertEquals(bd.getPixel(Std.int(Fathom.actualStage.stageWidth / 2), Std.int(Fathom.actualStage.stageHeight / 2)), 0xff0000);
   }
-
-
-  /*
-  No idea how to test this!
-
-  public function testNonSquare() {
-    assertThrows(function() stage.width = 234234);
-  }
-  */
-
-  // Entities move instantly when setPos()d (and correctly!).
+  // Camera can follow Vec and Entity
 }
 
