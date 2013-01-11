@@ -20,54 +20,24 @@ import com.sociodox.theminer.TheMiner;
 using Lambda;
 
 class Fathom {
-    static public var scaleX(getScaleX, never) : Float;
-    static public var scaleY(getScaleY, never) : Float;
-    static public var currentMode(getCurrentMode, never) : Int;
-
 #if flash
     static public var starling:Starling;
 #end
 
-    static public var mapRef : Map;
-    static public var entities : Set<Entity> = new Set([]);
-    static public var initialized : Bool = false;
-    static public var stage : Entity;
+    static public var mapRef: Map;
+    static public var mode: Mode;
+    static public var entities: Set<Entity> = new Set([]);
+    static public var initialized: Bool = false;
+    static public var stage: Entity;
     static public var actualStage: Stage;
-    static public var grid : SpatialHash;
-    static public var modes : Array<Int> = [0];
+    static public var grid: SpatialHash;
     static public var cb:Void -> Void;
-
     static public var camera: CameraFocus;
 
     static private var fpsFn : Void -> String;
 
     public function new() {
         throw ("You can't initialize a Fathom object. Use Fathom.initialize() instead.");
-    }
-
-    static public function getScaleX() : Float {
-        return stage.scaleX;
-    }
-
-    static public function getScaleY() : Float {
-        return stage.scaleY;
-    }
-
-    static public function getCurrentMode() : Int {
-        return modes[modes.length - 1];
-    }
-
-    // TODO this stuff should go in Mode.as
-    static public function pushMode(mode : Int) : Void {
-        modes.push(mode);
-    }
-
-    static public function popMode() : Void {
-        modes.pop();
-    }
-
-    static public function replaceMode(mode : Int) : Void {
-        modes[modes.length - 1] = mode;
     }
 
     //TODO: Eventually main class should extend this or something...
@@ -77,6 +47,7 @@ class Fathom {
 
         Fathom.initialized = true;
         Fathom.cb = cb;
+        Fathom.mode = new Mode();
 #if flash
         Fathom.starling = new Starling(RootEntity, flash.Lib.current.stage);
         Fathom.starling.start();
@@ -133,7 +104,7 @@ class Fathom {
     // it.
     static function moveEverything() : Void {
         var active: Entity -> Bool = function(e: Entity) : Bool {
-            return e.modes().has(currentMode);
+            return e.modes().has(mode.currentMode);
         };
 
         var list : Set<MovingEntity> = movingEntities().filter(active);
@@ -203,7 +174,7 @@ class Fathom {
         var list : Set<Entity> = entities.clone();
         // Similarly, if something changes the current mode, that shouldn't
         // be reflected until the next update cycle.
-        var cachedMode : Int = currentMode;
+        var cachedMode : Int = mode.currentMode;
 
         moveEverything();
         for (e in list) {

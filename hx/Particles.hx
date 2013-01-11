@@ -214,7 +214,7 @@ class Particles {
     }
 
     public function update() : Void {
-        if(Fathom.currentMode != 0)  {
+        if(Fathom.mode.currentMode != 0)  {
             trace("Due to a hack, I'm returning now.");
             return;
         }
