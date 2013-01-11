@@ -248,7 +248,7 @@ class Graphic extends Sprite {
         animations.advance();
     }
 
-    public function add(p : IPositionable) : Graphic {
+    public function add(p: Vec) : Graphic {
         x += p.x;
         y += p.y;
 

@@ -2,7 +2,7 @@ import flash.display.Sprite;
 
 /** Vector. Vector is a pair of 2 numbers, typically (x, y), used
     to represent both position and direction. */
-class Vec implements IPositionable {
+class Vec {
     public var x: Float;
     public var y: Float;
 
@@ -50,15 +50,15 @@ class Vec implements IPositionable {
         return this;
     }
 
-    public function setPos(v : IPositionable) : Vec {
+    public function setPos(v : Vec) : Vec {
         x = v.x;
         y = v.y;
         return this;
     }
 
     public function add(v : Dynamic) : Vec {
-    if (Std.is(v, IPositionable)) {
-            var vec : IPositionable = cast(v, IPositionable);
+    if (Std.is(v, Vec)) {
+      var vec: Vec = cast(v, Vec);
 
       x += vec.x;
       y += vec.y;
@@ -80,7 +80,7 @@ class Vec implements IPositionable {
     }
 
     public function subtract(v : Dynamic) : Vec {
-        if(Std.is(v, IPositionable))  {
+        if(Std.is(v, Vec))  {
             var vec : Vec = cast(v, Vec);
 
             x -= vec.x;
@@ -100,8 +100,8 @@ class Vec implements IPositionable {
 
     // Takes either a Vector or an int (treated as a Vector(int, int))
   public function multiply(v : Dynamic) : Vec {
-    if (Std.is(v, IPositionable)) {
-      var i:IPositionable = cast(v, IPositionable);
+    if (Std.is(v, Vec)) {
+      var i:Vec = cast(v, Vec);
 
       x *= i.x;
       y *= i.y;
@@ -116,8 +116,8 @@ class Vec implements IPositionable {
     }
 
     public function divide(v : Dynamic) : Vec {
-        if (Std.is(v, IPositionable)) {
-          var i:IPositionable = cast(v, IPositionable);
+        if (Std.is(v, Vec)) {
+          var i:Vec = cast(v, Vec);
 
           x /= i.x;
           y /= i.y;

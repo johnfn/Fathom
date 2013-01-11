@@ -1,6 +1,6 @@
 import flash.geom.Point;
 
-class Rect extends Vec, implements IPositionable {
+class Rect extends Vec {
 	public var width(getWidth, setWidth) : Float;
 	public var height(getHeight, setHeight) : Float;
 	public var right(getRight, setRight) : Float;
