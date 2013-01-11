@@ -5,9 +5,10 @@ class GraphicTest extends haxe.unit.TestCase {
   var g:Entity;
 
   override public function globalSetup() {
-    g = new Entity(200, 200, 100, 100);
+    g = new Entity(0, 0, 100, 100);
     g.loadSpritesheet(AllTests.testSprite, new Vec(2, 2));
     g.setTile(0, 0);
+
   }
 
   override public function globalTeardown() {
@@ -22,12 +23,18 @@ class GraphicTest extends haxe.unit.TestCase {
   //TODO: adjusting w should adjust pivot also.
 
   public function testInit() {
-    assertEquals(g.x, 200);
-    assertEquals(g.y, 200);
+    assertEquals(g.x, 0);
+    assertEquals(g.y, 0);
   }
 
   public function testImageLoading() {
     g.setTile(0, 0);
+
+    Fathom.camera.update();
+
+    Graphic.showScreenshot();
+
+    trace(Fathom.entities);
 
     assertEquals(g.getPixel(0, 0), 0xffffff);
     assertEquals(g.getPixel(1, 1), 0xffffff);
@@ -35,13 +42,11 @@ class GraphicTest extends haxe.unit.TestCase {
     assertEquals(g.getPixel(1, 0), 0x000000);
   }
 
-  public function testSpriteSheetLoc() {
+ public function testSpriteSheetLoc() {
     g.setTile(1, 2);
 
     assertEquals(g.getSpriteX(), 1);
     assertEquals(g.getSpriteY(), 2);
-
-    Graphic.showScreenshot();
 
     g.setTile(0, 1);
 

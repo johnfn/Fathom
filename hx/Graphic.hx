@@ -72,19 +72,19 @@ class Graphic extends Sprite, implements IPositionable {
         animations = new AnimationHandler(this);
     }
 
-    public function toString(): String {
+    public #if nme override #end function toString(): String {
         return "[Graphic]";
     }
 
     // Set this entities graphics to be the sprite at (x, y) on the provided spritesheet.
     // TODO: Implicit assumption that bitmap faces right.
-    public function setTile(x : Int, y : Int) : Graphic {
+    public function setTile(spriteX: Int, spriteY: Int) : Graphic {
         Util.assert(fullTexture != null, "The spritesheet is null.");
 
-        spritesheet.x = x;
-        spritesheet.y = y;
+        spritesheet.x = spriteX;
+        spritesheet.y = spriteY;
 
-        var region:Rectangle = new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+        var region:Rectangle = new Rectangle(spriteX * tileWidth, spriteY * tileHeight, tileWidth, tileHeight);
 
 #if flash
         texturedObject.texture = Texture.fromTexture(fullTexture, region);
@@ -96,7 +96,7 @@ class Graphic extends Sprite, implements IPositionable {
 #end
 
         if(!animations.hasAnimation("default"))  {
-            animations.addAnimation("default", x, y, 1);
+            animations.addAnimation("default", spriteX, spriteY, 1);
         }
 
         return this;
@@ -221,8 +221,10 @@ class Graphic extends Sprite, implements IPositionable {
     /** This method should only be used for testing.
      *  Don't use it in an actual game!
      */
-    public function getPixel(x:Int, y:Int): Int {
-        return takeScreenshot().getPixel(Std.int(x) + x, Std.int(y) + y);
+    public function getPixel(pixelX:Int, pixelY:Int): Int {
+        Util.assert(Math.floor(x) == x && Math.floor(y) == y, "x or y coordinates are non-int.");
+
+        return takeScreenshot().getPixel(Std.int(x) + pixelX, Std.int(y) + pixelY);
     }
 
     var facing : Int;

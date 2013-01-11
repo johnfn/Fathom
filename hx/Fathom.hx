@@ -92,7 +92,7 @@ class Fathom {
 
         MagicKeyObject._initializeKeyInput();
         Fathom.start();
-        Fathom.camera = new CameraFocus(Fathom.actualStage, Fathom.stage, new Point(0, 0), []);
+        Fathom.camera = new CameraFocus(Fathom.actualStage, Fathom.stage, new Point(Fathom.actualStage.stageWidth / 2, Fathom.actualStage.stageHeight / 2), []);
 
         cb();
 #end
@@ -244,7 +244,7 @@ class RootEntity extends Sprite {
 
         // Can't initialize the Cam until the container is initialized...
         Fathom.start();
-        Fathom.camera = new CameraFocus(Fathom.actualStage, Fathom.stage, new Point(0, 0), []);
+        Fathom.camera = new CameraFocus(Fathom.actualStage, Fathom.stage, new Point(Fathom.actualStage.stageWidth / 2, Fathom.actualStage.stageHeight / 2), []);
         Fathom.cb();
         MagicKeyObject._initializeKeyInput();
 
