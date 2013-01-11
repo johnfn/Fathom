@@ -232,7 +232,7 @@ class Entity extends Graphic {
     }
 
     // We do some casting so you don't have to.
-    public override function loadSpritesheet(spritesheetClass: BitmapData, tileDimension : Vec = null, whichTile : Vec = null) : Entity {
+    public override function loadSpritesheet(spritesheetClass: String, tileDimension : Vec = null, whichTile : Vec = null) : Entity {
         return cast(super.loadSpritesheet(spritesheetClass, tileDimension, whichTile), Entity);
     }
 

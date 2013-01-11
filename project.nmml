@@ -15,9 +15,17 @@
     
 
   <haxeflag name="-D" value="dbg" />
+  <haxeflag name="-D" value="debug" />
 	
   <!--
 	<icon path="Assets/nme.svg" />
   -->
+
+  <!-- Starling flags -->
+
+  <compilerflag name="-swf-lib starling/starling.swf" if="flash" />
+  <compilerflag name="--macro patchTypes('starling/starling.patch')" if="flash" />
+  <app swf-version="11" />
+  <haxedef name="as3_native" />
 	
 </project>

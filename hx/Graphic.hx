@@ -116,13 +116,14 @@ class Graphic extends Sprite {
      *  there's only one tile. whichTile is the tile that this Graphic will be; pass in
      *  null if you want to defer the decision by calling setTile() later.
      */
-    public function loadSpritesheet(spritesheetObj: BitmapData, tileDimension : Vec = null, whichTile : Vec = null) : Graphic {
+    public function loadSpritesheet(filepath: String, tileDimension : Vec = null, whichTile : Vec = null) : Graphic {
         Util.assert(fullTexture == null, "fullTexture is already set.");
         Util.assert(tileDimension == null || !tileDimension.equals(new Vec(0, 0)), "tileDimension can't be 0 by 0!");
 
         if (whichTile == null)     whichTile = new Vec(0, 0);
 
 #if flash
+        var spritesheetObj = nme.Assets.getBitmapData(filepath);
         var classAsKey:String = Type.getClassName(Type.getClass(spritesheetObj));
         // TODO Probably completely unnecessary, I'm sure Starling caches this.
         if (cachedAssets.exists(classAsKey)) {
@@ -138,6 +139,7 @@ class Graphic extends Sprite {
         texturedObject.width  = tileDimension.x;
         texturedObject.height = tileDimension.y;
 #else
+        var spritesheetObj = nme.Assets.getBitmapData(filepath);
         fullTexture = spritesheetObj;
         texturedObject = new Bitmap(fullTexture);
 
@@ -202,7 +204,7 @@ class Graphic extends Sprite {
 
         Starling.context.drawToBitmapData(result);
 #else
-        result.draw(Fathom.stage);
+        result.draw(Fathom.actualStage);
 #end
 
         return result;
@@ -215,6 +217,12 @@ class Graphic extends Sprite {
         img.x = 200;
         img.y = 200;
         Fathom.stage.addChild(img);
+#else
+        var b:Bitmap = new Bitmap(bd);
+        b.x = 200;
+        b.y = 200;
+
+        Fathom.stage.addChild(b);
 #end
     }
 

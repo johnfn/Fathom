@@ -1,10 +1,10 @@
+import nme.geom.Point;
+
 #if flash
-import flash.geom.Point;
 import starling.display.DisplayObject;
 import starling.display.Stage;
 import starling.events.Event;
 #else
-import nme.geom.Point;
 import nme.display.DisplayObject;
 import nme.display.Stage;
 import nme.events.Event;

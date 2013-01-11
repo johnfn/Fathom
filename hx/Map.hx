@@ -1,12 +1,6 @@
-#if nme
 import nme.geom.Point;
 import nme.geom.Rectangle;
 import nme.display.BitmapData;
-#else
-import flash.geom.Point;
-import flash.geom.Rectangle;
-import flash.display.BitmapData;
-#end
 
 import Color;
 import Util;
@@ -20,7 +14,7 @@ typedef ItemDetail = {
 
     // One of these two is required.
 
-    @:optional var gfx: BitmapData;
+    @:optional var gfx: String;
     @:optional var spc: Dynamic;
 
     // Optional settings
@@ -101,7 +95,9 @@ class Map extends Rect {
         return (x < 0 || x >= width || y < 0 || y >= height);
     }
 
-    public function fromImage(bData: BitmapData, groundList : Array<String>, mappings : Array<ItemDetail>) : Map {
+    public function fromImage(mapFilepath: String, groundList : Array<String>, mappings : Array<ItemDetail>) : Map {
+        var bData: BitmapData = nme.Assets.getBitmapData(mapFilepath);
+
         // Load ground list
         this.grounds = groundList;
 

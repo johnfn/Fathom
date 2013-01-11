@@ -1,2 +1,2 @@
 #!/bin/bash
-haxe test.hxml && open test.swf
+haxelib run nme test project.nmml flash -debug

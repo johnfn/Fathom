@@ -10,31 +10,14 @@ import flash.display.BitmapData;
 import flash.display.Bitmap;
 #end
 
-#if flash
-@:bitmap("testsprite.png") class TestSprite extends flash.display.BitmapData {}
-@:bitmap("testmap.png") class TestMap extends flash.display.BitmapData {}
-@:bitmap("testanimation.png") class TestAnimation extends flash.display.BitmapData {}
-#end
-
 class AllTests extends Sprite {
   public static var stage;
 
-  public static var testSprite:BitmapData;
-  public static var testMap:BitmapData;
-  public static var testAnimation:BitmapData;
+  public static var testSprite:String = "test/testsprite.png";
+  public static var testMap:String = "test/testmap.png";
+  public static var testAnimation:String = "test/testanimation.png";
 
   public static function main() {
-
-#if flash
-    testSprite    = Type.createInstance(TestSprite, []);
-    testMap       = Type.createInstance(TestMap, []);
-    testAnimation = Type.createInstance(TestAnimation, []);
-#else
-    testSprite    = Assets.getBitmapData("test/testsprite.png");
-    testMap       = Assets.getBitmapData("test/testmap.png");
-    testAnimation = Assets.getBitmapData("test/testanimation.png");
-#end
-
     Fathom.initialize(test);
   }
 
