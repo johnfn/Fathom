@@ -1,4 +1,4 @@
-import flash.geom.Point;
+import nme.geom.Point;
 
 class Rect extends Vec {
 	public var width(getWidth, setWidth) : Float;

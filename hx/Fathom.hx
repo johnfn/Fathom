@@ -4,13 +4,11 @@ import starling.events.Event;
 import starling.display.Sprite;
 import starling.display.Stage;
 import starling.display.DisplayObjectContainer;
-import flash.geom.Point;
 #else
 import nme.display.Stage;
 import nme.events.Event;
 import nme.display.Sprite;
 import nme.display.DisplayObjectContainer;
-import nme.geom.Point;
 #end
 
 #if profile
@@ -73,7 +71,7 @@ class Fathom {
 
         MagicKeyObject._initializeKeyInput();
         Fathom.start();
-        Fathom.camera = new CameraFocus(Fathom.actualStage, Fathom.stage, new Point(Fathom.actualStage.stageWidth / 2, Fathom.actualStage.stageHeight / 2), []);
+        Fathom.camera = new CameraFocus(Fathom.actualStage, Fathom.stage, new Vec(Fathom.actualStage.stageWidth / 2, Fathom.actualStage.stageHeight / 2), []);
 
         if (cb != null) {
             cb();

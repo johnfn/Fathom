@@ -1,22 +1,19 @@
+import nme.display.Bitmap;
+import nme.display.BitmapData;
+import nme.geom.Point;
+import nme.geom.Rectangle;
+
 #if flash
 import starling.display.Image;
 import starling.core.Starling;
 import starling.textures.Texture;
 import starling.display.Sprite;
 import starling.display.DisplayObjectContainer;
-import flash.display.Bitmap;
-import flash.display.BitmapData;
-import flash.geom.Point;
-import flash.geom.Rectangle;
 import starling.events.Event;
 import starling.core.RenderSupport;
 #else
 import nme.display.Sprite;
 import nme.display.DisplayObjectContainer;
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.geom.Point;
-import nme.geom.Rectangle;
 import nme.events.Event;
 #end
 

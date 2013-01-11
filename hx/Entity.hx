@@ -1,11 +1,11 @@
 import Util;
+import nme.display.BitmapData;
+
 #if flash
-import flash.display.BitmapData;
 import starling.display.DisplayObjectContainer;
 import starling.display.Sprite;
 import starling.display.DisplayObject;
 #else
-import nme.display.BitmapData;
 import nme.display.DisplayObjectContainer;
 import nme.display.DisplayObject;
 import nme.display.Sprite;
