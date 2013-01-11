@@ -16,7 +16,7 @@ class KeyTest extends haxe.unit.TestCase {
   public function testKeypress() {
     var aDown:KeyboardEvent = new KeyboardEvent(KeyboardEvent.KEY_DOWN, 65, 65);
     var aUp:KeyboardEvent = new KeyboardEvent(KeyboardEvent.KEY_UP, 65, 65);
-    Fathom.stage.dispatchEvent(aDown);
+    Fathom.actualStage.dispatchEvent(aDown);
 
     assertTrue(Util.KeyDown.A);
     Fathom.actualStage.dispatchEvent(aUp);
