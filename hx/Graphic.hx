@@ -274,23 +274,5 @@ class Graphic extends Sprite {
     public function vec() : Vec {
         return new Vec(x, y);
     }
-
-    /* IPositionable */
-
-    public function getX(): Float {
-        return x;
-    }
-
-    public function getY(): Float {
-        return y;
-    }
-
-    public function setX(val: Float): Float {
-        return x = val;
-    }
-
-    public function setY(val: Float): Float {
-        return y = val;
-    }
 }
 
