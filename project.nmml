@@ -14,7 +14,7 @@
   <window width="500" height="500" background="0xFFFFFF" fps="30" />
     
 
-  <haxeflag name="-D" value="dbg" />
+  <haxeflag name="-D" value="test" />
   <haxeflag name="-D" value="debug" />
 	
   <!--

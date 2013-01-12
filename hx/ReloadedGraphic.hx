@@ -47,9 +47,14 @@ class ReloadedGraphic extends Bitmap {
     if (urlData.exists(url)) {
       urlData.get(url).waiters.push(this);
     } else {
+#if test
+      bitmapData = nme.Assets.getBitmapData(url);
+      masterBitmapData = nme.Assets.getBitmapData(url);
+#else
       loader = new Loader();
       urlData.set(url, {url: url, waiters: [this], loader: loader});
       loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadComplete);
+#end
     }
   }
 
@@ -57,7 +62,7 @@ class ReloadedGraphic extends Bitmap {
     this.masterBitmapData = newBD;
     this.setTile(tileX, tileY);
 
-    if (this.cb) {
+    if (this.cb != null) {
       this.cb();
     }
   }
