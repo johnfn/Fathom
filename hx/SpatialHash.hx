@@ -84,7 +84,7 @@ class SpatialHash {
         var coords : Array<Dynamic> = getCoords(e);
         var i : Int = 0;
         while(i < coords.length) {
-            if (coords[i].x >= grid.length || coords[i].y >= grid[i].length ||
+            if (coords[i].x >= grid.length || coords[i].y >= grid[0].length ||
                 coords[i].x < 0 || coords[i].y < 0) continue;
 
             var arr : Array<Dynamic> = grid[coords[i].x][coords[i].y];

@@ -368,6 +368,7 @@ class Map extends Rect {
 
         for (it in items) {
             if(Hooks.hasLeftMap(it, this))  {
+                trace("yep, left.");
                 Util.assert(!it.groups().has("Character"));
                 this.itemSwitchedMaps(it);
             }

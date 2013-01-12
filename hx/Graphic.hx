@@ -41,10 +41,10 @@ class Graphic extends Sprite {
     static var cachedAssets: SuperObjectHash<String, Texture> = new SuperObjectHash();
     var fullTexture : Texture;
 #else
-    var texturedObject:Bitmap;
+    //var texturedObject:Bitmap;
     static var cachedAssets: SuperObjectHash<String, BitmapData> = new SuperObjectHash();
     var fullTexture : BitmapData;
-    var hotswapped: ReloadedGraphic;
+    var texturedObject: ReloadedGraphic;
 #end
 
     public var depth(getDepth, setDepth) : Int;
@@ -86,16 +86,7 @@ class Graphic extends Sprite {
 
         texturedObject.texture = Texture.fromTexture(fullTexture, region);
 #else
-        if (hotswapped != null) {
-            hotswapped.setTile(spriteX, spriteY);
-        } else {
-            Util.assert(fullTexture != null, "The spritesheet is null.");
-
-            var bd:BitmapData = new BitmapData(tileWidth, tileHeight);
-            bd.copyPixels(fullTexture, region, new Point(0, 0), null, null, true);
-
-            texturedObject.bitmapData = bd;
-        }
+        texturedObject.setTile(spriteX, spriteY);
 #end
 
         if(!animations.hasAnimation("default"))  {
@@ -142,11 +133,15 @@ class Graphic extends Sprite {
         texturedObject.width  = tileDimension.x;
         texturedObject.height = tileDimension.y;
 #else
-        var spritesheetObj = nme.Assets.getBitmapData(filepath);
-        fullTexture = spritesheetObj;
-        texturedObject = new Bitmap(fullTexture);
+        if (texturedObject == null) {
+            texturedObject = new ReloadedGraphic(filepath);
+        } else {
+            Util.assert(false, "haven't figured this out TODO");
+        }
 
-        if (tileDimension == null) tileDimension = new Vec(fullTexture.width, fullTexture.height);
+        tileDimension = new Vec(25, 25);
+
+        //if (tileDimension == null) tileDimension = new Vec(texturedObject.width, texturedObject.height);
 #end
 
         addChild(texturedObject);
@@ -164,19 +159,6 @@ class Graphic extends Sprite {
 
         return this;
     }
-
-#if cpp
-    public function loadHotSwapImage(path: String) {
-        if (hotswapped == null) {
-            hotswapped = new ReloadedGraphic(path);
-            addChild(hotswapped);
-        } else {
-            Util.assert(false, "haven't figured this out TODO");
-        }
-
-        return this;
-    }
-#end
 
     // In the case that your Graphic is just one big static image, you can use loadImage().
     public function loadImage(imgClass : Dynamic) : Graphic {
@@ -254,7 +236,6 @@ class Graphic extends Sprite {
         return _depth;
     }
 
-    //TODO...
     public function update() : Void {
         animations.advance();
     }

@@ -20,7 +20,7 @@ class Hooks {
     }
 
     //TODO...
-        static public function entityDestroyed(e : Entity, cb : Void -> Void) : Void -> Void {
+    static public function entityDestroyed(e : Entity, cb : Void -> Void) : Void -> Void {
         var sentCallback : Bool = false;
         return function() : Void {
             if(!sentCallback)  {
@@ -31,7 +31,7 @@ class Hooks {
     }
 
     //TODO: Not a Hook.
-        static public function hasLeftMap(who : Entity, map : Map) : Bool {
+    static public function hasLeftMap(who : Entity, map : Map) : Bool {
         if(who.x < 0 || who.y < 0 || who.x > map.width - who.width || who.y > map.height - who.width)  {
             return true;
         }
