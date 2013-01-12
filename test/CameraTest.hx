@@ -50,6 +50,18 @@ class CameraTest extends haxe.unit.TestCase {
     var bd:BitmapData = Graphic.takeScreenshot();
     assertEquals(bd.getPixel(Std.int(Fathom.actualStage.stageWidth / 2), Std.int(Fathom.actualStage.stageHeight / 2)), 0xff0000);
   }
+
+  public function testSnap() {
+    Fathom.camera.setFocusTarget(new Vec(500, 500));
+
+    Fathom.pixelSnapping = true;
+
+    for (x in 0...50) {
+      var p: Point = g.localToGlobal(new Point(0, 0));
+      assertTrue(p.x == Math.round(p.x));
+      assertTrue(p.y == Math.round(p.y));
+    }
+  }
   // Camera can follow Vec and Entity
 }
 
