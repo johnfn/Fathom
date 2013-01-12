@@ -9,6 +9,10 @@ import nme.geom.Rectangle;
 import nme.geom.Point;
 import nme.display.Shape;
 import cpp.vm.Thread;
+import Sys;
+
+import haxe.Timer;
+import haxe.macro.Context;
 
 typedef ReloadedData = {
   var waiters: Array<ReloadedGraphic>;
@@ -25,6 +29,7 @@ class ReloadedGraphic extends Bitmap {
   var tileY: Int = 0;
   var masterBitmapData:BitmapData;
 
+  static var timer: Timer;
   static var urlData: SuperObjectHash<String, ReloadedData> = null;
 
   public function new(url: String) {
@@ -33,8 +38,8 @@ class ReloadedGraphic extends Bitmap {
 
     if (urlData == null) {
       urlData = new SuperObjectHash();
-
-      constantlyReload();
+      timer = new Timer(1000);
+      timer.run = constantlyReload;
     }
 
     if (urlData.exists(url)) {
@@ -77,16 +82,9 @@ class ReloadedGraphic extends Bitmap {
   }
 
   static function constantlyReload() {
-    Thread.create(function() {
-
-      for (val in urlData.values()) {
-        val.loader.load(new URLRequest(val.url));
-      }
-
-      haxe.Timer.delay(function() {
-        constantlyReload();
-      }, 1000);
-    });
+    for (val in urlData.values()) {
+      val.loader.load(new URLRequest(Fathom.hotswapPrefix + val.url));
+    }
   }
 
   function loadComplete(e:Event) {
