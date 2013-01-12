@@ -135,13 +135,13 @@ class Graphic extends Sprite {
 #else
         if (texturedObject == null) {
             texturedObject = new ReloadedGraphic(filepath);
+
+            if (tileDimension != null) {
+                texturedObject.setTileSize(tileDimension.x, tileDimension.y);
+            }
         } else {
             Util.assert(false, "haven't figured this out TODO");
         }
-
-        tileDimension = new Vec(25, 25);
-
-        //if (tileDimension == null) tileDimension = new Vec(texturedObject.width, texturedObject.height);
 #end
 
         addChild(texturedObject);

@@ -51,6 +51,11 @@ class ReloadedGraphic extends Bitmap {
     }
   }
 
+  public function setTileSize(tWidth: Int, tHeight: Int) {
+    tileWidth = tWidth;
+    tileHeight = tHeight;
+  }
+
   public function setTile(tileX: Int, tileY: Int): Void {
     this.tileX = tileX;
     this.tileY = tileY;
