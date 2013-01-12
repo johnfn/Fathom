@@ -83,6 +83,8 @@ class CameraFocus {
 	var _zoomFinishedEvent : CameraFocusEvent;
 	var _shakeStartedEvent : CameraFocusEvent;
 	var _shakeFinishedEvent : CameraFocusEvent;
+	var preciseX: Float = 0;
+	var preciseY: Float = 0;
 	public function new(aStage : Stage, aStageContainer : DisplayObject, aFocusTarget : Dynamic, aLayersInfo : Array<Layer> = null, aAutoStart : Bool = true) {
 		if (aLayersInfo == null) aLayersInfo = [];
 
@@ -90,6 +92,8 @@ class CameraFocus {
 		_stageContainer = aStageContainer;
 		_layersInfo = new SuperObjectHash();
 		focusTarget = aFocusTarget;
+		preciseX = focusTarget.x;
+		preciseY = focusTarget.y;
 		_focusPosition = new Point();
 		_focusTracker = new Point();
 		_focusTracker.x = _focusTarget.x;
@@ -272,8 +276,18 @@ class CameraFocus {
 		}
 ;
 		// update the location of the focusTracker
-		_focusTracker.x += (_focusTarget.x - _focusTracker.x) / _step;
-		_focusTracker.y += (_focusTarget.y - _focusTracker.y) / _step;
+
+		preciseX += (_focusTarget.x - preciseX) / _step;
+		preciseY += (_focusTarget.y - preciseY) / _step;
+
+		if (Fathom.pixelSnapping) {
+			_focusTracker.x = Math.round(preciseX);
+			_focusTracker.y = Math.round(preciseY);
+		} else {
+			_focusTracker.x = preciseX;
+			_focusTracker.y = preciseY;
+		}
+
 		// update the current and last tracking location
 		_focusLastLoc.x = _focusCurrentLoc.x;
 		_focusLastLoc.y = _focusCurrentLoc.y;

@@ -22,6 +22,8 @@ class Fathom {
     static public var starling:Starling;
 #end
 
+    static public var pixelSnapping: Bool = true;
+
     static public var hotswapPrefix: String;
     static public var mapRef: Map;
     static public var mode: Mode;
