@@ -137,7 +137,7 @@ class Graphic extends Sprite {
             texturedObject = new ReloadedGraphic(filepath);
 
             if (tileDimension != null) {
-                texturedObject.setTileSize(tileDimension.x, tileDimension.y);
+                texturedObject.setTileSize(Std.int(tileDimension.x), Std.int(tileDimension.y));
             }
         } else {
             Util.assert(false, "haven't figured this out TODO");

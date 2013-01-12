@@ -23,18 +23,20 @@ typedef ReloadedData = {
 class ReloadedGraphic extends Bitmap {
   var url: String;
   var loader: Loader;
-  var tileWidth: Int = 25;
-  var tileHeight: Int = 25;
+  var tileWidth: Int = 0;
+  var tileHeight: Int = 0;
   var tileX: Int = 0;
   var tileY: Int = 0;
   var masterBitmapData:BitmapData;
+  var cb: Void -> Void;
 
   static var timer: Timer;
   static var urlData: SuperObjectHash<String, ReloadedData> = null;
 
-  public function new(url: String) {
+  public function new(url: String, reloadEvent: Void -> Void = null) {
   	super();
     this.url = url;
+    this.cb = reloadEvent;
 
     if (urlData == null) {
       urlData = new SuperObjectHash();
@@ -51,6 +53,15 @@ class ReloadedGraphic extends Bitmap {
     }
   }
 
+  public function reloadEvent(newBD:BitmapData) {
+    this.masterBitmapData = newBD;
+    this.setTile(tileX, tileY);
+
+    if (this.cb) {
+      this.cb();
+    }
+  }
+
   public function setTileSize(tWidth: Int, tHeight: Int) {
     tileWidth = tWidth;
     tileHeight = tHeight;
@@ -59,6 +70,11 @@ class ReloadedGraphic extends Bitmap {
   public function setTile(tileX: Int, tileY: Int): Void {
     this.tileX = tileX;
     this.tileY = tileY;
+
+    if (tileWidth == 0 || tileHeight == 0) {
+      tileWidth = this.bitmapData.width;
+      tileHeight = this.bitmapData.height;
+    }
 
     if (masterBitmapData != null) {
       var region:Rectangle = new Rectangle(tileX * tileWidth, tileY * tileHeight, tileWidth, tileHeight);
@@ -99,8 +115,7 @@ class ReloadedGraphic extends Bitmap {
 
     for (waiter in urlData.get(url).waiters) {
       if (waiter.bitmapData == null || !compare(waiter.bitmapData, loadedBitmap.bitmapData)) {
-        waiter.masterBitmapData = loadedBitmap.bitmapData;
-        waiter.setTile(waiter.tileX, waiter.tileY);
+        waiter.reloadEvent(loadedBitmap.bitmapData);
       }
     }
   }
