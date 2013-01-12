@@ -19,7 +19,11 @@ typedef ReloadedData = {
 class ReloadedGraphic extends Bitmap {
   var url: String;
   var loader: Loader;
-  var maskedShape: Shape;
+  var tileWidth: Int = 25;
+  var tileHeight: Int = 25;
+  var tileX: Int = 0;
+  var tileY: Int = 0;
+  var masterBitmapData:BitmapData;
 
   static var urlData: SuperObjectHash<String, ReloadedData> = null;
 
@@ -33,12 +37,6 @@ class ReloadedGraphic extends Bitmap {
       constantlyReload();
     }
 
-    maskedShape = new Shape();
-    maskedShape.graphics.beginFill(0);
-    maskedShape.graphics.drawRect(0, 0, 25, 25);
-    maskedShape.graphics.endFill();
-    this.mask = maskedShape;
-
     if (urlData.exists(url)) {
       urlData.get(url).waiters.push(this);
     } else {
@@ -49,13 +47,14 @@ class ReloadedGraphic extends Bitmap {
   }
 
   public function setTile(tileX: Int, tileY: Int): Void {
-    if (this.parent != null && this.mask.parent == null) {
-      this.parent.addChild(maskedShape);
-    }
+    this.tileX = tileX;
+    this.tileY = tileY;
 
-    // Let the mask do the hard work for us.
-    this.x = -tileX * 25;
-    this.y = -tileY * 25;
+    if (masterBitmapData != null) {
+      var region:Rectangle = new Rectangle(tileX * tileWidth, tileY * tileHeight, tileWidth, tileHeight);
+      bitmapData = new BitmapData(tileWidth, tileHeight);
+      bitmapData.copyPixels(masterBitmapData, region, new Point(0, 0), null, null, true);
+    }
   }
 
   // Returns true if the two BitmapDatas are equal, false otherwise.
@@ -97,7 +96,8 @@ class ReloadedGraphic extends Bitmap {
 
     for (waiter in urlData.get(url).waiters) {
       if (waiter.bitmapData == null || !compare(waiter.bitmapData, loadedBitmap.bitmapData)) {
-        waiter.bitmapData = loadedBitmap.bitmapData;
+        waiter.masterBitmapData = loadedBitmap.bitmapData;
+        waiter.setTile(waiter.tileX, waiter.tileY);
       }
     }
   }
