@@ -47,8 +47,13 @@ class Graphic extends Sprite {
     var texturedObject: ReloadedGraphic;
 #end
 
-    public var depth(getDepth, setDepth) : Int;
+    /* This function is called when the graphic is loaded.
 
+       Honestly, you should never have to use it. I just have it here for
+       testing.
+    */
+    public var loaded: Void -> Void = null;
+    public var depth(getDepth, setDepth) : Int;
     public var animations : AnimationHandler;
     var spritesheet : SpriteSheet;
     // TODO: Rename
@@ -134,7 +139,7 @@ class Graphic extends Sprite {
         texturedObject.height = tileDimension.y;
 #else
         if (texturedObject == null) {
-            texturedObject = new ReloadedGraphic(filepath);
+            texturedObject = new ReloadedGraphic(filepath, loaded);
 
             if (tileDimension != null) {
                 texturedObject.setTileSize(Std.int(tileDimension.x), Std.int(tileDimension.y));

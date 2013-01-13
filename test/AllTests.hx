@@ -38,6 +38,10 @@ class AllTests extends Sprite {
       r.add(new ColorTest());
       r.add(new KeyTest());
 
+#if cpp
+      r.add(new ReloadedGraphicTest());
+#end
+
       r.run();
     }, 250);
 

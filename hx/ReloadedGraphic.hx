@@ -65,6 +65,7 @@ class ReloadedGraphic extends Bitmap {
 
     if (this.cb != null) {
       this.cb();
+      this.cb = null;
     }
   }
 

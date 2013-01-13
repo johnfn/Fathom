@@ -4,7 +4,7 @@ import nme.geom.Point;
 class CameraTest extends haxe.unit.TestCase {
   var g:Entity;
 
-  override public function globalSetup() {
+  override public function globalAsyncSetup() {
     g = new Entity(-8, -8, 100, 100); // Centered at the origin
     g.loadSpritesheet(AllTests.testAnimation, new Vec(16, 16), new Vec(0, 0));
 

@@ -31,5 +31,5 @@ Fathom is licensed under the MIT license. That means you can do whatever you wan
 
 There's no way that Fathom could have come together without the open source contributions of awesome developers.
 
-* CameraFocus thanks to [joeonmars](https://github.com/joeonmars/CameraFocus)
-* Starling thanks to the guys at [PrimaryFeather/Gamua](https://github.com/PrimaryFeather/Starling-Framework)
+* `CameraFocus` thanks to [joeonmars](https://github.com/joeonmars/CameraFocus)
+* `Starling` thanks to the guys at [PrimaryFeather/Gamua](https://github.com/PrimaryFeather/Starling-Framework)
