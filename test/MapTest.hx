@@ -21,22 +21,20 @@ class MapTest extends haxe.unit.TestCase {
 
   public static var constructedCount:Int = 0;
 
-  override public function setup() {
+  public function globalAsyncSetup(done: Void -> Void) {
     m = new Map(2, 2, 2);
-
+    m.loaded = done;
     m.fromImage(AllTests.testMap, [], [
       { color: "#ffffff", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
     , { color: "#0000ff", gfx: AllTests.testSprite, spritesheet: new Vec(1, 0) }
     , { color: "#ff0000", spc: MapTest.SpecialThing, spritesheet: new Vec(1, 1) } //represented as green
     ]);
-
     m.loadNewMap(new Vec(0, 0));
-    constructedCount = 0;
   }
 
   //TODO TEST: Map collisions with moving entities...
 
-  override public function tearDown() {
+  override public function globalTeardown() {
     Fathom.destroyAll();
   }
 
@@ -49,10 +47,13 @@ class MapTest extends haxe.unit.TestCase {
     Fathom.stage.addChild(b);
     */
 
+    m.loadNewMapAbs(new Vec(0, 0));
     assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0x0000ff);
   }
 
   public function testMapChangeDiff() {
+    m.loadNewMapAbs(new Vec(0, 0));
+
     m.loadNewMap(new Vec(1, 0));
     assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0xFFFFFF);
     m.loadNewMap(new Vec(-1, 0));
@@ -72,6 +73,8 @@ class MapTest extends haxe.unit.TestCase {
   }
 
   public function testSpecialItems() {
+    m.loadNewMapAbs(new Vec(0, 0));
+
     constructedCount = 0;
     m.loadNewMap(new Vec(0, 1));
 
@@ -110,6 +113,8 @@ class MapTest extends haxe.unit.TestCase {
 
   public function testPersistentItem() {
     var s:Entity;
+
+    Util.printStackTrace();
 
     m.loadNewMapAbs(new Vec(0, 1));
     s = Fathom.entities.one([Set.hasGroup("test")]);

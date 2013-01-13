@@ -44,7 +44,6 @@ class Util {
 	}
 
 	static public function printStackTrace() : Void {
-		trace(haxe.Stack.callStack());
 		trace(haxe.Stack.toString(haxe.Stack.callStack()));
 	}
 

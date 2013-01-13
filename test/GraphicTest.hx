@@ -6,7 +6,9 @@ class GraphicTest extends haxe.unit.TestCase {
 
   public function globalAsyncSetup(done: Void -> Void) {
     g = new Entity(0, 0, 100, 100);
-    g.loaded = done;
+    g.loaded = function() {
+      done();
+    }
     g.loadSpritesheet(AllTests.testSprite, new Vec(2, 2));
     g.setTile(0, 0);
   }

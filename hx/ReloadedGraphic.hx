@@ -18,6 +18,7 @@ typedef ReloadedData = {
   var waiters: Array<ReloadedGraphic>;
   var loader: Loader;
   var url: String;
+  var loaded: Bool;
 }
 
 class ReloadedGraphic extends Bitmap {
@@ -45,16 +46,36 @@ class ReloadedGraphic extends Bitmap {
     }
 
     if (urlData.exists(url)) {
+      if (urlData.get(url).loaded) {
+
+        // Even if we were able to load it immediately rather than deferring,
+        // we can't call the `done` callback here because it would break
+        // our established continuation-passing semantics.
+        //
+        // Imagine if someone did this:
+        //
+        // var reloadedG = new ReloadedGraphic("something", function() {
+        //   reloadedG.x = 5;
+        // })
+        //
+        // Normally that would work fine, but in this case `done` would be
+        // called before reloadedG was assigned, so you'd get a null pointer
+        // exception.
+        //
+        // The long and short of it is: we can load really fast, but
+        // we may lie to the end user about just how fast.
+        //
+        // I don't anticipate people using the loaded callback much, so
+        // I'm fine making this tradeoff.
+
+        this.masterBitmapData = cast(urlData.get(url).loader.content, Bitmap).bitmapData;
+        this.setTile(tileX, tileY);
+      }
+
       urlData.get(url).waiters.push(this);
     } else {
-      /*
-#if test
-      bitmapData = nme.Assets.getBitmapData(url);
-      masterBitmapData = nme.Assets.getBitmapData(url);
-#else
-*/
       loader = new Loader();
-      urlData.set(url, {url: url, waiters: [this], loader: loader});
+      urlData.set(url, {url: url, waiters: [this], loader: loader, loaded: false});
       loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadComplete);
     }
   }
@@ -120,6 +141,7 @@ class ReloadedGraphic extends Bitmap {
     var rect:Rectangle = new Rectangle(0, 0, loadedBitmap.width, loadedBitmap.height);
     var point:Point = new Point(0, 0);
 
+    urlData.get(url).loaded = true;
     for (waiter in urlData.get(url).waiters) {
       if (waiter.bitmapData == null || !compare(waiter.bitmapData, loadedBitmap.bitmapData)) {
         waiter.reloadEvent(loadedBitmap.bitmapData);

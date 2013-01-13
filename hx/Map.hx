@@ -34,6 +34,10 @@ class Map extends Rect {
     public var widthInTiles(getWidthInTiles, never) : Int;
     public var heightInTiles(getHeightInTiles, never) : Int;
 
+    public var loaded: Void -> Void = null;
+
+    var itemsLeftToLoad: Int = 0;
+
     var _widthInTiles : Int;
     var _heightInTiles : Int;
     var bogusmapentry : Entity;
@@ -126,7 +130,6 @@ class Map extends Rect {
         var processedItems : Array<Entity> = [];
         var k:String = topLeftCorner.asKey();
         var items : Array<Entity> = persistent.exists(k) ? persistent.get(k) : [];
-
 
         for (i in items) {
             if(!i.destroyed)  {
@@ -245,11 +248,20 @@ class Map extends Rect {
         return itemData.gfx == null;
     }
 
+    function singleEntityLoad() {
+        --itemsLeftToLoad;
+
+        if (itemsLeftToLoad == 0 && loaded != null) {
+            loaded();
+        }
+    }
+
     function addPersistentItem(c : Color, x : Int, y : Int) : Void {
         if(!persistentItemMapping.has(c.toString()))  {
             if(c.toString() != "#ffffff")  {
                 Util.log("Color without data: " + c.toString());
             }
+            singleEntityLoad();
             return;
         }
 
@@ -269,10 +281,12 @@ class Map extends Rect {
 
         if (isSpecial(itemData)) {
             e = Type.createInstance(itemData.spc, []).setPos(x * tileSize, y * tileSize);
+            singleEntityLoad();
         } else {
-            e = new Entity(x * tileSize, y * tileSize, tileSize, tileSize)
-                .loadSpritesheet(itemData.gfx, new Vec(tileSize, tileSize))
-                .setTile(Std.int(ssLoc.x), Std.int(ssLoc.y));
+            e = new Entity(x * tileSize, y * tileSize, tileSize, tileSize);
+            e.loaded = singleEntityLoad;
+            e.loadSpritesheet(itemData.gfx, new Vec(tileSize, tileSize));
+            e.setTile(Std.int(ssLoc.x), Std.int(ssLoc.y));
         }
 
         persistent.get(topLeftCorner.asKey()).push(e);
@@ -289,6 +303,8 @@ class Map extends Rect {
         if(!seenBefore)  {
             // If we haven't seen it before, load in all the persistent items.
             persistent.set(topLeftCorner.asKey(), []);
+
+            itemsLeftToLoad = widthInTiles * heightInTiles;
             for (x in 0...widthInTiles) {
                 for (y in 0...heightInTiles) {
                     var dataColor : Color = data[Std.int(topLeftCorner.x + x)][Std.int(topLeftCorner.y + y)];
@@ -368,7 +384,6 @@ class Map extends Rect {
 
         for (it in items) {
             if(Hooks.hasLeftMap(it, this))  {
-                trace("yep, left.");
                 Util.assert(!it.groups().has("Character"));
                 this.itemSwitchedMaps(it);
             }
