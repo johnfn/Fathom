@@ -9,13 +9,14 @@ class AnimationTest extends haxe.unit.TestCase {
 
   // The animation test graphic looks like this:
   // RED BLACK GREEN WHITE
-  override public function setup() {
+  public function globalAsyncSetup(done: Void -> Void) {
     g = new Entity(0, 0, 16, 16);
+    g.loaded = done;
     g.loadSpritesheet(AllTests.testAnimation, new Vec(16, 16), new Vec(0, 0));
     g.animations.ticksPerFrame = 1;
   }
 
-  override public function tearDown() {
+  override public function globalTeardown() {
     Fathom.destroyAll();
   }
 

@@ -197,6 +197,7 @@ class Entity extends Graphic {
     /* This flags an Entity to be removed permanently. It can't be add()ed back. */
     public function destroy() : Void {
         Util.assert(Fathom.entities.has(this), "That entity is not in Fathom.");
+        removeFromFathom();
         destroyed = true;
     }
 
@@ -204,7 +205,6 @@ class Entity extends Graphic {
     // If an entity is flagged for removal with destroy(), clearMemory() will eventually
     // be called on it.
     public function clearMemory() : Void {
-        removeFromFathom();
         events = null;
         destroyed = true;
     }
