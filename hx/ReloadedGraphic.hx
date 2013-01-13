@@ -33,10 +33,10 @@ class ReloadedGraphic extends Bitmap {
   static var timer: Timer;
   static var urlData: SuperObjectHash<String, ReloadedData> = null;
 
-  public function new(url: String, reloadEvent: Void -> Void = null) {
+  public function new(url: String, cb: Void -> Void = null) {
   	super();
     this.url = url;
-    this.cb = reloadEvent;
+    this.cb = cb;
 
     if (urlData == null) {
       urlData = new SuperObjectHash();
@@ -47,14 +47,15 @@ class ReloadedGraphic extends Bitmap {
     if (urlData.exists(url)) {
       urlData.get(url).waiters.push(this);
     } else {
+      /*
 #if test
       bitmapData = nme.Assets.getBitmapData(url);
       masterBitmapData = nme.Assets.getBitmapData(url);
 #else
+*/
       loader = new Loader();
       urlData.set(url, {url: url, waiters: [this], loader: loader});
       loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadComplete);
-#end
     }
   }
 
@@ -77,8 +78,8 @@ class ReloadedGraphic extends Bitmap {
     this.tileY = tileY;
 
     if (tileWidth == 0 || tileHeight == 0) {
-      tileWidth = this.bitmapData.width;
-      tileHeight = this.bitmapData.height;
+      tileWidth = this.masterBitmapData.width;
+      tileHeight = this.masterBitmapData.height;
     }
 
     if (masterBitmapData != null) {
@@ -129,7 +130,7 @@ class ReloadedGraphic extends Bitmap {
 #else
 class ReloadedGraphic extends nme.display.Bitmap {
   public function new(url: String) {
-
+    Util.assert(false, "something bad happened 3:");
   }
 }
 #end
