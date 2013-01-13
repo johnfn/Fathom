@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
-	
-	<meta title="Fathom Tests" package="com.fathom" version="0.0.0" company="Fathom" />
-	<app main="AllTests" path="Export" />
-	
-	<source path="hx" />
-	<source path="test" />
-	
-	<haxelib name="nme" />
-	
-	<assets path="test" include="*" exclude="nme.svg" />
+
+  <meta title="Fathom Tests" package="com.fathom" version="0.0.0" company="Fathom" />
+  <app main="AllTests" path="Export" />
+
+  <source path="hx" />
+  <source path="test" />
+
+  <haxelib name="nme" />
+
+  <assets path="test" include="*" exclude="nme.svg" />
 
   <window width="500" height="500" background="0xFFFFFF" fps="30" />
-    
+
 
   <haxeflag name="-D" value="test" />
   <haxeflag name="-D" value="debug" />
-	
+
   <!--
-	<icon path="Assets/nme.svg" />
+  <icon path="Assets/nme.svg" />
   -->
 
   <!-- Starling flags -->
@@ -27,5 +27,5 @@
   <compilerflag name="--macro patchTypes('starling/starling.patch')" if="flash" />
   <app swf-version="11" />
   <haxedef name="as3_native" />
-	
+
 </project>
