@@ -137,6 +137,14 @@ class Graphic extends Sprite {
         texturedObject = new Image(fullTexture);
         texturedObject.width  = tileDimension.x;
         texturedObject.height = tileDimension.y;
+
+        if (loaded != null) {
+            haxe.Timer.delay(function() {
+                var copy = loaded;
+                loaded = null;
+                copy();
+            }, 50);
+        }
 #else
         if (texturedObject == null) {
             texturedObject = new ReloadedGraphic(filepath, loaded);
