@@ -28,6 +28,55 @@ typedef ItemDetail = {
     @:optional var special:Bool;
 }
 
+enum MapDataType {
+    Image;
+    //Tiled;
+}
+
+private class MapData {
+    var datatype: MapDataType;
+    var imgData: ReloadedGraphic;
+
+    var bData: BitmapData;
+    var data: Array<Array<Color>>;
+
+    //public function new(type: MapDataType, location: String) {
+    public function new(type: MapDataType, bData: BitmapData) {
+        this.datatype = type;
+
+        switch (type) {
+            case Image:
+            {
+                /*
+                imgData = new ReloadedGraphic(url);
+                imgData.addUpdateCallback(onReload);
+                */
+                this.bData = bData;
+                loadData();
+            }
+        }
+    }
+
+    public function get(x: Int, y: Int): Color {
+        return data[x][y];
+    }
+
+
+    function loadData() {
+        data = Util.make2DArray(bData.width, bData.height, null);
+
+        for (x in 0...bData.width) {
+            for (y in 0...bData.height) {
+                data[x][y] = Color.fromInt(bData.getPixel(x, y));
+            }
+        }
+    }
+
+    function onReload() {
+        trace("reload!");
+    }
+}
+
 //TODO: Map should extend Entity. Will need to change update loop.
 class Map extends Rect {
     public var tileSize(getTileSize, never) : Int;
@@ -45,7 +94,7 @@ class Map extends Rect {
     var _tileSize : Int;
 
     // Color data from the map.
-    var data : Array<Array<Color>>;
+    var data : MapData = null;
 
     // Cached array of collideable tiles.
     var tiles : Array<Array<Entity>>;
@@ -53,14 +102,12 @@ class Map extends Rect {
     public var collisionInfo : Array<Array<Bool>>;
     var topLeftCorner : Vec;
     var exploredMaps : SuperObjectHash<String, Bool>;
-    var _graphics : Entity;
     // Mapping between colors and items.
     var persistentItemMapping : SuperObjectHash<String, ItemDetail>;
     var persistent : SuperObjectHash<String, Array<Entity>>;
     public var sizeVector : Vec;
 
     public function new(widthInTiles : Int, heightInTiles : Int, tileSize : Int) {
-        data = [];
         tiles = [];
         collisionInfo = [];
         topLeftCorner = new Vec(0, 0);
@@ -101,6 +148,7 @@ class Map extends Rect {
 
     public function fromImage(mapFilepath: String, groundList : Array<String>, mappings : Array<ItemDetail>) : Map {
         var bData: BitmapData = nme.Assets.getBitmapData(mapFilepath);
+        data = new MapData(Image, bData);
 
         // Load ground list
         this.grounds = groundList;
@@ -110,15 +158,6 @@ class Map extends Rect {
             this.persistentItemMapping.set(s.color, s);
 
             Util.assert(s.spc != null || s.gfx != null, "Both SPC and GFX are null.");
-        }
-
-        // Load data from image.
-        data = Util.make2DArray(bData.width, bData.height, null);
-
-        for (x in 0...bData.width) {
-            for (y in 0...bData.height) {
-                data[x][y] = Color.fromInt(bData.getPixel(x, y));
-            }
         }
 
         loadNewMap(new Vec(0, 0));
@@ -155,19 +194,19 @@ class Map extends Rect {
         if(itemData.roundOutEdges) {
             var locX : Int = Std.int(topLeftCorner.x) + x;
             var locY : Int = Std.int(topLeftCorner.y) + y;
-            if(locY == 0 || data[locX][locY - 1].toString() != c)  {
+            if(locY == 0 || data.get(locX, locY - 1).toString() != c)  {
                 result.y--;
             }
-            if(locX == 0 || data[locX - 1][locY].toString() != c)  {
+            if(locX == 0 || data.get(locX - 1, locY).toString() != c)  {
                 result.x--;
             }
-            if(locY != heightInTiles - 1 && data[locX][locY + 1].toString() != c)  {
+            if(locY != heightInTiles - 1 && data.get(locX, locY + 1).toString() != c)  {
                 result.y++;
             }
-            if(locX == widthInTiles - 1 || data[locX + 1][locY].toString() != c)  {
+            if(locX == widthInTiles - 1 || data.get(locX + 1, locY).toString() != c)  {
                 result.x++;
             }
-            if(locY != 0 && data[locX][locY - 1].toString() != c && locY != heightInTiles - 1 && data[locX][locY + 1].toString() != c)  {
+            if(locY != 0 && data.get(locX, locY - 1).toString() != c && locY != heightInTiles - 1 && data.get(locX, locY + 1).toString() != c)  {
                 result.y--;
             }
         }
@@ -182,28 +221,28 @@ class Map extends Rect {
             var locX : Int = Std.int(topLeftCorner.x) + x;
             var locY : Int = Std.int(topLeftCorner.y) + y;
             // Horizontal wall, ground below.
-            if(!isGround(data[locX - 1][locY].toString(), c) && !isGround(data[locX + 1][locY].toString(), c) && isGround(data[locX][locY + 1].toString(), c))  {
+            if(!isGround(data.get(locX - 1, locY).toString(), c) && !isGround(data.get(locX + 1, locY).toString(), c) && isGround(data.get(locX, locY + 1).toString(), c))  {
                 result.y += 2;
             }
             // Horizontal wall, ground above.
-            if(data[locX - 1][locY].toString() == c && data[locX + 1][locY].toString() == c && isGround(data[locX][locY - 1].toString(), c))  {
+            if(data.get(locX - 1, locY).toString() == c && data.get(locX + 1, locY).toString() == c && isGround(data.get(locX, locY - 1).toString(), c))  {
                 result.y -= 2;
             }
             // Vertical wall, ground to the left.
-            if(data[locX][locY - 1].toString() == c && data[locX][locY + 1].toString() == c && isGround(data[locX - 1][locY].toString(), c))  {
+            if(data.get(locX, locY - 1).toString() == c && data.get(locX, locY + 1).toString() == c && isGround(data.get(locX - 1, locY).toString(), c))  {
                 result.x -= 2;
             }
             // Vertical wall, ground to the right.
-            if(!isGround(data[locX][locY - 1].toString(), c) && !isGround(data[locX][locY + 1].toString(), c) && isGround(data[locX + 1][locY].toString(), c))  {
+            if(!isGround(data.get(locX, locY - 1).toString(), c) && !isGround(data.get(locX, locY + 1).toString(), c) && isGround(data.get(locX + 1, locY).toString(), c))  {
                 result.x += 2;
             }
             // - - -
             // - x x
             // - x -
-            if(data[locX + 1][locY].toString() == c && data[locX][locY + 1].toString() == c && isGround(data[locX - 1][locY].toString(), c) && isGround(data[locX][locY - 1].toString(), c))  {
+            if(data.get(locX + 1, locY).toString() == c && data.get(locX, locY + 1).toString() == c && isGround(data.get(locX - 1, locY).toString(), c) && isGround(data.get(locX, locY - 1).toString(), c))  {
                 result.x -= 2;
                 result.y -= 2;
-            } else if(data[locX + 1][locY].toString() == c && data[locX][locY + 1].toString() == c)  {
+            } else if(data.get(locX + 1, locY).toString() == c && data.get(locX, locY + 1).toString() == c)  {
                 // x x x
                 // x x x
                 // x x -
@@ -213,30 +252,30 @@ class Map extends Rect {
             // - - -
             // x x -
             // - x -
-            if(data[locX - 1][locY].toString() == c && data[locX][locY + 1].toString() == c && isGround(data[locX + 1][locY].toString(), c) && isGround(data[locX][locY - 1].toString(), c))  {
+            if(data.get(locX - 1, locY).toString() == c && data.get(locX, locY + 1).toString() == c && isGround(data.get(locX + 1, locY).toString(), c) && isGround(data.get(locX, locY - 1).toString(), c))  {
                 result.x += 2;
                 result.y -= 2;
-            } else if(data[locX - 1][locY].toString() == c && data[locX][locY + 1].toString() == c)  {
+            } else if(data.get(locX - 1, locY).toString() == c && data.get(locX, locY + 1).toString() == c)  {
                 result.x -= 2;
                 result.y += 1;
             }
             // - x -
             // x x -
             // - - -
-            if(data[locX - 1][locY].toString() == c && data[locX][locY - 1].toString() == c && isGround(data[locX + 1][locY].toString(), c) && isGround(data[locX][locY + 1].toString(), c))  {
+            if(data.get(locX - 1, locY).toString() == c && data.get(locX, locY - 1).toString() == c && isGround(data.get(locX + 1, locY).toString(), c) && isGround(data.get(locX, locY + 1).toString(), c))  {
                 result.x += 2;
                 result.y += 2;
-            } else if(data[locX - 1][locY].toString() == c && data[locX][locY - 1].toString() == c)  {
+            } else if(data.get(locX - 1, locY).toString() == c && data.get(locX, locY - 1).toString() == c)  {
                 result.x -= 2;
                 result.y -= 1;
             }
             // - x -
             // - x x
             // - - -
-            if(data[locX + 1][locY].toString() == c && data[locX][locY - 1].toString() == c && isGround(data[locX - 1][locY].toString(), c) && isGround(data[locX][locY + 1].toString(), c))  {
+            if(data.get(locX + 1, locY).toString() == c && data.get(locX, locY - 1).toString() == c && isGround(data.get(locX - 1, locY).toString(), c) && isGround(data.get(locX, locY + 1).toString(), c))  {
                 result.x -= 2;
                 result.y += 2;
-            } else if(data[locX + 1][locY].toString() == c && data[locX][locY - 1].toString() == c)  {
+            } else if(data.get(locX + 1, locY).toString() == c && data.get(locX, locY - 1).toString() == c)  {
                 result.x += 2;
                 result.y -= 1;
             }
@@ -307,7 +346,7 @@ class Map extends Rect {
             itemsLeftToLoad = widthInTiles * heightInTiles;
             for (x in 0...widthInTiles) {
                 for (y in 0...heightInTiles) {
-                    var dataColor : Color = data[Std.int(topLeftCorner.x + x)][Std.int(topLeftCorner.y + y)];
+                    var dataColor : Color = data.get(Std.int(topLeftCorner.x + x), Std.int(topLeftCorner.y + y));
                     addPersistentItem(dataColor, x, y);
                 }
             }

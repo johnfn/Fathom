@@ -29,7 +29,8 @@ class ReloadedGraphic extends Bitmap {
   var tileX: Int = 0;
   var tileY: Int = 0;
   var masterBitmapData:BitmapData;
-  var cb: Void -> Void;
+  var doneCB: Void -> Void;
+  var updateCB: Void -> Void;
 
   static var timer: Timer;
   static var urlData: SuperObjectHash<String, ReloadedData> = null;
@@ -37,7 +38,7 @@ class ReloadedGraphic extends Bitmap {
   public function new(url: String, cb: Void -> Void = null) {
   	super();
     this.url = url;
-    this.cb = cb;
+    this.doneCB = cb;
 
     if (urlData == null) {
       urlData = new SuperObjectHash();
@@ -80,13 +81,21 @@ class ReloadedGraphic extends Bitmap {
     }
   }
 
+  public function addUpdateCallback(cb: Void -> Void): Void {
+    this.updateCB = cb;
+  }
+
   public function reloadEvent(newBD:BitmapData) {
     this.masterBitmapData = newBD;
     this.setTile(tileX, tileY);
 
-    if (this.cb != null) {
-      this.cb();
-      this.cb = null;
+    if (this.doneCB != null) {
+      this.doneCB();
+      this.doneCB = null;
+    }
+
+    if (this.updateCB != null) {
+      this.updateCB();
     }
   }
 
@@ -154,6 +163,7 @@ class ReloadedGraphic extends Bitmap {
 class ReloadedGraphic extends nme.display.Bitmap {
   public function new(url: String) {
     Util.assert(false, "something bad happened 3:");
+    super();
   }
 }
 #end
