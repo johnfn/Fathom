@@ -37,32 +37,42 @@ private class MapData {
     var datatype: MapDataType;
     var imgData: ReloadedGraphic;
 
-    var bData: BitmapData;
+    var loaded: Bool = false;
+    var img: ReloadedGraphic;
     var data: Array<Array<Color>>;
+    var reloadCB: Void -> Void = null;
 
     //public function new(type: MapDataType, location: String) {
-    public function new(type: MapDataType, bData: BitmapData) {
+    public function new(type: MapDataType, url: String) {
+        var that: MapData = this;
+
         this.datatype = type;
 
         switch (type) {
             case Image:
             {
-                /*
-                imgData = new ReloadedGraphic(url);
-                imgData.addUpdateCallback(onReload);
-                */
-                this.bData = bData;
-                loadData();
+                img = new ReloadedGraphic(url, function() {
+                    that.loaded = true;
+                });
+                img.addUpdateCallback(onReload);
             }
         }
+    }
+
+    public function hasLoaded(): Bool {
+        return loaded;
     }
 
     public function get(x: Int, y: Int): Color {
         return data[x][y];
     }
 
+    public function setReloadCallback(cb: Void -> Void): Void {
+        reloadCB = cb;
+    }
 
     function loadData() {
+        var bData: BitmapData = img.bitmapData;
         data = Util.make2DArray(bData.width, bData.height, null);
 
         for (x in 0...bData.width) {
@@ -73,7 +83,9 @@ private class MapData {
     }
 
     function onReload() {
-        trace("reload!");
+        if (reloadCB != null) {
+            reloadCB();
+        }
     }
 }
 
@@ -147,8 +159,12 @@ class Map extends Rect {
     }
 
     public function fromImage(mapFilepath: String, groundList : Array<String>, mappings : Array<ItemDetail>) : Map {
-        var bData: BitmapData = nme.Assets.getBitmapData(mapFilepath);
-        data = new MapData(Image, bData);
+        var that: Map = this;
+
+        data = new MapData(Image, Fathom.hotswapPrefix + mapFilepath);
+        data.setReloadCallback(function() {
+            that.loadNewMap(new Vec(0, 0));
+        });
 
         // Load ground list
         this.grounds = groundList;
@@ -159,8 +175,6 @@ class Map extends Rect {
 
             Util.assert(s.spc != null || s.gfx != null, "Both SPC and GFX are null.");
         }
-
-        loadNewMap(new Vec(0, 0));
 
         return this;
     }
@@ -419,6 +433,8 @@ class Map extends Rect {
     }
 
     public function update() : Void {
+        if (!data.loaded) return;
+
         var items : Array<Entity> = persistent.get(topLeftCorner.asKey());
 
         for (it in items) {

@@ -121,4 +121,12 @@ class MapTest extends haxe.unit.TestCase {
     assertDotEquals(s.vec(), new Vec(1, 1));
     s.setPos(0, 2);
   }
+
+  /*
+  public function testReload() {
+    m.loadNewMapAbs(new Vec(0, 0));
+    // do something surprising
+    m.loadNewMapAbs(new Vec(0, 0));
+  }
+  */
 }
