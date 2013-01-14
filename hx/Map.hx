@@ -83,6 +83,8 @@ private class MapData {
     }
 
     function onReload() {
+        loadData();
+
         if (reloadCB != null) {
             reloadCB();
         }
@@ -161,7 +163,7 @@ class Map extends Rect {
     public function fromImage(mapFilepath: String, groundList : Array<String>, mappings : Array<ItemDetail>) : Map {
         var that: Map = this;
 
-        data = new MapData(Image, Fathom.hotswapPrefix + mapFilepath);
+        data = new MapData(Image, mapFilepath);
         data.setReloadCallback(function() {
             that.loadNewMap(new Vec(0, 0));
         });
@@ -387,7 +389,7 @@ class Map extends Rect {
         exploredMaps.set(topLeftCorner.asKey(), true);
     }
 
-    public function itemSwitchedMaps(leftScreen : Entity) : Void {
+    function itemSwitchedMaps(leftScreen : Entity) : Void {
         var smallerSize : Vec = sizeVector.clone().subtract(leftScreen.width);
         var dir : Vec = leftScreen.rect().divide(smallerSize).map(Math.floor);
         var newMapLoc : Vec = topLeftCorner.clone().add(dir.clone().multiply(widthInTiles));
@@ -433,7 +435,7 @@ class Map extends Rect {
     }
 
     public function update() : Void {
-        if (!data.loaded) return;
+        if (!data.hasLoaded()) return;
 
         var items : Array<Entity> = persistent.get(topLeftCorner.asKey());
 
