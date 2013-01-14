@@ -165,6 +165,7 @@ class Map extends Rect {
 
         data = new MapData(Image, mapFilepath);
         data.setReloadCallback(function() {
+            that.exploredMaps = new SuperObjectHash();
             that.loadNewMap(new Vec(0, 0));
         });
 
