@@ -99,7 +99,7 @@ class Map extends Rect {
 
     public var loaded: Void -> Void = null;
 
-    var itemsLeftToLoad: Int = 0;
+    var itemsLeftToLoad: Int = 1; //the map data
 
     var _widthInTiles : Int;
     var _heightInTiles : Int;
@@ -167,6 +167,8 @@ class Map extends Rect {
         data.setReloadCallback(function() {
             that.exploredMaps = new SuperObjectHash();
             that.loadNewMap(new Vec(0, 0));
+            trace("loaded the map at last!");
+            singleEntityLoad(); //TODO - bad name now.
         });
 
         // Load ground list
@@ -307,7 +309,7 @@ class Map extends Rect {
     function singleEntityLoad() {
         --itemsLeftToLoad;
 
-        if (itemsLeftToLoad == 0 && loaded != null) {
+        if (itemsLeftToLoad == 0 && loaded != null && data.hasLoaded()) {
             loaded();
         }
     }

@@ -1,18 +1,12 @@
 import haxe.Stack;
 
 class Util {
-
 	static public var uid : Float = 0;
 	static public var KeyDown : MagicKeyObject;
 	static public var KeyJustDown : MagicKeyObject;
 	static public var KeyUp : MagicKeyObject;
 	static public var KeyJustUp : MagicKeyObject;
-	//TODO: Should move Array.prototype stuff into separate ArrayExtensions class.
-	/* Ties each element e in the array to a value k(e) and sorts the array
-   how you'd sort the values from low to high. */
 
-    // Array::indexOf only works with String values.
-	// Remove all occurances of item from array.
 	static public function id(x : Dynamic) : Dynamic {
 		return x;
 	}
@@ -55,8 +49,8 @@ class Util {
        We separate them so that it's easy to search for "trace" with a following "("
        to find debugging messages you need to remove.
        */
-    static public function log(s:String) : Void {
-    	trace(s);
+  static public function log(s:String) : Void {
+  	trace(s);
 	}
 
 	// Short for print (like in Ruby). Attempts to print a human readable representation
@@ -125,7 +119,7 @@ class Util {
 	}
 
 	static public function assert(b : Bool, ?s: String) : Void {
-		if(!b)  {
+		if (!b) {
 			Util.log("Assertion failed" + s);
 			Util.printStackTrace();
 			throw "Assertion failed: " + s;

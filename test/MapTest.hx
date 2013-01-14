@@ -22,14 +22,16 @@ class MapTest extends haxe.unit.TestCase {
   public static var constructedCount:Int = 0;
 
   public function globalAsyncSetup(done: Void -> Void) {
-    m = new Map(2, 2, 2);
-    m.loaded = done;
-    m.fromImage(AllTests.testMap, [], [
-      { color: "#ffffff", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
-    , { color: "#0000ff", gfx: AllTests.testSprite, spritesheet: new Vec(1, 0) }
-    , { color: "#ff0000", spc: MapTest.SpecialThing, spritesheet: new Vec(1, 1) } //represented as green
-    ]);
-    m.loadNewMap(new Vec(0, 0));
+    new ReloadedGraphic(AllTests.testMap, function() {
+      m = new Map(2, 2, 2);
+      m.loaded = done;
+      m.fromImage(AllTests.testMap, [], [
+        { color: "#ffffff", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
+      , { color: "#0000ff", gfx: AllTests.testSprite, spritesheet: new Vec(1, 0) }
+      , { color: "#ff0000", spc: MapTest.SpecialThing, spritesheet: new Vec(1, 1) } //represented as green
+      ]);
+      m.loadNewMap(new Vec(0, 0));
+    });
   }
 
   //TODO TEST: Map collisions with moving entities...
@@ -121,6 +123,29 @@ class MapTest extends haxe.unit.TestCase {
     assertDotEquals(s.vec(), new Vec(1, 1));
     s.setPos(0, 2);
   }
+
+  /*
+  public function testSwitchMaps() {
+    var s:Entity;
+
+    m.loadNewMapAbs(new Vec(0, 1));
+    s = Fathom.entities.one([Set.hasGroup("test")]);
+    s.setPos(-2, 1);
+
+    m.update();
+    assertTrue(!s.inFathom);
+
+    m.loadNewMapAbs(new Vec(0, 0));
+    assertTrue(s.inFathom);
+
+    s.setPos(2, 1);
+    assertTrue(!s.inFathom);
+
+    m.loadNewMapAbs(new Vec(0, 1));
+    assertTrue(s.inFathom);
+    s.setPos(0, 2); //original position
+  }
+  */
 
   /*
   public function testReload() {

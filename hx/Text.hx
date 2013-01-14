@@ -129,8 +129,8 @@ class Text extends Entity {
     }
 
     // The classic videogame-ish effect of showing only 1 character
-        // of text at a time.
-        public function typewrite() : Text {
+    // of text at a time.
+    public function typewrite() : Text {
         var counter : Int = 0;
         var id : Int = 0;
         var that : Text = this;
