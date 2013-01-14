@@ -79,6 +79,12 @@ class ReloadedGraphic extends Bitmap {
       urlData.set(url, {url: url, waiters: [this], loader: loader, loaded: false});
       loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadComplete);
     }
+
+    haxe.Timer.delay(function() {
+      if (!urlData.get(url).loaded) {
+        trace("I can't seem to open the file: " + (Fathom.hotswapPrefix + url) + " - that, or it's taking a while.");
+      }
+    }, 2000);
   }
 
   public function addUpdateCallback(cb: Void -> Void): Void {
