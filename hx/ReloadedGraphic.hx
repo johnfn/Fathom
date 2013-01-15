@@ -1,4 +1,3 @@
-#if cpp
 import nme.display.BitmapData;
 import nme.display.Bitmap;
 import nme.display.Sprite;
@@ -8,7 +7,6 @@ import nme.events.Event;
 import nme.geom.Rectangle;
 import nme.geom.Point;
 import nme.display.Shape;
-import cpp.vm.Thread;
 import Sys;
 
 import haxe.Timer;
@@ -170,12 +168,3 @@ class ReloadedGraphic extends Bitmap {
     }
   }
 }
-
-#else
-class ReloadedGraphic extends nme.display.Bitmap {
-  public function new(url: String) {
-    Util.assert(false, "something bad happened 3:");
-    super();
-  }
-}
-#end
