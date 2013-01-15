@@ -87,11 +87,15 @@ class ReloadedGraphic extends Bitmap {
     this.masterBitmapData = nme.Assets.getBitmapData(url);
     this.bitmapData = this.masterBitmapData;
 
-    haxe.Timer.delay(function() {
-      if (!urlData.get(url).loaded) {
-        trace("I can't seem to open the file: " + (Fathom.hotswapPrefix + url) + " - that, or it's taking a while.");
-      }
-    }, 2000);
+    if (Fathom.rootDir == null) {
+      trace("Fathom.rootDir is null. You should set it to be the root directory of your project - otherwise hot reloading won't work.");
+    } else {
+      haxe.Timer.delay(function() {
+        if (!urlData.get(url).loaded) {
+          trace("I can't seem to open the file: " + (Fathom.rootDir + url) + " - that, or it's taking a while.");
+        }
+      }, 2000);
+    }
   }
 
   public function addUpdateCallback(cb: Void -> Void): Void {
@@ -149,7 +153,7 @@ class ReloadedGraphic extends Bitmap {
 
   static function constantlyReload() {
     for (val in urlData.values()) {
-      val.loader.load(new URLRequest(Fathom.hotswapPrefix + val.url));
+      val.loader.load(new URLRequest(Fathom.rootDir + val.url));
     }
   }
 

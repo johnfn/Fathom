@@ -18,6 +18,7 @@ class AllTests extends Sprite {
   public static var testAnimation:String = "test/testanimation.png";
 
   public static function main() {
+    Fathom.rootDir = "";
     Fathom.initialize(test);
   }
 

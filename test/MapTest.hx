@@ -21,17 +21,14 @@ class MapTest extends haxe.unit.TestCase {
 
   public static var constructedCount:Int = 0;
 
-  public function globalAsyncSetup(done: Void -> Void) {
-    new ReloadedGraphic(AllTests.testMap, function() {
-      m = new Map(2, 2, 2);
-      m.loaded = done;
-      m.fromImage(AllTests.testMap, [], [
-        { color: "#ffffff", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
-      , { color: "#0000ff", gfx: AllTests.testSprite, spritesheet: new Vec(1, 0) }
-      , { color: "#ff0000", spc: MapTest.SpecialThing, spritesheet: new Vec(1, 1) } //represented as green
-      ]);
-      m.loadNewMap(new Vec(0, 0));
-    });
+  public override function globalSetup() {
+    m = new Map(2, 2, 2);
+    m.fromImage(AllTests.testMap, [], [
+      { color: "#ffffff", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
+    , { color: "#0000ff", gfx: AllTests.testSprite, spritesheet: new Vec(1, 0) }
+    , { color: "#ff0000", spc: MapTest.SpecialThing, spritesheet: new Vec(1, 1) } //represented as green
+    ]);
+    m.loadNewMap(new Vec(0, 0));
   }
 
   //TODO TEST: Map collisions with moving entities...

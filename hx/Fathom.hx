@@ -24,7 +24,7 @@ class Fathom {
 
     static public var pixelSnapping: Bool = true;
 
-    static public var hotswapPrefix: String;
+    static public var rootDir: String;
     static public var mapRef: Map;
     static public var mode: Mode;
     static public var entities: Set<Entity> = new Set([]);

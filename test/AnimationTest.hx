@@ -9,9 +9,8 @@ class AnimationTest extends haxe.unit.TestCase {
 
   // The animation test graphic looks like this:
   // RED BLACK GREEN WHITE
-  public function globalAsyncSetup(done: Void -> Void) {
+  public override function globalSetup() {
     g = new Entity(0, 0, 16, 16);
-    g.loaded = done;
     g.loadSpritesheet(AllTests.testAnimation, new Vec(16, 16), new Vec(0, 0));
     g.animations.ticksPerFrame = 1;
   }

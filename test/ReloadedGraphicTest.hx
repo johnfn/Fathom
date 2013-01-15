@@ -6,13 +6,9 @@ using Lambda;
 class ReloadedGraphicTest extends haxe.unit.TestCase {
   public var g: ReloadedGraphic = null;
 
-  public function globalAsyncSetup(done: Void -> Void) {
-    Fathom.hotswapPrefix = "/Users/grantm/code/ep1/FathomHaxe/";
-
-    g = new ReloadedGraphic(AllTests.testSprite, function() {
-      Fathom.stage.addChild(g);
-      done();
-    });
+  public override function globalSetup() {
+    g = new ReloadedGraphic(AllTests.testSprite);
+    Fathom.stage.addChild(g);
   }
 
   override public function tearDown() {
