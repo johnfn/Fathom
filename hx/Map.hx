@@ -9,23 +9,27 @@ import Entity;
 using Lambda;
 
 typedef ItemDetail = {
+    /* The color that this item corresponds to on the image. */
     var color: String;
-    var spritesheet: Vec;
 
     // One of these two is required.
+    // TODO: Fancy magic to require at least one of them in compile time?
 
+    /* If it's just a static image, the path to the spritesheet that contains
+       that image. */
     @:optional var gfx: String;
+
+    /* If it has special properties, the class that should be created. */
     @:optional var spc: Dynamic;
+
+    /* The location of the image on the spritesheet. */
+    var spritesheet: Vec;
 
     // Optional settings
 
-    @:optional var type: Class<Dynamic>;
     @:optional var roundOutEdges: Bool;
     @:optional var fancyEdges: Bool;
     @:optional var randoEdges: Bool;
-
-    // Private use by Map
-    @:optional var special:Bool;
 }
 
 enum MapDataType {
@@ -51,10 +55,9 @@ private class MapData {
         switch (type) {
             case Image:
             {
-                img = new ReloadedGraphic(url, function() {
-                    that.loaded = true;
-                });
+                img = new ReloadedGraphic(url);
                 img.addUpdateCallback(onReload);
+                loadData();
             }
         }
     }
@@ -167,8 +170,6 @@ class Map extends Rect {
         data.setReloadCallback(function() {
             that.exploredMaps = new SuperObjectHash();
             that.loadNewMap(new Vec(0, 0));
-            trace("loaded the map at last!");
-            singleEntityLoad(); //TODO - bad name now.
         });
 
         // Load ground list
@@ -180,6 +181,8 @@ class Map extends Rect {
 
             Util.assert(s.spc != null || s.gfx != null, "Both SPC and GFX are null.");
         }
+
+        that.loadNewMap(new Vec(0, 0));
 
         return this;
     }
@@ -306,20 +309,11 @@ class Map extends Rect {
         return itemData.gfx == null;
     }
 
-    function singleEntityLoad() {
-        --itemsLeftToLoad;
-
-        if (itemsLeftToLoad == 0 && loaded != null && data.hasLoaded()) {
-            loaded();
-        }
-    }
-
     function addPersistentItem(c : Color, x : Int, y : Int) : Void {
         if(!persistentItemMapping.has(c.toString()))  {
             if(c.toString() != "#ffffff")  {
                 Util.log("Color without data: " + c.toString());
             }
-            singleEntityLoad();
             return;
         }
 
@@ -339,10 +333,8 @@ class Map extends Rect {
 
         if (isSpecial(itemData)) {
             e = Type.createInstance(itemData.spc, []).setPos(x * tileSize, y * tileSize);
-            singleEntityLoad();
         } else {
             e = new Entity(x * tileSize, y * tileSize, tileSize, tileSize);
-            e.loaded = singleEntityLoad;
             e.loadSpritesheet(itemData.gfx, new Vec(tileSize, tileSize));
             e.setTile(Std.int(ssLoc.x), Std.int(ssLoc.y));
         }

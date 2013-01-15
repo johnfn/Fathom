@@ -21,6 +21,12 @@ typedef ReloadedData = {
   var loaded: Bool;
 }
 
+/** ReloadedGraphic is essentially a Bitmap that reloads itself every
+ *  time the file it was loaded from changes.
+ *
+ *  You should never have to deal with ReloadedGraphics unless you are
+ *  extending Fathom in some way.
+ */
 class ReloadedGraphic extends Bitmap {
   var url: String;
   var loader: Loader;
@@ -29,16 +35,14 @@ class ReloadedGraphic extends Bitmap {
   var tileX: Int = 0;
   var tileY: Int = 0;
   var masterBitmapData:BitmapData;
-  var doneCB: Void -> Void;
   var updateCB: Void -> Void;
 
   static var timer: Timer;
   static var urlData: SuperObjectHash<String, ReloadedData> = null;
 
-  public function new(url: String, cb: Void -> Void = null) {
+  public function new(url: String) {
   	super();
     this.url = url;
-    this.doneCB = cb;
 
     if (urlData == null) {
       urlData = new SuperObjectHash();
@@ -80,6 +84,9 @@ class ReloadedGraphic extends Bitmap {
       loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadComplete);
     }
 
+    this.masterBitmapData = nme.Assets.getBitmapData(url);
+    this.bitmapData = this.masterBitmapData;
+
     haxe.Timer.delay(function() {
       if (!urlData.get(url).loaded) {
         trace("I can't seem to open the file: " + (Fathom.hotswapPrefix + url) + " - that, or it's taking a while.");
@@ -91,14 +98,9 @@ class ReloadedGraphic extends Bitmap {
     this.updateCB = cb;
   }
 
-  public function reloadEvent(newBD:BitmapData) {
+  function reloadEvent(newBD:BitmapData) {
     this.masterBitmapData = newBD;
     this.setTile(tileX, tileY);
-
-    if (this.doneCB != null) {
-      this.doneCB();
-      this.doneCB = null;
-    }
 
     if (this.updateCB != null) {
       this.updateCB();
