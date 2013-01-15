@@ -6,14 +6,17 @@ import Util;
 
 class MovingEntity extends Entity {
 
-    /* Velocity of the MovingEntity. */    public var vel : Vec;
+    /* Velocity of the MovingEntity. */
+    public var vel : Vec;
     public var xColl : Set<Entity>;
     public var yColl : Set<Entity>;
     public var touchingLeft : Bool;
     public var touchingRight : Bool;
     public var touchingTop : Bool;
     public var touchingBottom : Bool;
-    /* List of all entities that this entity collided with in this time step. */    var collisionList : Set<Entity>;
+    /* List of all entities that this entity collided with in this time step. */
+    var collisionList : Set<Entity>;
+
     function new(x : Float = 0, y : Float = 0, width : Float = 20, height : Float = -1) {
         vel = new Vec(0, 0);
         xColl = new Set<Entity>();
@@ -39,6 +42,4 @@ class MovingEntity extends Entity {
     public function isBlocked() : Bool {
         return isTouching([Set.doesntHaveGroup("non-blocking")]);
     }
-
 }
-

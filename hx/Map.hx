@@ -23,6 +23,7 @@ typedef ItemDetail = {
     @:optional var spc: Dynamic;
 
     /* The location of the image on the spritesheet. */
+    // TODO - make optional, no spritesheet =
     var spritesheet: Vec;
 
     // Optional settings

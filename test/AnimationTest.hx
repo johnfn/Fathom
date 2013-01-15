@@ -20,7 +20,7 @@ class AnimationTest extends haxe.unit.TestCase {
   }
 
   public function testSimpleAnimations() {
-    g.animations.addAnimationXY("a", [[0,0], [1,0], [2,0], [3,0]]);
+    g.animations.addAnimationXY("a", [{x: 0, y: 0}, {x: 1, y: 0}, {x: 2, y: 0}, {x: 3, y: 0}]);
     g.animations.play("a");
 
     assertEquals(g.animations.currentFrame, 0);
@@ -44,7 +44,7 @@ class AnimationTest extends haxe.unit.TestCase {
   }
 
   public function testStop() {
-    g.animations.addAnimationXY("a", [[0,0], [1,0], [2,0], [3,0]]);
+    g.animations.addAnimationXY("a", [{x: 0, y: 0}, {x: 1, y: 0}, {x: 2, y: 0}, {x: 3, y: 0}]);
     g.animations.play("a");
 
     assertEquals(g.animations.currentFrame, 0);
@@ -60,8 +60,8 @@ class AnimationTest extends haxe.unit.TestCase {
   }
 
   public function testTwoAnimations() {
-    g.animations.addAnimationXY("a", [[0, 0]]);
-    g.animations.addAnimationXY("b", [[1, 0]]);
+    g.animations.addAnimationXY("a", [{x: 0, y: 0}]);
+    g.animations.addAnimationXY("b", [{x: 1, y: 0}]);
 
     g.animations.play("a");
     assertEquals(g.animations.currentFrame, 0);
@@ -79,7 +79,7 @@ class AnimationTest extends haxe.unit.TestCase {
       ++tester;
     }
 
-    g.animations.addAnimationXY("a", [[0, 0], [1, 0]]);
+    g.animations.addAnimationXY("a", [{x: 0, y: 0}, {x: 1, y: 0}]);
     g.animations.play("a").andThen(test);
 
     assertEquals(tester, 0);
