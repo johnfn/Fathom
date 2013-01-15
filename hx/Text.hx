@@ -1,6 +1,5 @@
-import flash.filters.DropShadowFilter;
-import flash.text.TextField;
-import flash.text.TextFormat;
+//import flash.filters.DropShadowFilter;
+import starling.text.TextField;
 import Hooks;
 import Util;
 
@@ -13,64 +12,49 @@ class Text extends Entity {
     var content : String;
     var typewriting : Bool;
     var typewriteTick : Void -> Void;
-    var normalTextFormat : TextFormat;
-    var redTextFormat : TextFormat;
-    function new(content : String = "", textName : String = null) {
+
+    public function new(content : String = "", textName : String = null) {
         content = "";
         typewriting = false;
-        normalTextFormat = new TextFormat();
-        redTextFormat = new TextFormat();
-        super(0, 0);
+        super(-10, -10);
         this.content = content;
-        if(textName != null)
-            normalTextFormat.font = textName;
-        normalTextFormat.size = 16;
-        normalTextFormat.color = 0xFFFFFF;
-        if(textName != null) redTextFormat.font = textName;
-        redTextFormat.size = 16;
-        redTextFormat.color = 0xFF0000;
-        textField = new TextField();
-        textField.selectable = false;
-        textField.wordWrap = true;
-        textField.filters = [new DropShadowFilter(2.0, 45, 0, 1, 0, 0, 1)];
-        textField.embedFonts = true;
-        textField.defaultTextFormat = normalTextFormat;
+        if(textName != null) textField.fontName = textName;
+        textField = new TextField(200, 100, content);
+        textField.fontSize = 16;
+        textField.color = 0xFFFFFF;
+        //textField.filters = [new DropShadowFilter(2.0, 45, 0, 1, 0, 0, 1)];
         //textField.antiAliasType = "advanced";
-        textField.sharpness = 100;
-        textField.thickness = 0;
         text = content;
-        sprite.addChild(textField);
+        addChild(textField);
         // You need to set the width after you add the TextField - otherwise, it'll
         // be reset to 0.
         width = 200;
     }
 
     public function setSize(val : Float) : Float {
-        normalTextFormat.size = val;
-        redTextFormat.size = val;
-        textField.defaultTextFormat = normalTextFormat;
+        textField.fontSize = val;
         return val;
     }
 
-    override public function setWidth(val : Float) : Float {
+    public function setWidth(val : Float) : Float {
         textField.width = val;
-        sprite.width = val;
+        this.width = val;
         return val;
     }
 
-    override public function setHeight(val : Float) : Float {
+    public function setHeight(val : Float) : Float {
         textField.height = val;
-        sprite.height = val;
+        this.height = val;
         return val;
     }
 
     public function setColor(val : UInt) : UInt {
-        textField.textColor = val;
+        textField.color = val;
         return val;
     }
 
     public function getColor() : UInt {
-        return textField.textColor;
+        return textField.color;
     }
 
     /*
@@ -88,6 +72,7 @@ class Text extends Entity {
     // Interpolate the string by adding colors. Any words between *stars* are
     // colored red.
     public function setText(s : String) : String {
+        /*
         var pairs : Array<Dynamic> = [];
         var currentPair : Array<Dynamic> = [];
         var idx : Int = 0;
@@ -115,6 +100,7 @@ class Text extends Entity {
             textField.setTextFormat(redTextFormat, pairs[i][0], pairs[i][1]);
             i++;
         }
+        */
         return s;
     }
 
@@ -143,7 +129,7 @@ class Text extends Entity {
                 that.unlisten(this.typewriteTick);
                 return;
             }
-            textField.appendText(that.content.charAt(counter));
+            textField.text += that.content.charAt(counter);
             counter++;
         };
 

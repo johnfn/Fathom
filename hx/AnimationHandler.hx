@@ -1,6 +1,5 @@
 using Lambda;
 
-//TODO use this...
 typedef Pair = {
     var x: Int;
     var y: Int;
