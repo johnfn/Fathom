@@ -14,8 +14,7 @@ class AnimationHandler {
     public var currentFrame(getCurrentFrame, never): Int;
 
     var animations : SuperObjectHash<String, Array<Pair>>;
-    //TODO -> public
-    public var currentAnimation : String;
+    var currentAnimation : String;
     var _currentFrame : Int;
     var currentTick : Int;
     var _ticksPerFrame : Int;
