@@ -495,7 +495,7 @@ class ColoredText extends DisplayObjectContainer {
 
 	/** The native Flash BitmapFilters to apply to this TextField.
    *  Only available when using standard (TrueType) fonts! */
-  public function getNativeFilters() : Array<Dynamic> {
+  public function getNativeFilters() : Array<BitmapFilter> {
 		return mNativeFilters;
 	}
 
@@ -521,7 +521,7 @@ class ColoredText extends DisplayObjectContainer {
   static public function unregisterBitmapFont(name : String, dispose : Bool = true) : Void {
 		if(dispose && Reflect.field(bitmapFonts, name) != null)
 			Reflect.field(bitmapFonts, name).dispose();
-    __delete__(bitmapFonts, name);
+    untyped __delete__(bitmapFonts, name);
 	}
 
 	/** Returns a registered bitmap font (or null, if the font has not been registered). */
@@ -532,10 +532,10 @@ class ColoredText extends DisplayObjectContainer {
 	/** Stores the currently available bitmap fonts. Since a bitmap font will only work
    *  in one Starling instance, they are saved in Starling's 'customData' property. */
   static function getBitmapFonts() : Dictionary {
-		var fonts : Dictionary = try cast(Starling.current.customData[BITMAP_FONT_DATA_NAME], Dictionary) catch(e:Dynamic) null;
+		var fonts : Dictionary = try cast(Reflect.getProperty(Starling.current.customData, BITMAP_FONT_DATA_NAME), Dictionary) catch(e:Dynamic) null;
 		if(fonts == null)  {
 			fonts = new Dictionary();
-			Starling.current.customData[BITMAP_FONT_DATA_NAME] = fonts;
+			Reflect.setField(Starling.current.customData, BITMAP_FONT_DATA_NAME, fonts);
 		}
 		return fonts;
 	}
