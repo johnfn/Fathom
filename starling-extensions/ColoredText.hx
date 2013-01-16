@@ -107,7 +107,7 @@ class ColoredText extends DisplayObjectContainer {
   public function new(width : Int, height : Int, text : String, fontName : String = "Verdana", fontSize : Float = 12, color : UInt = 0x0, bold : Bool = false) {
   	super();
 
-		mText = (text == null) ? text : "";
+		mText = (text != null) ? text : "";
 		mFontSize = fontSize;
 		mColor = color;
 		mHAlign = HAlign.CENTER;
