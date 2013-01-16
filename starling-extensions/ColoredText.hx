@@ -101,13 +101,17 @@ class ColoredText extends DisplayObjectContainer {
 	var mBorder : DisplayObjectContainer;
 	var mImage : Image;
 	var mQuadBatch : QuadBatch;
+
+	var pairs: Array<Array<Int>>;
+
 	// this object will be used for text rendering
-		static var sNativeTextField : flash.text.TextField = new flash.text.TextField();
+	static var sNativeTextField : flash.text.TextField = new flash.text.TextField();
 	/** Create a new text field with the given properties. */
   public function new(width : Int, height : Int, text : String, fontName : String = "Verdana", fontSize : Float = 12, color : UInt = 0x0, bold : Bool = false) {
   	super();
 
-		mText = (text != null) ? text : "";
+  	pairs = [];
+		this.text = (text != null) ? text : "";
 		mFontSize = fontSize;
 		mColor = color;
 		mHAlign = HAlign.CENTER;
@@ -180,6 +184,12 @@ class ColoredText extends DisplayObjectContainer {
 		sNativeTextField.text = mText;
 		sNativeTextField.embedFonts = true;
 		sNativeTextField.filters = mNativeFilters;
+
+		for (i in 0...pairs.length) {
+			textFormat.color = 0xff0000; //TODO - won't work.
+			sNativeTextField.setTextFormat(textFormat, pairs[i][0], pairs[i][1]);
+		}
+
 		// we try embedded fonts first, non-embedded fonts are just a fallback
 		if(sNativeTextField.textWidth == 0.0 || sNativeTextField.textHeight == 0.0)
 			sNativeTextField.embedFonts = false;
@@ -208,22 +218,19 @@ class ColoredText extends DisplayObjectContainer {
 		bitmapData.draw(sNativeTextField, new Matrix(1, 0, 0, 1, 0, Std.int(yOffset) - 2));
 		sNativeTextField.text = "";
 		// update textBounds rectangle
-		if(mTextBounds == null)
+		if (mTextBounds == null)
 			mTextBounds = new Rectangle();
 		mTextBounds.setTo(xOffset / scale, yOffset / scale, textWidth / scale, textHeight / scale);
 		var texture : Texture = Texture.fromBitmapData(bitmapData, false, false, scale);
-		if(mImage == null) {
+		if (mImage == null) {
 			mImage = new Image(texture);
 			mImage.touchable = false;
 			addChild(mImage);
-		}
-
-		else  {
+		} else {
 			mImage.texture.dispose();
 			mImage.texture = texture;
 			mImage.readjustSize();
 		}
-
 	}
 
 	function autoScaleNativeTextField(textField : flash.text.TextField) : Void {
@@ -281,7 +288,8 @@ class ColoredText extends DisplayObjectContainer {
 		topLine.color = rightLine.color = bottomLine.color = leftLine.color = mColor;
 	}
 
-	/** Returns the bounds of the text within the text field. */	public function getTextBounds() : Rectangle {
+	/** Returns the bounds of the text within the text field. */
+	public function getTextBounds() : Rectangle {
 		if(mRequiresRedraw)
 			redrawContents();
 		if(mTextBounds == null)
@@ -321,8 +329,29 @@ class ColoredText extends DisplayObjectContainer {
 	public function setText(value : String) : String {
 		if(value == null)
 			value = "";
+
 		if(mText != value)  {
-			mText = value;
+	    pairs = [];
+	    var currentPair : Array<Int> = [];
+	    var idx : Int = 0;
+	    var resultString : String = "";
+	    var i : Int;
+	    for (i in 0...value.length) {
+	        idx++;
+	        if(value.charAt(i) == "*")  {
+            idx--;
+            currentPair.push(idx);
+	        } else  {
+            resultString += value.charAt(i);
+	        }
+
+	        if(currentPair.length == 2)  {
+            pairs.push(currentPair);
+            currentPair = [];
+	        }
+	    }
+
+			mText = resultString;
 			mRequiresRedraw = true;
 		}
 		return value;

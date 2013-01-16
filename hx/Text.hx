@@ -73,33 +73,6 @@ class Text extends Entity {
     // colored red.
     public function setText(s : String) : String {
         /*
-        var pairs : Array<Dynamic> = [];
-        var currentPair : Array<Dynamic> = [];
-        var idx : Int = 0;
-        var resultString : String = "";
-        var i : Int;
-        i = 0;
-        while(i < s.length) {
-            idx++;
-            if(s.charAt(i) == "*")  {
-                idx--;
-                currentPair.push(idx);
-            } else  {
-                resultString += s.charAt(i);
-            }
-
-            if(currentPair.length == 2)  {
-                pairs.push(currentPair);
-                currentPair = [];
-            }
-            i++;
-        }
-        textField.text = resultString;
-        i = 0;
-        while(i < pairs.length) {
-            textField.setTextFormat(redTextFormat, pairs[i][0], pairs[i][1]);
-            i++;
-        }
         */
         return s;
     }
