@@ -14,17 +14,17 @@ class Text extends Entity {
     var typewriteTick : Void -> Void;
 
     public function new(content : String = "", textName : String = null) {
-        content = "";
         typewriting = false;
         super(-10, -10);
         this.content = content;
         if(textName != null) textField.fontName = textName;
         textField = new TextField(200, 100, content);
         textField.fontSize = 16;
-        textField.color = 0xFFFFFF;
+        textField.color = 0x00FFFF;
         //textField.filters = [new DropShadowFilter(2.0, 45, 0, 1, 0, 0, 1)];
         //textField.antiAliasType = "advanced";
         text = content;
+        textField.border = true;
         addChild(textField);
         // You need to set the width after you add the TextField - otherwise, it'll
         // be reset to 0.
