@@ -16,11 +16,11 @@ class TextTest extends haxe.unit.TestCase {
 
   // It's hard to be too sophisticated with these tests. We just check
   // if it has the right colors.
-  function hasColor(color: Int): Bool {
+  function hasColor(color: UInt): Bool {
     var bd: BitmapData = Graphic.takeScreenshot();
 
     for (x in 0...100) {
-      if (bd.getPixel(x, 10) == 0x000000) {
+      if (bd.getPixel(x, 10) == color) {
         return true;
       }
     }
