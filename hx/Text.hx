@@ -73,6 +73,12 @@ class Text extends Entity {
     // colored red.
     public function setText(s : String) : String {
         /*
+        textField.text = resultString;
+        i = 0;
+        while(i < pairs.length) {
+            textField.setTextFormat(redTextFormat, pairs[i][0], pairs[i][1]);
+            i++;
+        }
         */
         return s;
     }
