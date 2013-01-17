@@ -1,9 +1,8 @@
 //import flash.filters.DropShadowFilter;
 import Hooks;
 import Util;
-import starlingextensions.ColoredText;
+import starlingextensions.TextField;
 import flash.text.TextFormat;
-import flash.text.TextField;
 
  typedef ColorSegment = {
    var start: Int;
@@ -21,7 +20,7 @@ class Text extends Entity {
     public var text(getText, setText) : String;
     public var accentColor(getAccentColor, setAccentColor): UInt;
 
-    var textField : ColoredText;
+    var textField : TextField;
     var content : String;
     var typewriting : Bool;
     var typewriteTick : Void -> Void;
@@ -35,7 +34,7 @@ class Text extends Entity {
         pairs = [];
         this.content = content;
         if(textName != null) textField.fontName = textName;
-        textField = new ColoredText(200, 100, content);
+        textField = new TextField(200, 100, content);
         textField.fontSize = 16;
         textField.color = 0x000000;
         //textField.filters = [new DropShadowFilter(2.0, 45, 0, 1, 0, 0, 1)];
@@ -94,7 +93,7 @@ class Text extends Entity {
     }
     */
 
-    function formatText(textField: TextField, textFormat: TextFormat): Void {
+    function formatText(textField: flash.text.TextField, textFormat: TextFormat): Void {
         for (pair in pairs) {
             textFormat.color = pair.color;
             if (pair.accentDefault) {

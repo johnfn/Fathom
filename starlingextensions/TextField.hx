@@ -16,7 +16,6 @@ import flash.display.BitmapData;
 import flash.geom.Matrix;
 import flash.geom.Rectangle;
 import flash.text.AntiAliasType;
-import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.utils.Dictionary;
 import flash.filters.BitmapFilter;
@@ -65,7 +64,7 @@ import starling.text.BitmapFont;
  *  </ul>
  */
 
-class ColoredText extends DisplayObjectContainer {
+class TextField extends DisplayObjectContainer {
   public var textBounds(getTextBounds, never) : Rectangle;
   public var text(getText, setText) : String;
   public var fontName(getFontName, setFontName) : String;
@@ -80,11 +79,11 @@ class ColoredText extends DisplayObjectContainer {
   public var kerning(getKerning, setKerning) : Bool;
   public var autoScale(getAutoScale, setAutoScale) : Bool;
   public var nativeFilters(getNativeFilters, setNativeFilters) : Array<BitmapFilter>;
-  public var textFormatCallback(getTextFormatCB, setTextFormatCB): TextField -> TextFormat -> Void;
+  public var textFormatCallback(getTextFormatCB, setTextFormatCB): flash.text.TextField -> TextFormat -> Void;
   static var bitmapFonts(getBitmapFonts, never) : Dictionary;
 
   // the name container with the registered bitmap fonts
-  static inline var BITMAP_FONT_DATA_NAME : String = "starling.ColoredText.BitmapFonts";
+  static inline var BITMAP_FONT_DATA_NAME : String = "starling.TextField.BitmapFonts";
   var mFontSize : Float;
   var mColor : UInt;
   var mText : String;
@@ -104,7 +103,7 @@ class ColoredText extends DisplayObjectContainer {
   var mBorder : DisplayObjectContainer;
   var mImage : Image;
   var mQuadBatch : QuadBatch;
-  var mTextFormatCB : TextField -> TextFormat -> Void;
+  var mTextFormatCB : flash.text.TextField -> TextFormat -> Void;
 
   // this object will be used for text rendering
   static var sNativeTextField : flash.text.TextField = new flash.text.TextField();
@@ -384,11 +383,11 @@ class ColoredText extends DisplayObjectContainer {
     return value;
   }
 
-  public function setTextFormatCB(cb: TextField -> TextFormat -> Void): TextField -> TextFormat -> Void {
+  public function setTextFormatCB(cb: flash.text.TextField -> TextFormat -> Void): flash.text.TextField -> TextFormat -> Void {
     return mTextFormatCB = cb;
   }
 
-  public function getTextFormatCB(): TextField -> TextFormat -> Void {
+  public function getTextFormatCB(): flash.text.TextField -> TextFormat -> Void {
     return mTextFormatCB;
   }
 
