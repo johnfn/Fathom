@@ -14,6 +14,8 @@ class TextTest extends haxe.unit.TestCase {
     Fathom.destroyAll();
   }
 
+  // It's hard to be too sophisticated with these tests. We just check
+  // if it has the right colors.
   function hasColor(color: Int): Bool {
     var bd: BitmapData = Graphic.takeScreenshot();
 
@@ -26,8 +28,6 @@ class TextTest extends haxe.unit.TestCase {
     return false;
   }
 
-  // It's hard to be too sophisticated with these tests. We just check
-  // if it has the right colors.
   public function testDraw() {
     assertTrue(hasColor(0x000000));
   }
@@ -63,6 +63,19 @@ class TextTest extends haxe.unit.TestCase {
     g.accentColor = 0x00ff00;
 
     assertTrue(hasColor(0x000000));
+    assertTrue(hasColor(0x00ff00));
+  }
+
+  public function testChangeAccentColor() {
+    g.text = "{0, 255, 0} *test test*";
+
+    assertTrue(hasColor(0x00ff00));
+  }
+
+  public function testChangeAccentColorDontGetConfused() {
+    g.text = "{0, 255, 0} *test test*";
+    g.accentColor = 0x0000ff;
+
     assertTrue(hasColor(0x00ff00));
   }
 
