@@ -1,4 +1,4 @@
-j Fathom
+# Fathom
 
 Hi. Fathom is a game development library, currently being developed for Haxe. It compiles to Flash and NME.
 
