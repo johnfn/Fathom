@@ -4,15 +4,6 @@ import Rect;
 using Lambda;
 
 class RectTest extends haxe.unit.TestCase {
-
-  override public function setup() {
-
-  }
-
-  override public function tearDown() {
-
-  }
-
   public function testRectRectCollision() {
     var test1:Rect = new Rect(10, 10, 20, 20);
     var test2:Rect = new Rect(15, 15, 20, 20);

@@ -8,13 +8,13 @@ class EntityTest extends haxe.unit.TestCase {
   var e2:Entity;
   var e3:Entity;
 
-  override public function setup() {
+  override public function beforeEach() {
     e1 = new Entity(0, 0, 10, 10).addGroups(["a"]);
     e2 = new Entity(0, 0, 10, 10).addGroups(["b"]);
     e3 = new Entity(0, 0, 10, 10).addGroups(["c"]);
   }
 
-  override public function tearDown() {
+  override public function afterEach() {
     Fathom.destroyAll();
   }
 

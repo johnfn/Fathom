@@ -86,6 +86,7 @@ class ColoredText extends DisplayObjectContainer {
   public var kerning(getKerning, setKerning) : Bool;
   public var autoScale(getAutoScale, setAutoScale) : Bool;
   public var nativeFilters(getNativeFilters, setNativeFilters) : Array<BitmapFilter>;
+  public var accentColor: Int = 0xff0000;
   static var bitmapFonts(getBitmapFonts, never) : Dictionary;
 
   // the name container with the registered bitmap fonts
@@ -358,7 +359,7 @@ class ColoredText extends DisplayObjectContainer {
     if(mText != value)  {
       pairs = [];
 
-      var currentColor: Int = 0xff0000;
+      var currentColor: Int = accentColor;
       var r: EReg = ~/\*|\{([0-9]+)[\s]*,[\s]*([0-9]+)[\s]*,[\s]*([0-9]+)\}/;
       var currentPair: ColorSegment = { start: -1, end: -1, color: 0xff0000 };
 
@@ -376,7 +377,6 @@ class ColoredText extends DisplayObjectContainer {
             currentPair = { start: -1, end: -1, color: currentColor };
           }
         } else {
-          trace(r.matched(1));
           currentColor = new Color(Std.parseInt(r.matched(1))
                                  , Std.parseInt(r.matched(2))
                                  , Std.parseInt(r.matched(3))).toInt();

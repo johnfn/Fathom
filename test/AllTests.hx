@@ -36,6 +36,7 @@ class AllTests extends Sprite {
       r.add(new RectTest());
       r.add(new VecTest());
       r.add(new CameraTest());
+      r.add(new TextTest());
       r.add(new GraphicTest());
       r.add(new EntityTest());
       r.add(new MapTest());

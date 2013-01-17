@@ -7,6 +7,7 @@ class Text extends Entity {
     public var size(never, setSize) : Float;
     public var color(getColor, setColor) : UInt;
     public var text(getText, setText) : String;
+    public var accentColor(getAccentColor, setAccentColor): UInt;
 
     var textField : ColoredText;
     var content : String;
@@ -31,6 +32,14 @@ class Text extends Entity {
         // You need to set the width after you add the TextField - otherwise, it'll
         // be reset to 0.
         width = 200;
+    }
+
+    public function setAccentColor(c: Int): Int {
+        return textField.accentColor = c;
+    }
+
+    public function getAccentColor(): Int {
+        return textField.accentColor;
     }
 
     public function setSize(val : Float) : Float {
@@ -74,15 +83,7 @@ class Text extends Entity {
     // Interpolate the string by adding colors. Any words between *stars* are
     // colored red.
     public function setText(s : String) : String {
-        /*
-        textField.text = resultString;
-        i = 0;
-        while(i < pairs.length) {
-            textField.setTextFormat(redTextFormat, pairs[i][0], pairs[i][1]);
-            i++;
-        }
-        */
-        return s;
+        return textField.text = s;
     }
 
     public function advanceText() : Void {

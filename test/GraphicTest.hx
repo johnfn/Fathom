@@ -14,11 +14,6 @@ class GraphicTest extends haxe.unit.TestCase {
     Fathom.destroyAll();
   }
 
-
-  override public function tearDown() {
-
-  }
-
   //TODO: adjusting w should adjust pivot also.
 
   public function testInit() {
