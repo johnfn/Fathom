@@ -17,7 +17,7 @@ Fathom compiles to AS3 (via .swc), so you can use AS3 too. But you don't get tha
 
 ## Developing?
 
-If you want to develop on Fathom, awesome! There are some things I think you should know. [Go here.](Fathom/DEVELOPING.md)
+If you want to develop on Fathom, awesome! There are some things I think you should know. [Go here.](Fathom/blob/master/DEVELOPING.md)
 
 ### Tests
 
