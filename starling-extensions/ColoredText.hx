@@ -63,6 +63,12 @@ import starling.text.BitmapFont;
  *  </ul>
  */
 
+ typedef ColorSegment = {
+ 	var start: Int;
+ 	var end: Int;
+ 	var color: Int;
+ }
+
 class ColoredText extends DisplayObjectContainer {
 	public var textBounds(getTextBounds, never) : Rectangle;
 	public var text(getText, setText) : String;
@@ -102,7 +108,7 @@ class ColoredText extends DisplayObjectContainer {
 	var mImage : Image;
 	var mQuadBatch : QuadBatch;
 
-	var pairs: Array<Array<Int>>;
+	var pairs: Array<ColorSegment>;
 
 	// this object will be used for text rendering
 	static var sNativeTextField : flash.text.TextField = new flash.text.TextField();
@@ -185,9 +191,9 @@ class ColoredText extends DisplayObjectContainer {
 		sNativeTextField.embedFonts = true;
 		sNativeTextField.filters = mNativeFilters;
 
-		for (i in 0...pairs.length) {
-			textFormat.color = 0xff0000; //TODO - won't work.
-			sNativeTextField.setTextFormat(textFormat, pairs[i][0], pairs[i][1]);
+		for (pair in pairs) {
+			textFormat.color = pair.color;
+			sNativeTextField.setTextFormat(textFormat, pair.start, pair.end);
 		}
 
 		// we try embedded fonts first, non-embedded fonts are just a fallback
@@ -332,22 +338,23 @@ class ColoredText extends DisplayObjectContainer {
 
 		if(mText != value)  {
 	    pairs = [];
-	    var currentPair : Array<Int> = [];
+	    var currentPair : ColorSegment = { start: -1, end: -1, color: 0xff0000 };
 	    var idx : Int = 0;
 	    var resultString : String = "";
-	    var i : Int;
 	    for (i in 0...value.length) {
 	        idx++;
 	        if(value.charAt(i) == "*")  {
             idx--;
-            currentPair.push(idx);
+
+            if (currentPair.start == -1) {
+            	currentPair.start = idx;
+            } else {
+	            currentPair.end = idx;
+	            pairs.push(currentPair);
+	            currentPair = { start: -1, end: -1, color: 0xff0000 }
+	          }
 	        } else  {
             resultString += value.charAt(i);
-	        }
-
-	        if(currentPair.length == 2)  {
-            pairs.push(currentPair);
-            currentPair = [];
 	        }
 	    }
 
