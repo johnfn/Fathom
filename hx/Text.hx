@@ -1,5 +1,4 @@
 //import flash.filters.DropShadowFilter;
-import starling.text.TextField;
 import Hooks;
 import Util;
 
@@ -8,7 +7,7 @@ class Text extends Entity {
     public var color(getColor, setColor) : UInt;
     public var text(getText, setText) : String;
 
-    var textField : TextField;
+    var textField : ColoredText;
     var content : String;
     var typewriting : Bool;
     var typewriteTick : Void -> Void;
@@ -18,9 +17,9 @@ class Text extends Entity {
         super(-10, -10);
         this.content = content;
         if(textName != null) textField.fontName = textName;
-        textField = new TextField(200, 100, content);
+        textField = new ColoredText(200, 100, content);
         textField.fontSize = 16;
-        textField.color = 0x00FFFF;
+        textField.color = 0x000000;
         //textField.filters = [new DropShadowFilter(2.0, 45, 0, 1, 0, 0, 1)];
         //textField.antiAliasType = "advanced";
         text = content;
