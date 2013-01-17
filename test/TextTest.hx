@@ -48,14 +48,14 @@ class TextTest extends haxe.unit.TestCase {
     g.accentColor = 0x00ff00;
     g.text = "*bluh bluh huge text*";
 
-    assertTrue(hasColor(0xff0000));
+    assertTrue(hasColor(0x00ff00));
   }
 
   public function testChangedAccentAfter() {
     g.text = "*bluh bluh huge text*";
     g.accentColor = 0x00ff00;
 
-    assertTrue(hasColor(0xff0000));
+    assertTrue(hasColor(0x00ff00));
   }
 
   public function testBothColors() {
@@ -67,7 +67,7 @@ class TextTest extends haxe.unit.TestCase {
   }
 
   public function testSetColor() {
-    g.text = "bluh bluh *huge text*";
+    g.text = "bluh *huge text*";
     g.color = 0xff0000;
     g.accentColor = 0x00ff00;
 

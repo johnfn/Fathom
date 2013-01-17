@@ -69,6 +69,10 @@ import starling.text.BitmapFont;
    var start: Int;
    var end: Int;
    var color: Int;
+
+   // Necessary so that if they then change the accent color, we
+   // can retroactively update.
+   var accentDefault: Bool;
  }
 
 class ColoredText extends DisplayObjectContainer {
@@ -213,6 +217,9 @@ class ColoredText extends DisplayObjectContainer {
 
     for (pair in pairs) {
       textFormat.color = pair.color;
+      if (pair.accentDefault) {
+        textFormat.color = accentColor;
+      }
       sNativeTextField.setTextFormat(textFormat, pair.start, pair.end);
     }
 
@@ -359,9 +366,10 @@ class ColoredText extends DisplayObjectContainer {
     if(mText != value)  {
       pairs = [];
 
+      var isDefaultAccentColor: Bool = true;
       var currentColor: Int = accentColor;
       var r: EReg = ~/\*|\{([0-9]+)[\s]*,[\s]*([0-9]+)[\s]*,[\s]*([0-9]+)\}/;
-      var currentPair: ColorSegment = { start: -1, end: -1, color: 0xff0000 };
+      var currentPair: ColorSegment = { start: -1, end: -1, color: currentColor, accentDefault: isDefaultAccentColor };
 
       var resultText: String = value;
 
@@ -374,13 +382,15 @@ class ColoredText extends DisplayObjectContainer {
           } else {
             currentPair.end = loc;
             pairs.push(currentPair);
-            currentPair = { start: -1, end: -1, color: currentColor };
+            currentPair = { start: -1, end: -1, color: currentColor, accentDefault: isDefaultAccentColor };
           }
         } else {
           currentColor = new Color(Std.parseInt(r.matched(1))
                                  , Std.parseInt(r.matched(2))
                                  , Std.parseInt(r.matched(3))).toInt();
           currentPair.color = currentColor;
+          isDefaultAccentColor = false;
+          currentPair.accentDefault = false;
         }
 
         resultText = r.replace(resultText, "");
