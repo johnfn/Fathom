@@ -189,8 +189,8 @@ class TextField extends DisplayObjectContainer {
       textFormat.italic = mItalic;
       textFormat.underline = mUnderline;
       textFormat.align = strToAlign(mHAlign);
+      textFormat.kerning = mKerning;
     }
-    textFormat.kerning = mKerning;
     sNativeTextField.defaultTextFormat = textFormat;
     sNativeTextField.width = width;
     sNativeTextField.height = height;

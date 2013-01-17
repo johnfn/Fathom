@@ -29,10 +29,6 @@ class AllTests extends Sprite {
     r.add(new ReloadedGraphicTest());
 #end
 
-#if flash
-    r.add(new TextTest());
-#end
-
     r.add(new SetTest());
     r.add(new SuperObjectHashTest());
     r.add(new RectTest());
@@ -41,6 +37,7 @@ class AllTests extends Sprite {
     r.add(new GraphicTest());
     r.add(new EntityTest());
     r.add(new MapTest());
+    r.add(new TextTest());
     r.add(new AnimationTest());
     r.add(new ColorTest());
     r.add(new KeyTest());

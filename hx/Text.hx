@@ -20,36 +20,52 @@ import flash.text.TextFormat;
  }
 
 class Text extends Entity {
-    public var size(never, setSize) : Float;
     public var color(getColor, setColor) : Int;
     public var text(getText, setText) : String;
     public var accentColor(getAccentColor, setAccentColor): Int;
 
     var textField : TextField;
-    var content : String;
     var typewriting : Bool;
     var typewriteTick : Void -> Void;
     var _accentColor: Int = 0xff0000;
 
     var pairs: Array<ColorSegment>;
 
-    public function new(content : String = "", textName : String = null) {
+    public function new(content : String = "", fontName : String = "Arial") {
         typewriting = false;
         super(-10, -10);
         pairs = [];
-        this.content = content;
-        if(textName != null) textField.fontName = textName;
-        textField = new TextField(200, 100, content);
+
+        var color: Int = 0x000000;
+#if flash
+        textField = new TextField(200, 100, "");
+        textField.fontName = fontName;
         textField.fontSize = 16;
-        textField.color = 0x000000;
-        //textField.filters = [new DropShadowFilter(2.0, 45, 0, 1, 0, 0, 1)];
-        //textField.antiAliasType = "advanced";
-        text = content;
+        textField.color = color;
         textField.border = true;
         textField.hAlign = "left";
         textField.vAlign = "top";
         textField.textFormatCallback = formatText;
+#else
+        textField = new TextField();
+        textField.width = 200;
+        textField.height = 100;
+
+        var textFormat : TextFormat = new TextFormat();
+
+        textFormat.font = fontName;
+        textFormat.size = 16;
+        textFormat.color = color;
+        textFormat.align = flash.text.TextFormatAlign.LEFT;
+
+        textField.defaultTextFormat = textFormat;
+#end
+        text = content;
         addChild(textField);
+
+        //textField.filters = [new DropShadowFilter(2.0, 45, 0, 1, 0, 0, 1)];
+        //textField.antiAliasType = "advanced";
+
         // You need to set the width after you add the TextField - otherwise, it'll
         // be reset to 0.
         width = 200;
@@ -61,11 +77,6 @@ class Text extends Entity {
 
     public function getAccentColor(): Int {
         return _accentColor;
-    }
-
-    public function setSize(val : Float) : Float {
-        textField.fontSize = val;
-        return val;
     }
 
     public function setWidth(val : Float) : Float {
@@ -81,12 +92,20 @@ class Text extends Entity {
     }
 
     public function setColor(val : Int) : Int {
+#if cpp
+        textField.defaultTextFormat.color = val;
+#else
         textField.color = val;
+#end
         return val;
     }
 
     public function getColor() : Int {
+#if cpp
+        return textField.defaultTextFormat.color;
+#else
         return textField.color;
+#end
     }
 
     /*
@@ -114,8 +133,6 @@ class Text extends Entity {
 
     // Interpolate the string by adding colors.
     public function setText(value: String) : String {
-        pairs = [];
-
         var isDefaultAccentColor: Bool = true;
         var currentColor: Int = accentColor;
         // This regex either matches a *, a **, or something like {255, 255, 0}.
@@ -125,6 +142,8 @@ class Text extends Entity {
         var resultText: String;
         var loc: Int = 0;
         var ignoreNextStar: Bool = false;
+
+        pairs = [];
 
         resultText = e.customReplace(value, function(r: EReg): String {
             var replacement: String = "";
@@ -172,6 +191,9 @@ class Text extends Entity {
     // The classic videogame-ish effect of showing only 1 character
     // of text at a time.
     public function typewrite() : Text {
+        //TODO - I got rid of content
+
+        /*
         var counter : Int = 0;
         var id : Int = 0;
         var that : Text = this;
@@ -190,6 +212,9 @@ class Text extends Entity {
 
         listen(this.typewriteTick);
         return this;
+        */
+
+        return this;
     }
 
     override public function groups() : Set<String> {
@@ -198,7 +223,6 @@ class Text extends Entity {
 
     override public function clearMemory() : Void {
         textField = null;
-        content = null;
         typewriteTick = null;
         super.clearMemory();
     }
