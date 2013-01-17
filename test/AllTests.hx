@@ -23,29 +23,28 @@ class AllTests extends Sprite {
   }
 
   static function test() {
-    //TODO: Figure out why I need this...
-    haxe.Timer.delay(function() {
-      var r = new haxe.unit.TestRunner();
+    var r = new haxe.unit.TestRunner();
 
 #if cpp
-      r.add(new ReloadedGraphicTest());
+    r.add(new ReloadedGraphicTest());
 #end
 
-      r.add(new SetTest());
-      r.add(new SuperObjectHashTest());
-      r.add(new RectTest());
-      r.add(new VecTest());
-      r.add(new CameraTest());
-      r.add(new TextTest());
-      r.add(new GraphicTest());
-      r.add(new EntityTest());
-      r.add(new MapTest());
-      r.add(new AnimationTest());
-      r.add(new ColorTest());
-      r.add(new KeyTest());
+#if flash
+    r.add(new TextTest());
+#end
 
-      r.run();
-    }, 250);
+    r.add(new SetTest());
+    r.add(new SuperObjectHashTest());
+    r.add(new RectTest());
+    r.add(new VecTest());
+    r.add(new CameraTest());
+    r.add(new GraphicTest());
+    r.add(new EntityTest());
+    r.add(new MapTest());
+    r.add(new AnimationTest());
+    r.add(new ColorTest());
+    r.add(new KeyTest());
 
+    r.run();
   }
 }

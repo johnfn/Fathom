@@ -6,13 +6,13 @@ using Lambda;
 class ReloadedGraphicTest extends haxe.unit.TestCase {
   public var g: ReloadedGraphic = null;
 
-  public override function globalSetup() {
+  public override function beforeEach() {
     g = new ReloadedGraphic(AllTests.testSprite);
     Fathom.stage.addChild(g);
   }
 
-  override public function tearDown() {
-
+  override public function afterEach() {
+    Fathom.destroyAll();
   }
 
   public function testLoad() {

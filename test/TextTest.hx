@@ -16,11 +16,11 @@ class TextTest extends haxe.unit.TestCase {
 
   // It's hard to be too sophisticated with these tests. We just check
   // if it has the right colors.
-  function hasColor(color: UInt): Bool {
+  function hasColor(color: Int): Bool {
     var bd: BitmapData = Graphic.takeScreenshot();
 
     for (x in 0...100) {
-      if (bd.getPixel(x, 10) == color) {
+      if (Std.int(bd.getPixel(x, 10)) == color) {
         return true;
       }
     }
@@ -86,6 +86,12 @@ class TextTest extends haxe.unit.TestCase {
 
     assertTrue(hasColor(0xff0000));
     assertTrue(hasColor(0x00ff00));
+  }
+
+  public function testEscaping() {
+    g.text = "test ** escape {255, 255, 255}** *derp*";
+
+    assertEquals(g.text, "test * escape * derp");
   }
 
 }

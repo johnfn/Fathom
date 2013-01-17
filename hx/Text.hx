@@ -1,7 +1,12 @@
 //import flash.filters.DropShadowFilter;
 import Hooks;
 import Util;
+#if flash
 import starlingextensions.TextField;
+#else
+import nme.text.TextField;
+#end
+
 import flash.text.TextFormat;
 
  typedef ColorSegment = {
@@ -16,9 +21,9 @@ import flash.text.TextFormat;
 
 class Text extends Entity {
     public var size(never, setSize) : Float;
-    public var color(getColor, setColor) : UInt;
+    public var color(getColor, setColor) : Int;
     public var text(getText, setText) : String;
-    public var accentColor(getAccentColor, setAccentColor): UInt;
+    public var accentColor(getAccentColor, setAccentColor): Int;
 
     var textField : TextField;
     var content : String;
@@ -75,12 +80,12 @@ class Text extends Entity {
         return val;
     }
 
-    public function setColor(val : UInt) : UInt {
+    public function setColor(val : Int) : Int {
         textField.color = val;
         return val;
     }
 
-    public function getColor() : UInt {
+    public function getColor() : Int {
         return textField.color;
     }
 
@@ -113,7 +118,8 @@ class Text extends Entity {
 
         var isDefaultAccentColor: Bool = true;
         var currentColor: Int = accentColor;
-        var r: EReg = ~/\*|\{([0-9]+)[\s]*,[\s]*([0-9]+)[\s]*,[\s]*([0-9]+)\}/;
+        // This regex either matches a *, a **, or something like {255, 255, 0}.
+        var r: EReg = ~/\*|\*\*|\{([0-9]+)[\s]*,[\s]*([0-9]+)[\s]*,[\s]*([0-9]+)\}/;
         var currentPair: ColorSegment = { start: -1, end: -1, color: currentColor, accentDefault: isDefaultAccentColor };
 
         var resultText: String = value;
@@ -129,6 +135,10 @@ class Text extends Entity {
                     pairs.push(currentPair);
                     currentPair = { start: -1, end: -1, color: currentColor, accentDefault: isDefaultAccentColor };
                 }
+
+                resultText = r.replace(resultText, "");
+            } else if (r.matched(0) == "**") {
+                resultText = r.replace(resultText, "*");
             } else {
                 currentColor = new Color(Std.parseInt(r.matched(1))
                                        , Std.parseInt(r.matched(2))
@@ -136,11 +146,9 @@ class Text extends Entity {
                 currentPair.color = currentColor;
                 isDefaultAccentColor = false;
                 currentPair.accentDefault = false;
+                resultText = r.replace(resultText, "");
             }
-
-            resultText = r.replace(resultText, "");
         }
-
 
         return textField.text = resultText;
     }
@@ -190,4 +198,3 @@ class Text extends Entity {
     }
 
 }
-
