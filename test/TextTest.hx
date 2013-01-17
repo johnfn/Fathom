@@ -94,5 +94,13 @@ class TextTest extends haxe.unit.TestCase {
     assertEquals(g.text, "test * escape * derp");
   }
 
+  public function testTripleStar() {
+    g.text = "***test***";
+    g.accentColor = 0x00ff00;
+
+    assertEquals(g.text, "*test*");
+    assertTrue(hasColor(0x00ff00));
+  }
+
 }
 

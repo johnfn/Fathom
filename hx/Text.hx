@@ -119,13 +119,17 @@ class Text extends Entity {
         var isDefaultAccentColor: Bool = true;
         var currentColor: Int = accentColor;
         // This regex either matches a *, a **, or something like {255, 255, 0}.
-        var r: EReg = ~/\*|\*\*|\{([0-9]+)[\s]*,[\s]*([0-9]+)[\s]*,[\s]*([0-9]+)\}/;
+        var e: EReg = ~/\*{1,2}|\{([0-9]+)[\s]*,[\s]*([0-9]+)[\s]*,[\s]*([0-9]+)\}/;
         var currentPair: ColorSegment = { start: -1, end: -1, color: currentColor, accentDefault: isDefaultAccentColor };
 
-        var resultText: String = value;
+        var resultText: String;
+        var loc: Int = 0;
+        var ignoreNextStar: Bool = false;
 
-        while (r.match(resultText)) {
-            var loc: Int = r.matchedPos().pos;
+        resultText = e.customReplace(value, function(r: EReg): String {
+            var replacement: String = "";
+
+            loc += e.matchedPos().pos;
 
             if (r.matched(0) == "*") {
                 if (currentPair.start == -1) {
@@ -136,9 +140,9 @@ class Text extends Entity {
                     currentPair = { start: -1, end: -1, color: currentColor, accentDefault: isDefaultAccentColor };
                 }
 
-                resultText = r.replace(resultText, "");
+                replacement = "";
             } else if (r.matched(0) == "**") {
-                resultText = r.replace(resultText, "*");
+                replacement = "*";
             } else {
                 currentColor = new Color(Std.parseInt(r.matched(1))
                                        , Std.parseInt(r.matched(2))
@@ -146,9 +150,11 @@ class Text extends Entity {
                 currentPair.color = currentColor;
                 isDefaultAccentColor = false;
                 currentPair.accentDefault = false;
-                resultText = r.replace(resultText, "");
+                replacement = "";
             }
-        }
+
+            return replacement;
+        });
 
         return textField.text = resultText;
     }
