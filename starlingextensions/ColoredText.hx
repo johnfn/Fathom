@@ -65,16 +65,6 @@ import starling.text.BitmapFont;
  *  </ul>
  */
 
- typedef ColorSegment = {
-   var start: Int;
-   var end: Int;
-   var color: Int;
-
-   // Necessary so that if they then change the accent color, we
-   // can retroactively update.
-   var accentDefault: Bool;
- }
-
 class ColoredText extends DisplayObjectContainer {
   public var textBounds(getTextBounds, never) : Rectangle;
   public var text(getText, setText) : String;
@@ -90,7 +80,7 @@ class ColoredText extends DisplayObjectContainer {
   public var kerning(getKerning, setKerning) : Bool;
   public var autoScale(getAutoScale, setAutoScale) : Bool;
   public var nativeFilters(getNativeFilters, setNativeFilters) : Array<BitmapFilter>;
-  public var accentColor: Int = 0xff0000;
+  public var textFormatCallback(getTextFormatCB, setTextFormatCB): TextField -> TextFormat -> Void;
   static var bitmapFonts(getBitmapFonts, never) : Dictionary;
 
   // the name container with the registered bitmap fonts
@@ -114,8 +104,7 @@ class ColoredText extends DisplayObjectContainer {
   var mBorder : DisplayObjectContainer;
   var mImage : Image;
   var mQuadBatch : QuadBatch;
-
-  var pairs: Array<ColorSegment>;
+  var mTextFormatCB : TextField -> TextFormat -> Void;
 
   // this object will be used for text rendering
   static var sNativeTextField : flash.text.TextField = new flash.text.TextField();
@@ -123,7 +112,6 @@ class ColoredText extends DisplayObjectContainer {
   public function new(width : Int, height : Int, text : String, fontName : String = "Verdana", fontSize : Float = 12, color : UInt = 0x0, bold : Bool = false) {
     super();
 
-    pairs = [];
     this.text = (text != null) ? text : "";
     mFontSize = fontSize;
     mColor = color;
@@ -215,13 +203,8 @@ class ColoredText extends DisplayObjectContainer {
     sNativeTextField.embedFonts = true;
     sNativeTextField.filters = mNativeFilters;
 
-    for (pair in pairs) {
-      textFormat.color = pair.color;
-      if (pair.accentDefault) {
-        textFormat.color = accentColor;
-      }
-      sNativeTextField.setTextFormat(textFormat, pair.start, pair.end);
-    }
+    mTextFormatCB(sNativeTextField, textFormat);
+
 
     // we try embedded fonts first, non-embedded fonts are just a fallback
     if(sNativeTextField.textWidth == 0.0 || sNativeTextField.textHeight == 0.0)
@@ -364,54 +347,8 @@ class ColoredText extends DisplayObjectContainer {
       value = "";
 
     if(mText != value)  {
-      pairs = [];
 
-      var isDefaultAccentColor: Bool = true;
-      var currentColor: Int = accentColor;
-      var r: EReg = ~/\*|\{([0-9]+)[\s]*,[\s]*([0-9]+)[\s]*,[\s]*([0-9]+)\}/;
-      var currentPair: ColorSegment = { start: -1, end: -1, color: currentColor, accentDefault: isDefaultAccentColor };
-
-      var resultText: String = value;
-
-      while (r.match(resultText)) {
-        var loc: Int = r.matchedPos().pos;
-
-        if (r.matched(0) == "*") {
-          if (currentPair.start == -1) {
-            currentPair.start = loc;
-          } else {
-            currentPair.end = loc;
-            pairs.push(currentPair);
-            currentPair = { start: -1, end: -1, color: currentColor, accentDefault: isDefaultAccentColor };
-          }
-        } else {
-          currentColor = new Color(Std.parseInt(r.matched(1))
-                                 , Std.parseInt(r.matched(2))
-                                 , Std.parseInt(r.matched(3))).toInt();
-          currentPair.color = currentColor;
-          isDefaultAccentColor = false;
-          currentPair.accentDefault = false;
-        }
-
-        resultText = r.replace(resultText, "");
-      }
-
-
-      /*
-      var idx : Int = 0;
-      var resultString : String = "";
-      for (i in 0...value.length) {
-          idx++;
-          if(value.charAt(i) == "*")  {
-            idx--;
-
-          } else  {
-            resultString += value.charAt(i);
-          }
-      }
-
-      */
-      mText = resultText;
+      mText = value;
       mRequiresRedraw = true;
     }
     return value;
@@ -434,7 +371,7 @@ class ColoredText extends DisplayObjectContainer {
   }
 
   /** The size of the font. For bitmap fonts, use <code>BitmapFont.NATIVE_SIZE</code> for
-         *  the original size. */
+   *  the original size. */
   public function getFontSize() : Float {
     return mFontSize;
   }
@@ -445,6 +382,14 @@ class ColoredText extends DisplayObjectContainer {
       mRequiresRedraw = true;
     }
     return value;
+  }
+
+  public function setTextFormatCB(cb: TextField -> TextFormat -> Void): TextField -> TextFormat -> Void {
+    return mTextFormatCB = cb;
+  }
+
+  public function getTextFormatCB(): TextField -> TextFormat -> Void {
+    return mTextFormatCB;
   }
 
   /** The color of the text. For bitmap fonts, use <code>Color.WHITE</code> to use the

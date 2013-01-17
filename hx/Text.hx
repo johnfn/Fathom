@@ -2,6 +2,18 @@
 import Hooks;
 import Util;
 import starlingextensions.ColoredText;
+import flash.text.TextFormat;
+import flash.text.TextField;
+
+ typedef ColorSegment = {
+   var start: Int;
+   var end: Int;
+   var color: Int;
+
+   // Necessary so that if they then change the accent color, we
+   // can retroactively update.
+   var accentDefault: Bool;
+ }
 
 class Text extends Entity {
     public var size(never, setSize) : Float;
@@ -13,10 +25,14 @@ class Text extends Entity {
     var content : String;
     var typewriting : Bool;
     var typewriteTick : Void -> Void;
+    var _accentColor: Int = 0xff0000;
+
+    var pairs: Array<ColorSegment>;
 
     public function new(content : String = "", textName : String = null) {
         typewriting = false;
         super(-10, -10);
+        pairs = [];
         this.content = content;
         if(textName != null) textField.fontName = textName;
         textField = new ColoredText(200, 100, content);
@@ -28,6 +44,7 @@ class Text extends Entity {
         textField.border = true;
         textField.hAlign = "left";
         textField.vAlign = "top";
+        textField.textFormatCallback = formatText;
         addChild(textField);
         // You need to set the width after you add the TextField - otherwise, it'll
         // be reset to 0.
@@ -35,11 +52,11 @@ class Text extends Entity {
     }
 
     public function setAccentColor(c: Int): Int {
-        return textField.accentColor = c;
+        return _accentColor = c;
     }
 
     public function getAccentColor(): Int {
-        return textField.accentColor;
+        return _accentColor;
     }
 
     public function setSize(val : Float) : Float {
@@ -76,14 +93,57 @@ class Text extends Entity {
       return this;
     }
     */
+
+    function formatText(textField: TextField, textFormat: TextFormat): Void {
+        for (pair in pairs) {
+            textFormat.color = pair.color;
+            if (pair.accentDefault) {
+                textFormat.color = accentColor;
+            }
+            textField.setTextFormat(textFormat, pair.start, pair.end);
+        }
+    }
+
     public function getText() : String {
         return textField.text;
     }
 
-    // Interpolate the string by adding colors. Any words between *stars* are
-    // colored red.
-    public function setText(s : String) : String {
-        return textField.text = s;
+    // Interpolate the string by adding colors.
+    public function setText(value: String) : String {
+        pairs = [];
+
+        var isDefaultAccentColor: Bool = true;
+        var currentColor: Int = accentColor;
+        var r: EReg = ~/\*|\{([0-9]+)[\s]*,[\s]*([0-9]+)[\s]*,[\s]*([0-9]+)\}/;
+        var currentPair: ColorSegment = { start: -1, end: -1, color: currentColor, accentDefault: isDefaultAccentColor };
+
+        var resultText: String = value;
+
+        while (r.match(resultText)) {
+            var loc: Int = r.matchedPos().pos;
+
+            if (r.matched(0) == "*") {
+                if (currentPair.start == -1) {
+                    currentPair.start = loc;
+                } else {
+                    currentPair.end = loc;
+                    pairs.push(currentPair);
+                    currentPair = { start: -1, end: -1, color: currentColor, accentDefault: isDefaultAccentColor };
+                }
+            } else {
+                currentColor = new Color(Std.parseInt(r.matched(1))
+                                       , Std.parseInt(r.matched(2))
+                                       , Std.parseInt(r.matched(3))).toInt();
+                currentPair.color = currentColor;
+                isDefaultAccentColor = false;
+                currentPair.accentDefault = false;
+            }
+
+            resultText = r.replace(resultText, "");
+        }
+
+
+        return textField.text = resultText;
     }
 
     public function advanceText() : Void {
