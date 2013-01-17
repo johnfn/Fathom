@@ -1,6 +1,7 @@
 //import flash.filters.DropShadowFilter;
 import Hooks;
 import Util;
+import starlingExtensions.ColoredText;
 
 class Text extends Entity {
     public var size(never, setSize) : Float;
