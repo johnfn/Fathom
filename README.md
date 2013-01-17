@@ -15,7 +15,11 @@ Fathom compiles to AS3 (via .swc), so you can use AS3 too. But you don't get tha
 * `SuperObjectHash` - Did you know that Haxe doesn't provide a cross-platform TypedDictionary? `nme.ObjectHash` comes close, but silently screws up primitive key values (so `ObjectHash<Int, String>` would be a disaster). `SuperObjectHash` is what you want.
 * `Set` - A collection of unique items, with some handy high power functions.
 
-## Tests
+## Developing?
+
+If you want to develop on Fathom, awesome! There are some things I think you should know. [go here](DEVELOPING.md)
+
+### Tests
 
 Fathom is also tested! How cool is that.
 
@@ -23,7 +27,7 @@ To run the AS3 tests, use `./as3test`.
 
 To run the NME tests, use `./nmetest`.
 
-## License
+### License
 
 Fathom is licensed under the MIT license. That means you can do whatever you want with it, so long as you keep the LICENSE file intact.
 
