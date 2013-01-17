@@ -163,6 +163,23 @@ class ColoredText extends DisplayObjectContainer {
     mRequiresRedraw = false;
   }
 
+  function strToAlign(s: String): flash.text.TextFormatAlign {
+    if (s.toLowerCase() == "left") {
+      return flash.text.TextFormatAlign.LEFT;
+    }
+
+    if (s.toLowerCase() == "right") {
+      return flash.text.TextFormatAlign.RIGHT;
+    }
+
+    if (s.toLowerCase() == "center") {
+      return flash.text.TextFormatAlign.CENTER;
+    }
+
+    throw "Woops, that HAlign is not supported.";
+    return flash.text.TextFormatAlign.LEFT;
+  }
+
   function createRenderedContents() : Void {
     if(mQuadBatch != null)  {
       mQuadBatch.removeFromParent(true);
@@ -179,7 +196,7 @@ class ColoredText extends DisplayObjectContainer {
       textFormat.bold = mBold;
       textFormat.italic = mItalic;
       textFormat.underline = mUnderline;
-      //textFormat.align = mHAlign;
+      textFormat.align = strToAlign(mHAlign);
     }
     textFormat.kerning = mKerning;
     sNativeTextField.defaultTextFormat = textFormat;

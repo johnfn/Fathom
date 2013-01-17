@@ -1,7 +1,7 @@
 //import flash.filters.DropShadowFilter;
 import Hooks;
 import Util;
-import starlingExtensions.ColoredText;
+import starlingextensions.ColoredText;
 
 class Text extends Entity {
     public var size(never, setSize) : Float;
@@ -25,6 +25,8 @@ class Text extends Entity {
         //textField.antiAliasType = "advanced";
         text = content;
         textField.border = true;
+        textField.hAlign = "left";
+        textField.vAlign = "top";
         addChild(textField);
         // You need to set the width after you add the TextField - otherwise, it'll
         // be reset to 0.
