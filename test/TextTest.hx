@@ -1,5 +1,6 @@
 import nme.display.BitmapData;
 import nme.geom.Point;
+import flash.geom.Matrix;
 
 class TextTest extends haxe.unit.TestCase {
   var g:Text;

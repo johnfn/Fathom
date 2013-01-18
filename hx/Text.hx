@@ -24,7 +24,8 @@ class Text extends Entity {
     public var text(getText, setText) : String;
     public var accentColor(getAccentColor, setAccentColor): Int;
 
-    var textField : TextField;
+//todo- remove public
+    public var textField : TextField;
     var typewriting : Bool;
     var typewriteTick : Void -> Void;
     var _accentColor: Int = 0xff0000;
@@ -38,7 +39,7 @@ class Text extends Entity {
         super(-10, -10);
         pairs = [];
 
-        var color: Int = 0xff0000;
+        var color: Int = 0x000000;
 #if flash
         textField = new TextField(200, 100, "");
         textField.fontName = fontName;
@@ -103,7 +104,6 @@ class Text extends Entity {
 #if flash
         textField.color = val;
 #else
-        trace(textField.textColor);
         textField.defaultTextFormat.color = val;
         formatText(textField, textField.defaultTextFormat);
 #end
@@ -129,6 +129,8 @@ class Text extends Entity {
     */
 
     function formatText(textField: flash.text.TextField, textFormat: TextFormat): Void {
+        var defaultColor: Int = textFormat.color;
+
         for (pair in pairs) {
             textFormat.color = pair.color;
             if (pair.accentDefault) {
@@ -137,6 +139,8 @@ class Text extends Entity {
 
             textField.setTextFormat(textFormat, pair.start, pair.end);
         }
+
+        textFormat.color = defaultColor;
     }
 
     public function getText() : String {
