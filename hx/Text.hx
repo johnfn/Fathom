@@ -173,6 +173,9 @@ class Text extends Entity {
                 } else {
                     currentPair.end = loc;
                     pairs.push(currentPair);
+
+                    currentColor = accentColor;
+                    isDefaultAccentColor = true;
                     currentPair = { start: -1, end: -1, color: currentColor, accentDefault: isDefaultAccentColor };
                 }
 
