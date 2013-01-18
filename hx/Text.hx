@@ -149,7 +149,35 @@ class Text extends Entity {
         return textField.text;
     }
 
-    // Interpolate the string by adding colors.
+    /** Text has built-in color interpolation. That means that if you do
+     *
+     *      var t: Text = new Text("This is *so* cool!");
+     *
+     *  then the word "so" will be highlighted t.accentColor (which defaults
+     *  to red). If you do this:
+     *
+     *      var t: Text = new Text("This is *so* cool!");
+     *      t.accentColor = 0x00ff00;
+     *
+     *  Text is smart enough to change "so" to be green.
+     *
+     *  If you want more colors, you can change the color of the next starred
+     *  piece of text like so:
+     *
+     *      var t: Text = new Text("Lots *of* {0, 255, 0} *colors*.")
+     *
+     *  In that example, "of" would be red (accentColor), and "colors" would
+     *  be green (R = 0, G = 255, B = 0 - those values are taken from the
+     *  {0, 255, 0} block).
+     *
+     *  Finally, if you need an asterick in your text, use "**". For example:
+     *
+     *      var t: Text = new Text("Just some normal stars: ** **");
+     *
+     *  The person playing your game would see text that said
+     *  "Just some normal stars: * *".
+     *
+     */
     public function setText(value: String) : String {
         var isDefaultAccentColor: Bool = true;
         var currentColor: Int = accentColor;
