@@ -29,6 +29,8 @@ class Text extends Entity {
     var typewriteTick : Void -> Void;
     var _accentColor: Int = 0xff0000;
 
+    var normalTextFormat: TextFormat;
+
     var pairs: Array<ColorSegment>;
 
     public function new(content : String = "", fontName : String = "Arial") {
@@ -36,7 +38,7 @@ class Text extends Entity {
         super(-10, -10);
         pairs = [];
 
-        var color: Int = 0x000000;
+        var color: Int = 0xff0000;
 #if flash
         textField = new TextField(200, 100, "");
         textField.fontName = fontName;
@@ -48,6 +50,7 @@ class Text extends Entity {
         textField.textFormatCallback = formatText;
 #else
         textField = new TextField();
+        textField.selectable = false;
         textField.width = 200;
         textField.height = 100;
 
@@ -55,8 +58,8 @@ class Text extends Entity {
 
         textFormat.font = fontName;
         textFormat.size = 16;
-        textFormat.color = color;
         textFormat.align = flash.text.TextFormatAlign.LEFT;
+        textFormat.color = color;
 
         textField.defaultTextFormat = textFormat;
 #end
@@ -72,7 +75,12 @@ class Text extends Entity {
     }
 
     public function setAccentColor(c: Int): Int {
-        return _accentColor = c;
+        _accentColor = c;
+#if !flash
+        formatText(textField, textField.defaultTextFormat);
+#end
+
+        return c;
     }
 
     public function getAccentColor(): Int {
@@ -92,19 +100,22 @@ class Text extends Entity {
     }
 
     public function setColor(val : Int) : Int {
-#if cpp
-        textField.defaultTextFormat.color = val;
-#else
+#if flash
         textField.color = val;
+#else
+        trace(textField.textColor);
+        textField.defaultTextFormat.color = val;
+        formatText(textField, textField.defaultTextFormat);
 #end
+
         return val;
     }
 
     public function getColor() : Int {
-#if cpp
-        return textField.defaultTextFormat.color;
-#else
+#if flash
         return textField.color;
+#else
+        return textField.textColor;
 #end
     }
 
@@ -123,6 +134,7 @@ class Text extends Entity {
             if (pair.accentDefault) {
                 textFormat.color = accentColor;
             }
+
             textField.setTextFormat(textFormat, pair.start, pair.end);
         }
     }
@@ -175,7 +187,16 @@ class Text extends Entity {
             return replacement;
         });
 
-        return textField.text = resultText;
+        textField.text = resultText;
+
+        // In the case of Flash, formatText is called inside the render function of
+        // TextField.
+
+#if !flash
+        formatText(textField, textField.defaultTextFormat);
+#end
+
+        return resultText;
     }
 
     public function advanceText() : Void {
