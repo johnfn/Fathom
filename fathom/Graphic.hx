@@ -46,17 +46,11 @@ class Graphic extends Sprite {
     static var cachedAssets: SuperObjectHash<String, Texture> = new SuperObjectHash();
     var fullTexture : Texture;
 #else
-    //var texturedObject:Bitmap;
     static var cachedAssets: SuperObjectHash<String, BitmapData> = new SuperObjectHash();
     var fullTexture : BitmapData;
     var texturedObject: ReloadedGraphic;
 #end
 
-    /* This function is called when the graphic is loaded.
-
-       Honestly, you should never have to use it. I just have it here for
-       testing.
-    */
     public var depth(getDepth, setDepth) : Int;
     public var animations : AnimationHandler;
     var spritesheet : SpriteSheet;

@@ -29,19 +29,21 @@ class Text extends Entity {
     var typewriteTick : Void -> Void;
     var _accentColor: Int = 0xff0000;
     var _color: Int = 0x000000;
+    var _fontName: String = "arial";
 
     var normalTextFormat: TextFormat;
 
     var pairs: Array<ColorSegment>;
 
-    public function new(content : String = "", fontName : String = "arial") {
+    public function new(width: Int, height: Int, content : String = "") {
         typewriting = false;
-        super(-10, -10);
         pairs = [];
 
+        super(-10, -10);
+
 #if flash
-        textField = new TextField(200, 400, "");
-        textField.fontName = fontName;
+        textField = new TextField(width, height, "");
+        textField.fontName = _fontName;
         textField.fontSize = 16;
         textField.color = _color;
         textField.border = true;
@@ -54,7 +56,7 @@ class Text extends Entity {
 
         normalTextFormat = new TextFormat();
 
-        normalTextFormat.font = fontName;
+        normalTextFormat.font = _fontName;
         normalTextFormat.size = 16;
         normalTextFormat.align = flash.text.TextFormatAlign.LEFT;
         normalTextFormat.color = _color;
@@ -62,8 +64,8 @@ class Text extends Entity {
         textField.wordWrap = true;
         textField.text = content;
         textField.setTextFormat(normalTextFormat);
-        textField.width = 200;
-        textField.height = 400;
+        textField.width = width;
+        textField.height = height;
 #end
 
         text = content;
@@ -74,7 +76,6 @@ class Text extends Entity {
 
         // You need to set the width after you add the TextField - otherwise, it'll
         // be reset to 0.
-        width = 200;
     }
 
     public function setAccentColor(c: Int): Int {
@@ -88,18 +89,6 @@ class Text extends Entity {
 
     public function getAccentColor(): Int {
         return _accentColor;
-    }
-
-    public function setWidth(val : Float) : Float {
-        textField.width = val;
-        this.width = val;
-        return val;
-    }
-
-    public function setHeight(val : Float) : Float {
-        textField.height = val;
-        this.height = val;
-        return val;
     }
 
     public function setColor(val : Int) : Int {

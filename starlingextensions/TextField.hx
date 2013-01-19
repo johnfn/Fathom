@@ -204,7 +204,6 @@ class TextField extends DisplayObjectContainer {
 
     mTextFormatCB(sNativeTextField, textFormat);
 
-
     // we try embedded fonts first, non-embedded fonts are just a fallback
     if(sNativeTextField.textWidth == 0.0 || sNativeTextField.textHeight == 0.0)
       sNativeTextField.embedFonts = false;
@@ -346,7 +345,6 @@ class TextField extends DisplayObjectContainer {
       value = "";
 
     if(mText != value)  {
-
       mText = value;
       mRequiresRedraw = true;
     }
