@@ -1,4 +1,4 @@
-import hx.Color;
+import fathom.Color;
 
 class ColorTest extends haxe.unit.TestCase {
   public function testBasic() {

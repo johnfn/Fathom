@@ -1,14 +1,14 @@
-package hx;
+package fathom;
 
-import hx.Map;
-import hx.Mode;
-import hx.Set;
-import hx.Entity;
-import hx.SpatialHash;
-import hx.CameraFocus;
-import hx.MovingEntity;
-import hx.MagicKeyObject;
-import hx.Particles;
+import fathom.Map;
+import fathom.Mode;
+import fathom.Set;
+import fathom.Entity;
+import fathom.SpatialHash;
+import fathom.CameraFocus;
+import fathom.MovingEntity;
+import fathom.MagicKeyObject;
+import fathom.Particles;
 
 #if flash
 import starling.core.Starling;

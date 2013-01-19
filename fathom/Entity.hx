@@ -1,8 +1,8 @@
-package hx;
+package fathom;
 
-import hx.Graphic;
-import hx.Vec;
-import hx.Set;
+import fathom.Graphic;
+import fathom.Vec;
+import fathom.Set;
 
 import nme.display.BitmapData;
 

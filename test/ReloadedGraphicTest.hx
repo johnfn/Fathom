@@ -1,6 +1,6 @@
-import hx.ReloadedGraphic;
-import hx.Fathom;
-import hx.Graphic;
+import fathom.ReloadedGraphic;
+import fathom.Fathom;
+import fathom.Graphic;
 
 import flash.display.BitmapData;
 

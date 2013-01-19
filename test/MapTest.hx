@@ -1,9 +1,9 @@
-import hx.Map;
-import hx.Fathom;
-import hx.Vec;
-import hx.Graphic;
-import hx.Entity;
-import hx.Set;
+import fathom.Map;
+import fathom.Fathom;
+import fathom.Vec;
+import fathom.Graphic;
+import fathom.Entity;
+import fathom.Set;
 
 import flash.display.BitmapData;
 import flash.display.Bitmap;

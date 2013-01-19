@@ -1,4 +1,4 @@
-import hx.Fathom;
+import fathom.Fathom;
 
 #if nme
 import nme.display.Sprite;

@@ -1,7 +1,7 @@
-import hx.AnimationHandler;
-import hx.Entity;
-import hx.Vec;
-import hx.Fathom;
+import fathom.AnimationHandler;
+import fathom.Entity;
+import fathom.Vec;
+import fathom.Fathom;
 
 using Lambda;
 

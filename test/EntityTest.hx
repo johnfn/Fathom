@@ -1,6 +1,6 @@
-import hx.Entity;
-import hx.Fathom;
-import hx.Set;
+import fathom.Entity;
+import fathom.Fathom;
+import fathom.Set;
 
 import flash.display.BitmapData;
 

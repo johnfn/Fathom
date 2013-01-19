@@ -1,4 +1,4 @@
-import hx.Vec;
+import fathom.Vec;
 
 class VecTest extends haxe.unit.TestCase {
   public function testBasic() {

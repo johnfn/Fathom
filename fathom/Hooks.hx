@@ -1,6 +1,6 @@
-package hx;
+package fathom;
 
-import hx.Vec;
+import fathom.Vec;
 
 import flash.display.Sprite;
 import flash.geom.Point;

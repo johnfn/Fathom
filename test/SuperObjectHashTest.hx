@@ -1,4 +1,4 @@
-import hx.SuperObjectHash;
+import fathom.SuperObjectHash;
 
 class SuperObjectHashTest extends haxe.unit.TestCase {
   public function testNonPrimitive() {

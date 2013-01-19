@@ -1,5 +1,5 @@
-import hx.Util;
-import hx.Fathom;
+import fathom.Util;
+import fathom.Fathom;
 
 #if flash
 import starling.events.Event;
@@ -12,11 +12,11 @@ import nme.events.KeyboardEvent;
 class KeyTest extends haxe.unit.TestCase {
   public function testSimple() {
     // TODO: For the life of me I can't figure out why I'm required to
-    // write "hx.Util" here instead of just Util.
+    // write "fathom.Util" here instead of just Util.
     // Haxe bug???
-    assertFalse(hx.Util.KeyDown.X);
-    assertFalse(hx.Util.KeyDown.Down);
-    assertFalse(hx.Util.KeyDown.Space);
+    assertFalse(fathom.Util.KeyDown.X);
+    assertFalse(fathom.Util.KeyDown.Down);
+    assertFalse(fathom.Util.KeyDown.Space);
   }
 
   public function testKeypress() {
@@ -24,9 +24,9 @@ class KeyTest extends haxe.unit.TestCase {
     var aUp:KeyboardEvent = new KeyboardEvent(KeyboardEvent.KEY_UP, 65, 65);
 
     Fathom.actualStage.dispatchEvent(aDown);
-    assertTrue(hx.Util.KeyDown.A);
+    assertTrue(fathom.Util.KeyDown.A);
 
     Fathom.actualStage.dispatchEvent(aUp);
-    assertFalse(hx.Util.KeyDown.A);
+    assertFalse(fathom.Util.KeyDown.A);
   }
 }

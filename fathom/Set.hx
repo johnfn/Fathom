@@ -1,7 +1,7 @@
-package hx;
-import hx.Entity;
+package fathom;
+import fathom.Entity;
 
-import hx.SuperObjectHash;
+import fathom.SuperObjectHash;
 
 // TODO: High level stuff - should have some consistency with mutable/immutable
 // function calls.

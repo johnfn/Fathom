@@ -1,6 +1,6 @@
-package hx;
+package fathom;
 
-import hx.SuperObjectHash;
+import fathom.SuperObjectHash;
 
 #if flash
 import starling.events.Event;

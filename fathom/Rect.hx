@@ -1,4 +1,4 @@
-package hx;
+package fathom;
 
 import nme.geom.Point;
 

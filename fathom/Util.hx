@@ -1,8 +1,8 @@
-package hx;
+package fathom;
 
-import hx.MagicKeyObject;
-import hx.Vec;
-import hx.SuperObjectHash;
+import fathom.MagicKeyObject;
+import fathom.Vec;
+import fathom.SuperObjectHash;
 
 import haxe.Stack;
 

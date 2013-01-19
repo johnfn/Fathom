@@ -1,5 +1,5 @@
-import hx.Rect;
-import hx.Vec;
+import fathom.Rect;
+import fathom.Vec;
 
 import flash.display.BitmapData;
 

@@ -1,8 +1,8 @@
-package hx;
+package fathom;
 
-import hx.Vec;
-import hx.Entity;
-import hx.Set;
+import fathom.Vec;
+import fathom.Entity;
+import fathom.Set;
 
 import flash.display.MovieClip;
 import flash.geom.Point;

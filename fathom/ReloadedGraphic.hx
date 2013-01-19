@@ -1,4 +1,4 @@
-package hx;
+package fathom;
 
 import nme.display.BitmapData;
 import nme.display.Bitmap;

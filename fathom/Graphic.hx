@@ -1,10 +1,10 @@
-package hx;
+package fathom;
 
-import hx.ReloadedGraphic;
-import hx.SuperObjectHash;
-import hx.AnimationHandler;
-import hx.Vec;
-import hx.Rect;
+import fathom.ReloadedGraphic;
+import fathom.SuperObjectHash;
+import fathom.AnimationHandler;
+import fathom.Vec;
+import fathom.Rect;
 
 import nme.display.Bitmap;
 import nme.display.BitmapData;

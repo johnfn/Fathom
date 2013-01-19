@@ -1,4 +1,4 @@
-package hx;
+package fathom;
 
 //import flash.filters.DropShadowFilter;
 #if flash
@@ -24,7 +24,6 @@ class Text extends Entity {
     public var text(getText, setText) : String;
     public var accentColor(getAccentColor, setAccentColor): Int;
 
-//todo- remove public
     var textField : TextField;
     var typewriting : Bool;
     var typewriteTick : Void -> Void;
@@ -41,7 +40,7 @@ class Text extends Entity {
         pairs = [];
 
 #if flash
-        textField = new TextField(200, 100, "");
+        textField = new TextField(200, 400, "");
         textField.fontName = fontName;
         textField.fontSize = 16;
         textField.color = _color;
@@ -52,8 +51,6 @@ class Text extends Entity {
 #else
         textField = new TextField();
         textField.selectable = false;
-        textField.width = 200;
-        textField.height = 100;
 
         normalTextFormat = new TextFormat();
 
@@ -62,9 +59,13 @@ class Text extends Entity {
         normalTextFormat.align = flash.text.TextFormatAlign.LEFT;
         normalTextFormat.color = _color;
 
+        textField.wordWrap = true;
         textField.text = content;
         textField.setTextFormat(normalTextFormat);
+        textField.width = 200;
+        textField.height = 400;
 #end
+
         text = content;
         addChild(textField);
 

@@ -1,7 +1,7 @@
-import hx.Graphic;
-import hx.Fathom;
-import hx.Entity;
-import hx.Vec;
+import fathom.Graphic;
+import fathom.Fathom;
+import fathom.Entity;
+import fathom.Vec;
 
 import flash.display.BitmapData;
 

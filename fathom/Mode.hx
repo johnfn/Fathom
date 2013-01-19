@@ -1,4 +1,4 @@
-package hx;
+package fathom;
 
 class Mode {
   public var modes: Array<Int>;

@@ -1,9 +1,9 @@
-import hx.CameraFocus;
-import hx.Util;
-import hx.Entity;
-import hx.Vec;
-import hx.Fathom;
-import hx.Graphic;
+import fathom.CameraFocus;
+import fathom.Util;
+import fathom.Entity;
+import fathom.Vec;
+import fathom.Fathom;
+import fathom.Graphic;
 
 import nme.display.BitmapData;
 import nme.geom.Point;
