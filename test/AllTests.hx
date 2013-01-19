@@ -1,3 +1,7 @@
+package fathom.test;
+
+import fathom.hx.Fathom;
+
 #if nme
 import nme.display.Sprite;
 import nme.display.Bitmap;

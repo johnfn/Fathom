@@ -4,4 +4,5 @@ Starling-Framework
 test.swf
 *.sublime-*
 *.swp
+*.tmp
 Export/

@@ -1,4 +1,4 @@
-import Util;
+package fathom.hx;
 
 class Color {
 

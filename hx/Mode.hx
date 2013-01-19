@@ -1,3 +1,5 @@
+package fathom.hx;
+
 class Mode {
   public var modes: Array<Int>;
 

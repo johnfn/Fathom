@@ -1,3 +1,5 @@
+package fathom.test;
+
 import flash.display.BitmapData;
 import Rect;
 

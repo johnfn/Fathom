@@ -1,3 +1,5 @@
+package fathom.hx;
+
 #if flash
 import starling.events.Event;
 import starling.events.KeyboardEvent;

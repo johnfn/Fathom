@@ -1,8 +1,8 @@
+package fathom.hx;
+
 import flash.display.MovieClip;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import Hooks;
-import Util;
 
 class MovingEntity extends Entity {
 

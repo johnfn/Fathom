@@ -1,10 +1,8 @@
+package fathom.hx;
+
 import nme.geom.Point;
 import nme.geom.Rectangle;
 import nme.display.BitmapData;
-
-import Color;
-import Util;
-import Entity;
 
 using Lambda;
 

@@ -1,3 +1,5 @@
+package fathom.hx;
+
 #if flash
 import starling.core.Starling;
 import starling.events.Event;

@@ -1,4 +1,5 @@
-import Util;
+package fathom.hx;
+
 import nme.display.BitmapData;
 
 #if flash

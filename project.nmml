@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 
-  <meta title="Fathom Tests" package="com.fathom" version="0.0.0" company="Fathom" />
+  <meta title="Fathom Tests" package="fathom" version="0.0.0" company="Fathom" />
   <app main="AllTests" path="Export" />
 
   <source path="hx" />

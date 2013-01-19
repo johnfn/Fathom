@@ -1,3 +1,5 @@
+package fathom.hx;
+
 // TODO: High level stuff - should have some consistency with mutable/immutable
 // function calls.
 // This class mimics the Set data type found in languages like Python.

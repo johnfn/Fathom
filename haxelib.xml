@@ -1,0 +1,10 @@
+<project name="Fathom" url="http://github.com/johnfn/Fathom" license="MIT">
+    <user name="johnfn"/>
+    <tag v="flash"/>
+    <tag v="cpp"/>
+    <tag v="nme"/>
+    <tag v="game"/>
+    <description>GPU powered game engine targetting Flash. Currently in development.</description>
+    <version name="0.4">Pretty far from stable.</version>
+</project>
+

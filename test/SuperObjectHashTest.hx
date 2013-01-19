@@ -1,3 +1,5 @@
+package fathom.test;
+
 class SuperObjectHashTest extends haxe.unit.TestCase {
   public function testNonPrimitive() {
     var soh:SuperObjectHash<Array<Int>, Int> = new SuperObjectHash();

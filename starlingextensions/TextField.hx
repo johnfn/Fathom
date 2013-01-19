@@ -1,4 +1,4 @@
-package starlingextensions;
+package fathom.starlingextensions;
 
 // =================================================================================================
 //

@@ -1,3 +1,5 @@
+package fathom.hx;
+
 import flash.display.Sprite;
 import flash.geom.Point;
 

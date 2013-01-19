@@ -1,3 +1,4 @@
+package fathom.test;
 import Set;
 
 class SetTest extends haxe.unit.TestCase {

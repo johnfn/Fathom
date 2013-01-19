@@ -1,3 +1,5 @@
+package fathom.test;
+
 import nme.display.BitmapData;
 import nme.geom.Point;
 import flash.geom.Matrix;

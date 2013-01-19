@@ -1,3 +1,5 @@
+package fathom.hx;
+
 import nme.display.Bitmap;
 import nme.display.BitmapData;
 import nme.geom.Point;
@@ -16,9 +18,6 @@ import nme.display.Sprite;
 import nme.display.DisplayObjectContainer;
 import nme.events.Event;
 #end
-
-import Hooks;
-import Util;
 
 typedef SpriteSheet = {
     var x:Int;

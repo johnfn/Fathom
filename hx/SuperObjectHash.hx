@@ -1,4 +1,4 @@
-import ObjectHash;
+package fathom.hx;
 
 /**
   * SuperObjectHash is like ObjectHash, but it supports primitive values

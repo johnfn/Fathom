@@ -1,3 +1,5 @@
+package fathom.hx;
+
 import nme.geom.Point;
 
 #if flash

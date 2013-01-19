@@ -1,8 +1,8 @@
+package fathom.hx;
+
 //import flash.filters.DropShadowFilter;
-import Hooks;
-import Util;
 #if flash
-import starlingextensions.TextField;
+import fathom.starlingextensions.TextField;
 #else
 import nme.text.TextField;
 #end

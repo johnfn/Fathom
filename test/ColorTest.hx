@@ -1,3 +1,5 @@
+package fathom.test;
+
 class ColorTest extends haxe.unit.TestCase {
   public function testBasic() {
     var c1:Color = new Color(255, 0, 0);

@@ -1,3 +1,5 @@
+package fathom.test;
+
 import Vec;
 
 class VecTest extends haxe.unit.TestCase {

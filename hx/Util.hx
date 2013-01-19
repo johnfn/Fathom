@@ -1,3 +1,5 @@
+package fathom.hx;
+
 import haxe.Stack;
 
 class Util {

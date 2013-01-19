@@ -1,7 +1,10 @@
+package fathom.hx;
+
 /* Collision detection in Fathom is done with a data structure known as a Spatial Hash.
    If you're not familiar with a Spatial Hash, you can just think of it as a 2D array
    of every entity. */
 class SpatialHash {
+    // TODO as should be obvious i have barely begun porting this class.
 
     var grid : Array<Dynamic>;
     var widthInTiles : Int;

@@ -1,3 +1,5 @@
+package fathom.hx;
+
 import nme.display.BitmapData;
 import nme.display.Bitmap;
 import nme.display.Sprite;

@@ -1,3 +1,5 @@
+package fathom.hx;
+
 using Lambda;
 
 typedef Pair = {

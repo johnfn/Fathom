@@ -1,3 +1,5 @@
+package fathom.hx;
+
 /** Vector. Vector is a pair of 2 numbers, typically (x, y), used
     to represent both position and direction. */
 class Vec {
@@ -171,6 +173,5 @@ class Vec {
     public function asKey() : String {
         return x + "," + y;
     }
-
 }
 

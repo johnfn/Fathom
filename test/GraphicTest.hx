@@ -1,5 +1,6 @@
+package fathom.test;
+
 import flash.display.BitmapData;
-import Graphic;
 
 class GraphicTest extends haxe.unit.TestCase {
   var g:Entity;
