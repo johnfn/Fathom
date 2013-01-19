@@ -1,6 +1,4 @@
-package fathom.test;
-
-import fathom.hx.Fathom;
+import hx.Fathom;
 
 #if nme
 import nme.display.Sprite;
@@ -45,7 +43,6 @@ class AllTests extends Sprite {
     r.add(new AnimationTest());
     r.add(new ColorTest());
     r.add(new KeyTest());
-
 
     r.run();
   }

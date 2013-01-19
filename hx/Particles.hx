@@ -1,4 +1,4 @@
-package fathom.hx;
+package hx;
 //TODO...
 #if false
 

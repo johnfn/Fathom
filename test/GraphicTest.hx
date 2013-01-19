@@ -1,4 +1,5 @@
-package fathom.test;
+import hx.Graphic;
+import hx.Entity;
 
 import flash.display.BitmapData;
 

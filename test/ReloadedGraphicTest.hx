@@ -1,5 +1,5 @@
 import flash.display.BitmapData;
-import Rect;
+import hx.ReloadedGraphic;
 
 using Lambda;
 

@@ -1,4 +1,4 @@
-package fathom.hx;
+package hx;
 
 #if flash
 import starling.core.Starling;

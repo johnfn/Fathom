@@ -1,8 +1,5 @@
-package fathom.test;
-
-import flash.display.BitmapData;
-import flash.display.Bitmap;
-import Rect;
+import hx.AnimationHandler;
+import hx.Entity;
 
 using Lambda;
 

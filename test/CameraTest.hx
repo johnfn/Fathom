@@ -1,4 +1,5 @@
-package fathom.test;
+import hx.CameraFocus;
+import hx.Entity;
 
 import nme.display.BitmapData;
 import nme.geom.Point;

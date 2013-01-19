@@ -1,4 +1,4 @@
-package fathom.hx;
+package hx;
 
 import flash.display.MovieClip;
 import flash.geom.Point;

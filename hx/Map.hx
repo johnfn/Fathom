@@ -1,4 +1,4 @@
-package fathom.hx;
+package hx;
 
 import nme.geom.Point;
 import nme.geom.Rectangle;

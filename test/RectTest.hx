@@ -1,7 +1,7 @@
-package fathom.test;
+import hx.Rect;
+import hx.Rect;
 
 import flash.display.BitmapData;
-import Rect;
 
 using Lambda;
 

@@ -1,5 +1,4 @@
-package fathom.test;
-import Set;
+import hx.Set;
 
 class SetTest extends haxe.unit.TestCase {
   public function testInput() {

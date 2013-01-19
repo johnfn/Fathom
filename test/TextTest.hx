@@ -1,4 +1,4 @@
-package fathom.test;
+import hx.Text;
 
 import nme.display.BitmapData;
 import nme.geom.Point;

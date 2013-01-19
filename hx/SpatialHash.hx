@@ -1,4 +1,4 @@
-package fathom.hx;
+package hx;
 
 /* Collision detection in Fathom is done with a data structure known as a Spatial Hash.
    If you're not familiar with a Spatial Hash, you can just think of it as a 2D array

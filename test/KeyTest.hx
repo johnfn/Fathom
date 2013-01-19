@@ -1,4 +1,5 @@
-package fathom.test;
+import hx.Fathom;
+import hx.Util;
 
 #if flash
 import starling.events.Event;

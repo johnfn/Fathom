@@ -1,4 +1,6 @@
-package fathom.hx;
+package hx;
+
+import hx.SuperObjectHash;
 
 // TODO: High level stuff - should have some consistency with mutable/immutable
 // function calls.

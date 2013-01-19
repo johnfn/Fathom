@@ -1,4 +1,4 @@
-package fathom.hx;
+package hx;
 
 /** Vector. Vector is a pair of 2 numbers, typically (x, y), used
     to represent both position and direction. */

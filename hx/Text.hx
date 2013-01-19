@@ -1,4 +1,4 @@
-package fathom.hx;
+package hx;
 
 //import flash.filters.DropShadowFilter;
 #if flash

@@ -1,7 +1,10 @@
-package fathom.test;
+import hx.Map;
+import hx.Vec;
+import hx.Graphic;
+import hx.Entity;
+import hx.Set;
 
 import flash.display.BitmapData;
-import Graphic;
 import flash.display.Bitmap;
 
 using Lambda;
