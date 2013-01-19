@@ -1,4 +1,5 @@
 package hx;
+import hx.Entity;
 
 import hx.SuperObjectHash;
 

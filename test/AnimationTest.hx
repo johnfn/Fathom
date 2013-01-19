@@ -1,5 +1,7 @@
 import hx.AnimationHandler;
 import hx.Entity;
+import hx.Vec;
+import hx.Fathom;
 
 using Lambda;
 

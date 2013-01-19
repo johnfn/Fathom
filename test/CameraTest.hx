@@ -1,5 +1,9 @@
 import hx.CameraFocus;
+import hx.Util;
 import hx.Entity;
+import hx.Vec;
+import hx.Fathom;
+import hx.Graphic;
 
 import nme.display.BitmapData;
 import nme.geom.Point;

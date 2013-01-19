@@ -1,5 +1,7 @@
 import hx.Graphic;
+import hx.Fathom;
 import hx.Entity;
+import hx.Vec;
 
 import flash.display.BitmapData;
 

@@ -1,5 +1,9 @@
 package hx;
 
+import hx.MagicKeyObject;
+import hx.Vec;
+import hx.SuperObjectHash;
+
 import haxe.Stack;
 
 class Util {

@@ -1,5 +1,8 @@
-import flash.display.BitmapData;
 import hx.Entity;
+import hx.Fathom;
+import hx.Set;
+
+import flash.display.BitmapData;
 
 using Lambda;
 

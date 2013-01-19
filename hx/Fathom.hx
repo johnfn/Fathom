@@ -1,5 +1,15 @@
 package hx;
 
+import hx.Map;
+import hx.Mode;
+import hx.Set;
+import hx.Entity;
+import hx.SpatialHash;
+import hx.CameraFocus;
+import hx.MovingEntity;
+import hx.MagicKeyObject;
+import hx.Particles;
+
 #if flash
 import starling.core.Starling;
 import starling.events.Event;

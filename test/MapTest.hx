@@ -1,4 +1,5 @@
 import hx.Map;
+import hx.Fathom;
 import hx.Vec;
 import hx.Graphic;
 import hx.Entity;

@@ -1,5 +1,7 @@
 package hx;
 
+import hx.SuperObjectHash;
+
 #if flash
 import starling.events.Event;
 import starling.events.KeyboardEvent;

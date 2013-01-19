@@ -1,4 +1,6 @@
 import hx.Text;
+import hx.Fathom;
+import hx.Graphic;
 
 import nme.display.BitmapData;
 import nme.geom.Point;

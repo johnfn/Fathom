@@ -1,5 +1,9 @@
 package hx;
 
+import hx.Vec;
+import hx.Entity;
+import hx.Set;
+
 import flash.display.MovieClip;
 import flash.geom.Point;
 import flash.geom.Rectangle;
