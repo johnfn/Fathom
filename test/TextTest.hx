@@ -10,7 +10,7 @@ class TextTest extends haxe.unit.TestCase {
   var g:Text;
 
   public override function beforeEach() {
-    g = new Text("This is a {0, 255, 0} *test*.");
+    g = new Text(400, 300, "This is a {0, 255, 0} *test*.");
     g.x = 0;
     g.y = 0;
   }

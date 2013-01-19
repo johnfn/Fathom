@@ -2,7 +2,7 @@ package fathom;
 
 //import flash.filters.DropShadowFilter;
 #if flash
-import fathom.starlingextensions.TextField;
+import starlingextensions.TextField;
 #else
 import nme.text.TextField;
 #end
