@@ -4,7 +4,7 @@ import fathom.Entity;
 
 /** Collision detection in Fathom is done with a data structure known as a Spatial Hash.
  *  If you're not familiar with a Spatial Hash, think of placing a grid over
- *  the map, and keeping track of which grid locations each Entity is in.trace
+ *  the map, and keeping track of which grid locations each Entity is in.
  *  To check for collisions, you just see if any grid location has more than 1
  *  Entity in it.
  */
@@ -44,8 +44,6 @@ class SpatialHash {
         for (coord in coords) {
             getAt(coord).push(e);
         }
-
-        trace("done");
     }
 
     public function loadMap(m: Map, e: Entity): Void {
@@ -77,10 +75,6 @@ class SpatialHash {
         if((e.y + e.height) % gridHeight == 0) endSlotY--;
 
         var slotX : Int = Math.floor(e.x / gridWidth);
-
-        trace("start " + slotX + " end " + endSlotX);
-
-        trace(e.width);
 
         while(slotX <= endSlotX) {
             var slotY : Int = Math.floor(e.y / gridHeight);

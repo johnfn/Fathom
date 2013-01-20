@@ -162,7 +162,6 @@ class Graphic extends Sprite {
 
         return this;
     }
-
     // In the case that your Graphic is just one big static image, you can use loadImage().
     public function loadImage(imgClass : Dynamic) : Graphic {
         loadSpritesheet(imgClass);
