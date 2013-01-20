@@ -1,38 +1,54 @@
 package fathom;
 
-/* Collision detection in Fathom is done with a data structure known as a Spatial Hash.
-   If you're not familiar with a Spatial Hash, you can just think of it as a 2D array
-   of every entity. */
+import fathom.Entity;
+
+/** Collision detection in Fathom is done with a data structure known as a Spatial Hash.
+ *  If you're not familiar with a Spatial Hash, think of placing a grid over
+ *  the map, and keeping track of which grid locations each Entity is in.trace
+ *  To check for collisions, you just see if any grid location has more than 1
+ *  Entity in it.
+ */
 class SpatialHash {
     // TODO as should be obvious i have barely begun porting this class.
 
-    var grid : Array<Dynamic>;
-    var widthInTiles : Int;
-    var heightInTiles : Int;
-    var gridWidth : Int;
-    var gridHeight : Int;
+    // A two dimensional array of each entity at that grid location.
+    var grid: Array<Array<Array<Entity>>>;
+    var widthInTiles: Int;
+    var heightInTiles: Int;
+    var gridWidth: Int;
+    var gridHeight: Int;
 
-    public function new(list : Set<Entity>) {
+
+    /** Create a new Spatial Hash.
+     *
+     *  @param list A list of entities the spatial hash should contain.
+     */
+    public function new(list: Array<Entity>) {
         widthInTiles = 25;
         heightInTiles = 25;
         gridWidth = 25;
         gridHeight = 25;
-        grid = Util.make2DArrayFn(widthInTiles, heightInTiles, function(x:Int, y:Int) : Array<Dynamic> {
+
+        grid = Util.make2DArrayFn(widthInTiles, heightInTiles, function(x:Int, y:Int) : Array<Entity> {
             return [];
         });
 
-        for(e in list/* AS3HX WARNING could not determine type for var: e exp: EIdent(list) type: Set<Entity>*/) {
-            var coords : Array<Dynamic> = getCoords(e);
-            var j : Int = 0;
-            while(j < coords.length) {
-                grid[coords[j].x][coords[j].y].push(e);
-                j++;
-            }
+        for(e in list) {
+            add(e);
         }
-
     }
 
-    public function loadMap(m : Map, e : Entity) : Void {
+    public function add(e: Entity): Void {
+        var coords: Array<Vec> = getCoords(e);
+
+        for (coord in coords) {
+            getAt(coord).push(e);
+        }
+
+        trace("done");
+    }
+
+    public function loadMap(m: Map, e: Entity): Void {
         var i : Int = 0;
         while(i < m.widthInTiles) {
             var j : Int = 0;
@@ -61,6 +77,11 @@ class SpatialHash {
         if((e.y + e.height) % gridHeight == 0) endSlotY--;
 
         var slotX : Int = Math.floor(e.x / gridWidth);
+
+        trace("start " + slotX + " end " + endSlotX);
+
+        trace(e.width);
+
         while(slotX <= endSlotX) {
             var slotY : Int = Math.floor(e.y / gridHeight);
             while(slotY <= endSlotY) {
@@ -77,24 +98,24 @@ class SpatialHash {
         return result;
     }
 
-    /* Return the entity at x, y in the spatial hash. */    public function getAt(x : Int, y : Int) : Set<Entity> {
-        return new Set<Entity>(grid[x][y]);
+    /* Return the entity at x, y in the spatial hash. */
+    function getAt(coord: Vec) : Array<Entity> {
+        return grid[Std.int(coord.x)][Std.int(coord.y)];
     }
 
     /* Returns whether the entity e collides with any object in the hash,
        excluding itself. */
     public function collides(e : Entity) : Bool {
-        var coords : Array<Dynamic> = getCoords(e);
+        var coords : Array<Vec> = getCoords(e);
         var i : Int = 0;
         while(i < coords.length) {
             if (coords[i].x >= grid.length || coords[i].y >= grid[0].length ||
                 coords[i].x < 0 || coords[i].y < 0) continue;
 
-            var arr : Array<Dynamic> = grid[coords[i].x][coords[i].y];
+            var arr : Array<Entity> = getAt(coords[i]);
             var j : Int = 0;
             while(j < arr.length) {
-                if(arr[j] == e)
-                     {
+                if(arr[j] == e) {
                     j++;
                     continue;
                 }
@@ -109,26 +130,24 @@ class SpatialHash {
         return false;
     }
 
-    /* Return every entity the entity e collides with, excluding itself. */    public function getColliders(e : Entity) : Set<Entity> {
+    /* Return every entity the entity e collides with, excluding itself. */
+    public function getColliders(e : Entity) : Set<Entity> {
         var result : Set<Entity> = new Set<Entity>();
-        var coords : Array<Dynamic> = getCoords(e);
-        var i : Int = 0;
-        while(i < coords.length) {
-            var arr : Array<Dynamic> = grid[coords[i].x][coords[i].y];
+        var coords : Array<Vec> = getCoords(e);
+        for (coord in coords) {
+            var arr : Array<Entity> = getAt(coord);
             var j : Int = 0;
             while(j < arr.length) {
-                if(arr[j] == e)
-                     {
+                if(arr[j] == e) {
                     j++;
                     continue;
                 }
-;
+
                 if(arr[j].touchingRect(e))  {
                     result.add(arr[j]);
                 }
                 j++;
             }
-            i++;
         }
         return result;
     }

@@ -461,7 +461,7 @@ class Map extends Rect {
         collisionInfo = Util.make2DArray(widthInTiles, heightInTiles, false);
         diff.multiply(new Vec(widthInTiles, heightInTiles));
         updatePersistentItems(diff);
-        Fathom.grid = new SpatialHash(new Set<Entity>());
+        Fathom.grid = new SpatialHash([]);
         Fathom.grid.loadMap(this, bogusmapentry);
         //TODO
         //Fathom.container.sortDepths();

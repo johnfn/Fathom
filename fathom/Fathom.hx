@@ -80,9 +80,9 @@ class Fathom {
 #else
         Fathom.actualStage = nme.Lib.current.stage;
 #end
-        Fathom.stage = new Entity();
+        Fathom.stage = new Entity(0, 0, Fathom.actualStage.stageWidth, Fathom.actualStage.stageHeight);
         Fathom.actualStage.addChild(Fathom.stage);
-        Fathom.grid = new SpatialHash(Fathom.entities.get([]));
+        Fathom.grid = new SpatialHash(Fathom.entities.toArray());
 
         MagicKeyObject._initializeKeyInput();
         Fathom.start();
@@ -107,10 +107,6 @@ class Fathom {
        possibly for some sort of end game situation. */
     static public function stop() : Void {
         Fathom.stage.removeEventListener(Event.ENTER_FRAME, update);
-    }
-
-    static public function anythingAt(x : Int, y : Int) : Bool {
-        return grid.getAt(x, y).all([Set.hasGroup("transparent")]);
     }
 
     // TODO: These should be static functions on MovingEntity.

@@ -58,7 +58,7 @@ class Entity extends Graphic {
         return _currentlyInFathom = v;
     }
 
-    public function new(x : Float = 0, y : Float = 0, width : Float = -1, height : Float = -1) {
+    public function new(x : Float, y : Float, width : Float, height : Float) {
         if(!Fathom.initialized)  {
             throw "Fathom.initialize() has not been called. Failing.";
         }

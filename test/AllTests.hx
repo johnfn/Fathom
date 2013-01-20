@@ -31,6 +31,7 @@ class AllTests extends Sprite {
     r.add(new ReloadedGraphicTest());
 #end
 
+    r.add(new SpatialHashTest());
     r.add(new SetTest());
     r.add(new SuperObjectHashTest());
     r.add(new RectTest());

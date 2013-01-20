@@ -39,7 +39,7 @@ class Text extends Entity {
         typewriting = false;
         pairs = [];
 
-        super(-10, -10);
+        super(0, 0, width, height);
 
 #if flash
         textField = new TextField(width, height, "");
@@ -98,7 +98,6 @@ class Text extends Entity {
         textField.color = _color;
 #else
         normalTextFormat.color = _color;
-        textField.setTextFormat(normalTextFormat);
         formatText(textField, normalTextFormat);
 #end
 
