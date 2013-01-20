@@ -4,12 +4,8 @@ I'm going to use this document to keep track of development-related things I've 
 
 ## starlingextensions
 
-99% of the time Starling is perfect. That 1%, though... 
+Starling is pretty awesome, but you do have to watch out for a few minor issues.
 
 ### starling.text.TextField
 
-starling.text.TextField doesn't allow you to individually style words in a TextField, which is actually something that people like to do in games (go get the **MAGIC ORB**). So I ported it to haxe under `starlingextensions.TextField` and dropped in a callback called `textFormatCallback` that takes a `flash.text.TextField` (to format) and a `flash.text.TextFormat` (the normal text format).
-
-I use this callback in Fathom.Text to do all that fancy formatting (when compiling to Flash, that is).
-
-I opened an [issue](https://github.com/PrimaryFeather/Starling-Framework/issues/262) which is prety much the same idea so hopefully I can scrap this eventually.
+Starling doesn't let you resize a TextField. Actually, it does, but what it does is just stretches out the text that was rendered to the original size. This has trickled all the way down to `fathom.Text`, which can't be resized either. The only way around it would be to destroy the old TextField and make a new one. I guess you could also rewrite TextField, but I don't like rewriting other libraries when it's not absolutely necessary.
