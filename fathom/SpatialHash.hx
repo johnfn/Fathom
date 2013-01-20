@@ -92,47 +92,28 @@ class SpatialHash {
     /* Returns whether the entity e collides with any object in the hash,
        excluding itself. */
     public function collides(e : Entity) : Bool {
-        var coords : Array<Vec> = getCoords(e);
-        var i : Int = 0;
-        while(i < coords.length) {
-            if (coords[i].x >= grid.length || coords[i].y >= grid[0].length ||
-                coords[i].x < 0 || coords[i].y < 0) continue;
-
-            var arr : Array<Entity> = getAt(coords[i]);
-            var j : Int = 0;
-            while(j < arr.length) {
-                if(arr[j] == e) {
-                    j++;
-                    continue;
-                }
-;
-                if(arr[j].touchingRect(e))  {
-                    return true;
-                }
-                j++;
-            }
-            i++;
-        }
-        return false;
+        return getColliders(e).length > 0;
     }
 
     /* Return every entity the entity e collides with, excluding itself. */
     public function getColliders(e : Entity) : Set<Entity> {
         var result : Set<Entity> = new Set<Entity>();
         var coords : Array<Vec> = getCoords(e);
+
         for (coord in coords) {
+            if (coord.x >= grid.length || coord.y >= grid[0].length ||
+                coord.x < 0 || coord.y < 0) continue;
+
             var arr : Array<Entity> = getAt(coord);
-            var j : Int = 0;
-            while(j < arr.length) {
-                if(arr[j] == e) {
-                    j++;
+
+            for (ent in arr) {
+                if(ent == e) {
                     continue;
                 }
 
-                if(arr[j].touchingRect(e))  {
-                    result.add(arr[j]);
+                if(ent.touchingRect(e))  {
+                    result.add(ent);
                 }
-                j++;
             }
         }
         return result;
