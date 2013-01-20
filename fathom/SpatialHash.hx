@@ -97,8 +97,8 @@ class SpatialHash {
 
     /* Return every entity the entity e collides with, excluding itself. */
     public function getColliders(e : Entity) : Set<Entity> {
-        var result : Set<Entity> = new Set<Entity>();
-        var coords : Array<Vec> = getCoords(e);
+        var result: Set<Entity> = new Set<Entity>();
+        var coords: Array<Vec> = getCoords(e);
 
         for (coord in coords) {
             if (coord.x >= grid.length || coord.y >= grid[0].length ||
