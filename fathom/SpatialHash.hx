@@ -47,19 +47,14 @@ class SpatialHash {
     }
 
     public function loadMap(m: Map, e: Entity): Void {
-        var i : Int = 0;
-        while(i < m.widthInTiles) {
-            var j : Int = 0;
-            while(j < m.heightInTiles) {
+        for (i in 0...m.widthInTiles) {
+            for (j in 0...m.heightInTiles) {
                 if(!m.collisionInfo[i][j]) {
-                    j++;
                     continue;
                 }
 
                 grid[i][j].push(e);
-                j++;
             }
-            i++;
         }
     }
 
@@ -74,20 +69,17 @@ class SpatialHash {
         var endSlotY : Int = Math.floor((e.y + e.height) / gridHeight);
         if((e.y + e.height) % gridHeight == 0) endSlotY--;
 
-        var slotX : Int = Math.floor(e.x / gridWidth);
+        var startSlotX: Int = Math.floor(e.x / gridWidth);
+        var startSlotY: Int = Math.floor(e.y / gridHeight);
 
-        while(slotX <= endSlotX) {
-            var slotY : Int = Math.floor(e.y / gridHeight);
-            while(slotY <= endSlotY) {
+        for (slotX in startSlotX...(endSlotX + 1)) {
+            for (slotY in startSlotY...(endSlotY + 1)) {
                 if(slotX < 0 || slotX >= widthInTiles || slotY < 0 || slotY >= heightInTiles)  {
-                    slotY++;
                     continue;
-
                 }
+
                 result.push(new Vec(slotX, slotY));
-                slotY++;
             }
-            slotX++;
         }
         return result;
     }
