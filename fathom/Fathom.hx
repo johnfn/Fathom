@@ -43,7 +43,6 @@ class Fathom {
     static public var initialized: Bool = false;
     static public var stage: Entity;
     static public var actualStage: Stage;
-    static public var grid: SpatialHash;
     static public var cb:Void -> Void;
     static public var camera: CameraFocus;
 
@@ -108,73 +107,13 @@ class Fathom {
         Fathom.stage.removeEventListener(Event.ENTER_FRAME, update);
     }
 
-    // TODO: These should be static functions on MovingEntity.
-    // A fast way to find collisions is to subdivide the map into a grid and
-    // see if any individual square of the grid contains more than one item in
-    // it.
-    static function moveEverything() : Void {
-        var active: Entity -> Bool = function(e: Entity) : Bool {
-            return e.modes().has(mode.currentMode);
-        };
-
-        var list: Set<MovingEntity> = movingEntities().filter(active);
-
-        // Move every non-static entity.
-        for(e in list) {
-            var oldVelX: Float = e.vel.x;
-            var oldVelY: Float = e.vel.y;
-
-            var onceThrough : Bool = true;
-            e.xColl = new Set<Entity>();
-            e.yColl = new Set<Entity>();
-            // Resolve 1 px in the x-direction at a time...
-            while (onceThrough || oldVelX != 0) {
-                // Attempt to resolve as much of dy as possible on every tick.
-                while (oldVelY != 0) {
-                    var amtY : Float = Util.clamp(oldVelY, -1, 1);
-                    e.y += amtY;
-                    oldVelY -= amtY;
-                    if(grid.collides(e))  {
-                        var yColliders : Set<Entity> = grid.getColliders(e);
-                        e.yColl.extend(yColliders);
-                        if(yColliders.any([Set.doesntHaveGroup("non-blocking")]))  {
-                            e.y -= amtY;
-                            oldVelY += amtY;
-                            break;
-                        }
-                    }
-                }
-
-                onceThrough = false;
-                var amtX : Float = Util.clamp(oldVelX, -1, 1);
-                e.x += amtX;
-                oldVelX -= amtX;
-
-                if(grid.collides(e))  {
-                    var xColliders : Set<Entity> = grid.getColliders(e);
-                    e.xColl.extend(xColliders);
-                    if(xColliders.any([Set.doesntHaveGroup("non-blocking")]))  {
-                        e.x -= amtX;
-                    }
-                }
-            }
-
-            e.x = Math.floor(e.x);
-            e.y = Math.floor(e.y);
-            e.xColl.extend(grid.getColliders(e));
-            e.yColl.extend(grid.getColliders(e));
-            e.touchingBottom = (e.yColl.any([Set.doesntHaveGroup("non-blocking")]) && e.vel.y > 0);
-            e.touchingTop    = (e.yColl.any([Set.doesntHaveGroup("non-blocking")]) && e.vel.y < 0);
-            e.touchingLeft   = (e.xColl.any([Set.doesntHaveGroup("non-blocking")]) && e.vel.x < 0);
-            e.touchingRight  = (e.xColl.any([Set.doesntHaveGroup("non-blocking")]) && e.vel.x > 0);
-        }
-    }
-
     static function movingEntities() : Set<MovingEntity> {
         return Fathom.entities.get([function(e : Entity) : Bool {
             return !e.isStatic;
         }]).map(function(e: Entity): MovingEntity {
             return cast(e, MovingEntity);
+        }).filter(function(e: MovingEntity): Bool {
+            return e.modes().has(mode.currentMode);
         });
     }
 
@@ -186,7 +125,8 @@ class Fathom {
         // be reflected until the next update cycle.
         var cachedMode : Int = mode.currentMode;
 
-        moveEverything();
+        CollisionResolver.moveEverything(movingEntities());
+
         for (e in list) {
             if (!e.modes().has(cachedMode)) {
                 continue;
