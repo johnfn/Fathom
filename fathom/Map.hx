@@ -22,7 +22,7 @@ typedef ItemDetail = {
 
     /* The location of the image on the spritesheet. */
     // TODO - make optional, no spritesheet =
-    var spritesheet: Vec;
+    @:optional var spritesheet: Vec;
 
     // Optional settings
 
@@ -336,6 +336,7 @@ class Map extends Rect {
             e = new Entity(x * tileSize, y * tileSize, tileSize, tileSize);
             e.loadSpritesheet(itemData.gfx, new Vec(tileSize, tileSize));
             e.setTile(Std.int(ssLoc.x), Std.int(ssLoc.y));
+            e.addGroup("non-blocking");
         }
 
         persistent.get(topLeftCorner.asKey()).push(e);
@@ -461,8 +462,7 @@ class Map extends Rect {
         collisionInfo = Util.make2DArray(widthInTiles, heightInTiles, false);
         diff.multiply(new Vec(widthInTiles, heightInTiles));
         updatePersistentItems(diff);
-        Fathom.grid = new SpatialHash([]);
-        Fathom.grid.loadMap(this, bogusmapentry);
+        Fathom.grid = new SpatialHash(Fathom.entities.toArray());
         //TODO
         //Fathom.container.sortDepths();
         return this;

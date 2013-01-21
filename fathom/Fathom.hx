@@ -82,7 +82,6 @@ class Fathom {
 #end
         Fathom.stage = new Entity(0, 0, Fathom.actualStage.stageWidth, Fathom.actualStage.stageHeight);
         Fathom.actualStage.addChild(Fathom.stage);
-        Fathom.grid = new SpatialHash(Fathom.entities.toArray());
 
         MagicKeyObject._initializeKeyInput();
         Fathom.start();
@@ -118,12 +117,12 @@ class Fathom {
             return e.modes().has(mode.currentMode);
         };
 
-        var list : Set<MovingEntity> = movingEntities().filter(active);
+        var list: Set<MovingEntity> = movingEntities().filter(active);
 
         // Move every non-static entity.
         for(e in list) {
-            var oldVelX : Float = e.vel.x;
-            var oldVelY : Float = e.vel.y;
+            var oldVelX: Float = e.vel.x;
+            var oldVelY: Float = e.vel.y;
 
             var onceThrough : Bool = true;
             e.xColl = new Set<Entity>();
