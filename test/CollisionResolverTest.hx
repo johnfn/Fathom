@@ -144,4 +144,31 @@ class CollisionResolverTest extends haxe.unit.TestCase {
 
     Fathom.destroyAll();
   }
+
+  public function testPixelPerfectFalling(): Void {
+    m.fromStringArray
+      (
+        [ "....."
+        , "....."
+        , ".O..."
+        , ".X.X."
+        , "XXXXX"
+        ]
+      , [ { color: ".", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
+        , { color: "X", spc: Block, spritesheet: new Vec(1, 1) }
+        , { color: "O", spc: FallingBlock, spritesheet: new Vec(1, 1) }
+        ]
+      );
+
+    var block: FallingBlock = cast(Fathom.entities.get([Set.hasGroup("falling")]).first(), FallingBlock);
+    for (x in 0...50) {
+    	block.vel.x = 4;
+	    CollisionResolver.moveEverything(Fathom.movingEntities());
+	  }
+
+	  assertEquals(block.x, 50);
+	  assertEquals(block.y, 75);
+
+    Fathom.destroyAll();
+  }
 }
