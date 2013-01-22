@@ -44,6 +44,7 @@ class AllTests extends Sprite {
     r.add(new AnimationTest());
     r.add(new ColorTest());
     r.add(new KeyTest());
+    r.add(new CollisionResolverTest());
 
     r.run();
   }
