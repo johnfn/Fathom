@@ -68,6 +68,8 @@ class CollisionResolverTest extends haxe.unit.TestCase {
   }
 
   public function testSimpleFallingBlock(): Void {
+  	// The block should fall.
+
     m.fromStringArray
       (
         [ "..O.."
@@ -92,6 +94,8 @@ class CollisionResolverTest extends haxe.unit.TestCase {
   }
 
   public function testSimpleCollision(): Void {
+  	// The block should not fall through the ground.
+
     m.fromStringArray
       (
         [ "....."
@@ -118,6 +122,8 @@ class CollisionResolverTest extends haxe.unit.TestCase {
   }
 
   public function testSlightlyMoreComplexCollision(): Void {
+  	// Blocks should stack and not fall through other blocks.
+
     m.fromStringArray
       (
         [ "....."
@@ -146,6 +152,8 @@ class CollisionResolverTest extends haxe.unit.TestCase {
   }
 
   public function testPixelPerfectFalling(): Void {
+  	// When pushed, the block should fall into the crevasse.
+
     m.fromStringArray
       (
         [ "....."
