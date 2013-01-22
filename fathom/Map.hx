@@ -69,7 +69,7 @@ private class MapData {
         var md: MapData = new MapData();
 
         md.data = Util.make2DArrayFn(data.length, data[0].length, function(x, y): String {
-            return data[x].charAt(y);
+            return data[y].charAt(x);
         });
 
         return md;

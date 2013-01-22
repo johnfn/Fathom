@@ -107,7 +107,8 @@ class Fathom {
         Fathom.stage.removeEventListener(Event.ENTER_FRAME, update);
     }
 
-    static function movingEntities() : Set<MovingEntity> {
+    // The only reason this is public is for tests (TODO?)
+    public static function movingEntities() : Set<MovingEntity> {
         return Fathom.entities.get([function(e : Entity) : Bool {
             return !e.isStatic;
         }]).map(function(e: Entity): MovingEntity {
