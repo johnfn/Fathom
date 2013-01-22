@@ -119,7 +119,6 @@ class Map extends Rect {
 
     var _widthInTiles : Int;
     var _heightInTiles : Int;
-    var bogusmapentry : Entity;
     var grounds : Array<String>;
     var _tileSize : Int;
 
@@ -151,7 +150,6 @@ class Map extends Rect {
         this._heightInTiles = heightInTiles;
         this._tileSize = tileSize;
         this.clearTiles();
-        bogusmapentry = new BogusMapEntry(tileSize);
     }
 
     function clearTiles() : Void {
@@ -502,21 +500,4 @@ class Map extends Rect {
     public function getTopLeftCorner() : Vec {
         return this.topLeftCorner.clone();
     }
-}
-
-class BogusMapEntry extends Entity {
-    public function new(size : Int) {
-        super(0, 0, size, size);
-    }
-
-    // holy freaking christ
-    // hack levels are currently off the charts
-    override public function touchingRect(rect : Entity) : Bool {
-        return true;
-    }
-
-    override public function groups() : Set<String> {
-        return super.groups().concat("map");
-    }
-
 }

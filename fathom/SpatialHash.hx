@@ -46,18 +46,6 @@ class SpatialHash {
         }
     }
 
-    public function loadMap(m: Map, e: Entity): Void {
-        for (i in 0...m.widthInTiles) {
-            for (j in 0...m.heightInTiles) {
-                if(!m.collisionInfo[i][j]) {
-                    continue;
-                }
-
-                grid[i][j].push(e);
-            }
-        }
-    }
-
     /* Return the coordinates that the provided entity hashes to. Could be more than
        one coordinate. An entity with size exactly the gridsize, positioned exactly
        on a grid, will only exist in one coordinate. */
