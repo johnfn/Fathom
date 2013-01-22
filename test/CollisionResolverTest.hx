@@ -13,8 +13,9 @@ import nme.geom.Point;
 import flash.geom.Matrix;
 
 class Block extends Entity {
-  public function new() {
-    super(0, 0, 25, 25);
+  public function new(x: Int, y: Int) {
+    super(x, y, 25, 25);
+    loadSpritesheet(AllTests.testAnimation, new Vec(25, 25), new Vec(1, 1));
   }
 
   public override function groups():Set<String> {
@@ -24,7 +25,8 @@ class Block extends Entity {
 
 class FallingBlock extends MovingEntity {
   public function new() {
-    super(0, 0, 25, 25);
+    super(x, y, 25, 25);
+    loadSpritesheet(AllTests.testAnimation, new Vec(25, 25), new Vec(1, 1));
 
     this.vel = new Vec(0, 2);
   }
@@ -85,6 +87,60 @@ class CollisionResolverTest extends haxe.unit.TestCase {
     CollisionResolver.moveEverything(Fathom.movingEntities());
 
     assertEquals(block.y, 2);
+
+    Fathom.destroyAll();
+  }
+
+  public function testSimpleCollision(): Void {
+    m.fromStringArray
+      (
+        [ "....."
+        , "....."
+        , "....."
+        , "..O.."
+        , "XXXXX"
+        ]
+      , [ { color: ".", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
+        , { color: "X", spc: Block, spritesheet: new Vec(1, 1) }
+        , { color: "O", spc: FallingBlock, spritesheet: new Vec(1, 1) }
+        ]
+      );
+
+    var block: FallingBlock = cast(Fathom.entities.get([Set.hasGroup("falling")]).first(), FallingBlock);
+
+    for (x in 0...5) {
+	    CollisionResolver.moveEverything(Fathom.movingEntities());
+	  }
+
+    assertEquals(block.y, 75);
+
+    Fathom.destroyAll();
+  }
+
+  public function testSlightlyMoreComplexCollision(): Void {
+    m.fromStringArray
+      (
+        [ "....."
+        , "....."
+        , "..O.."
+        , "..O.."
+        , "XXXXX"
+        ]
+      , [ { color: ".", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
+        , { color: "X", spc: Block, spritesheet: new Vec(1, 1) }
+        , { color: "O", spc: FallingBlock, spritesheet: new Vec(1, 1) }
+        ]
+      );
+
+    var blocks: Set<Entity> = Fathom.entities.get([Set.hasGroup("falling")]);
+
+    for (x in 0...5) {
+	    CollisionResolver.moveEverything(Fathom.movingEntities());
+	  }
+
+    for (b in blocks) {
+    	assertTrue(b.y % 25 == 0);
+    }
 
     Fathom.destroyAll();
   }
