@@ -33,6 +33,7 @@ typedef ItemDetail = {
 
 enum MapDataType {
     Image;
+    StringArray;
     //Tiled;
 }
 
@@ -42,30 +43,43 @@ private class MapData {
 
     var loaded: Bool = false;
     var img: ReloadedGraphic;
-    var data: Array<Array<Color>>;
+    var str: Array<String>;
+
+    var data: Array<Array<String>>;
     var reloadCB: Void -> Void = null;
 
-    //public function new(type: MapDataType, location: String) {
-    public function new(type: MapDataType, url: String) {
-        var that: MapData = this;
+    // This is private. Use the static constructor functions like fromImage
+    // or fromStringArray instead.
+    function new() {
+    }
 
-        this.datatype = type;
+    public static function fromImage(url: String): MapData {
+        var md: MapData = new MapData();
 
-        switch (type) {
-            case Image:
-            {
-                img = new ReloadedGraphic(url);
-                img.addUpdateCallback(onReload);
-                loadData();
-            }
-        }
+        md.datatype = Image;
+
+        md.img = new ReloadedGraphic(url);
+        md.img.addUpdateCallback(md.onReload);
+        md.loadData();
+
+        return md;
+    }
+
+    public static function fromStringArray(data: Array<String>): MapData {
+        var md: MapData = new MapData();
+
+        md.data = Util.make2DArrayFn(data.length, data[0].length, function(x, y): String {
+            return data[x].charAt(y);
+        });
+
+        return md;
     }
 
     public function hasLoaded(): Bool {
         return loaded;
     }
 
-    public function get(x: Int, y: Int): Color {
+    public function get(x: Int, y: Int): String {
         return data[x][y];
     }
 
@@ -73,18 +87,18 @@ private class MapData {
         reloadCB = cb;
     }
 
-    function loadData() {
+    function loadData(): Void {
         var bData: BitmapData = img.bitmapData;
         data = Util.make2DArray(bData.width, bData.height, null);
 
         for (x in 0...bData.width) {
             for (y in 0...bData.height) {
-                data[x][y] = Color.fromInt(bData.getPixel(x, y));
+                data[x][y] = Color.fromInt(bData.getPixel(x, y)).toString();
             }
         }
     }
 
-    function onReload() {
+    function onReload(): Void {
         loadData();
 
         if (reloadCB != null) {
@@ -162,10 +176,12 @@ class Map extends Rect {
         return (x < 0 || x >= width || y < 0 || y >= height);
     }
 
-    public function fromImage(mapFilepath: String, groundList : Array<String>, mappings : Array<ItemDetail>) : Map {
+    public function fromImage(mapFilepath: String, mappings : Array<ItemDetail>, groundList : Array<String> = null) : Map {
+        if (groundList == null) groundList = [];
+
         var that: Map = this;
 
-        data = new MapData(Image, mapFilepath);
+        data = MapData.fromImage(mapFilepath);
         data.setReloadCallback(function() {
             that.exploredMaps = new SuperObjectHash();
             that.loadNewMap(new Vec(0, 0));
@@ -181,8 +197,24 @@ class Map extends Rect {
             Util.assert(s.spc != null || s.gfx != null, "Both SPC and GFX are null.");
         }
 
-        that.loadNewMap(new Vec(0, 0));
+        this.loadNewMap(new Vec(0, 0));
 
+        return this;
+    }
+
+    public function fromStringArray(arr: Array<String>, mappings: Array<ItemDetail>, groundList: Array<String> = null): Map {
+        if (groundList == null) groundList = [];
+
+        data = MapData.fromStringArray(arr);
+        this.grounds = groundList;
+
+        for (s in mappings) {
+            this.persistentItemMapping.set(s.color, s);
+
+            Util.assert(s.spc != null || s.gfx != null, "Both SPC and GFX are null.");
+        }
+
+        this.loadNewMap(new Vec(0, 0));
         return this;
     }
 
@@ -215,19 +247,19 @@ class Map extends Rect {
         if(itemData.roundOutEdges) {
             var locX : Int = Std.int(topLeftCorner.x) + x;
             var locY : Int = Std.int(topLeftCorner.y) + y;
-            if(locY == 0 || data.get(locX, locY - 1).toString() != c)  {
+            if(locY == 0 || data.get(locX, locY - 1) != c)  {
                 result.y--;
             }
-            if(locX == 0 || data.get(locX - 1, locY).toString() != c)  {
+            if(locX == 0 || data.get(locX - 1, locY) != c)  {
                 result.x--;
             }
-            if(locY != heightInTiles - 1 && data.get(locX, locY + 1).toString() != c)  {
+            if(locY != heightInTiles - 1 && data.get(locX, locY + 1) != c)  {
                 result.y++;
             }
-            if(locX == widthInTiles - 1 || data.get(locX + 1, locY).toString() != c)  {
+            if(locX == widthInTiles - 1 || data.get(locX + 1, locY) != c)  {
                 result.x++;
             }
-            if(locY != 0 && data.get(locX, locY - 1).toString() != c && locY != heightInTiles - 1 && data.get(locX, locY + 1).toString() != c)  {
+            if(locY != 0 && data.get(locX, locY - 1) != c && locY != heightInTiles - 1 && data.get(locX, locY + 1) != c)  {
                 result.y--;
             }
         }
@@ -238,32 +270,32 @@ class Map extends Rect {
         }
 
         if(itemData.fancyEdges)  {
-            var empty : String = (new Color(255, 255, 255).toString());
+            var empty: String = (new Color(255, 255, 255)).toString();
             var locX : Int = Std.int(topLeftCorner.x) + x;
             var locY : Int = Std.int(topLeftCorner.y) + y;
             // Horizontal wall, ground below.
-            if(!isGround(data.get(locX - 1, locY).toString(), c) && !isGround(data.get(locX + 1, locY).toString(), c) && isGround(data.get(locX, locY + 1).toString(), c))  {
+            if(!isGround(data.get(locX - 1, locY), c) && !isGround(data.get(locX + 1, locY), c) && isGround(data.get(locX, locY + 1), c))  {
                 result.y += 2;
             }
             // Horizontal wall, ground above.
-            if(data.get(locX - 1, locY).toString() == c && data.get(locX + 1, locY).toString() == c && isGround(data.get(locX, locY - 1).toString(), c))  {
+            if(data.get(locX - 1, locY) == c && data.get(locX + 1, locY) == c && isGround(data.get(locX, locY - 1), c))  {
                 result.y -= 2;
             }
             // Vertical wall, ground to the left.
-            if(data.get(locX, locY - 1).toString() == c && data.get(locX, locY + 1).toString() == c && isGround(data.get(locX - 1, locY).toString(), c))  {
+            if(data.get(locX, locY - 1) == c && data.get(locX, locY + 1) == c && isGround(data.get(locX - 1, locY), c))  {
                 result.x -= 2;
             }
             // Vertical wall, ground to the right.
-            if(!isGround(data.get(locX, locY - 1).toString(), c) && !isGround(data.get(locX, locY + 1).toString(), c) && isGround(data.get(locX + 1, locY).toString(), c))  {
+            if(!isGround(data.get(locX, locY - 1), c) && !isGround(data.get(locX, locY + 1), c) && isGround(data.get(locX + 1, locY), c))  {
                 result.x += 2;
             }
             // - - -
             // - x x
             // - x -
-            if(data.get(locX + 1, locY).toString() == c && data.get(locX, locY + 1).toString() == c && isGround(data.get(locX - 1, locY).toString(), c) && isGround(data.get(locX, locY - 1).toString(), c))  {
+            if(data.get(locX + 1, locY) == c && data.get(locX, locY + 1) == c && isGround(data.get(locX - 1, locY), c) && isGround(data.get(locX, locY - 1), c))  {
                 result.x -= 2;
                 result.y -= 2;
-            } else if(data.get(locX + 1, locY).toString() == c && data.get(locX, locY + 1).toString() == c)  {
+            } else if(data.get(locX + 1, locY) == c && data.get(locX, locY + 1) == c)  {
                 // x x x
                 // x x x
                 // x x -
@@ -273,30 +305,30 @@ class Map extends Rect {
             // - - -
             // x x -
             // - x -
-            if(data.get(locX - 1, locY).toString() == c && data.get(locX, locY + 1).toString() == c && isGround(data.get(locX + 1, locY).toString(), c) && isGround(data.get(locX, locY - 1).toString(), c))  {
+            if(data.get(locX - 1, locY) == c && data.get(locX, locY + 1) == c && isGround(data.get(locX + 1, locY), c) && isGround(data.get(locX, locY - 1), c))  {
                 result.x += 2;
                 result.y -= 2;
-            } else if(data.get(locX - 1, locY).toString() == c && data.get(locX, locY + 1).toString() == c)  {
+            } else if(data.get(locX - 1, locY) == c && data.get(locX, locY + 1) == c)  {
                 result.x -= 2;
                 result.y += 1;
             }
             // - x -
             // x x -
             // - - -
-            if(data.get(locX - 1, locY).toString() == c && data.get(locX, locY - 1).toString() == c && isGround(data.get(locX + 1, locY).toString(), c) && isGround(data.get(locX, locY + 1).toString(), c))  {
+            if(data.get(locX - 1, locY) == c && data.get(locX, locY - 1) == c && isGround(data.get(locX + 1, locY), c) && isGround(data.get(locX, locY + 1), c))  {
                 result.x += 2;
                 result.y += 2;
-            } else if(data.get(locX - 1, locY).toString() == c && data.get(locX, locY - 1).toString() == c)  {
+            } else if(data.get(locX - 1, locY) == c && data.get(locX, locY - 1) == c)  {
                 result.x -= 2;
                 result.y -= 1;
             }
             // - x -
             // - x x
             // - - -
-            if(data.get(locX + 1, locY).toString() == c && data.get(locX, locY - 1).toString() == c && isGround(data.get(locX - 1, locY).toString(), c) && isGround(data.get(locX, locY + 1).toString(), c))  {
+            if(data.get(locX + 1, locY) == c && data.get(locX, locY - 1) == c && isGround(data.get(locX - 1, locY), c) && isGround(data.get(locX, locY + 1), c))  {
                 result.x -= 2;
                 result.y += 2;
-            } else if(data.get(locX + 1, locY).toString() == c && data.get(locX, locY - 1).toString() == c)  {
+            } else if(data.get(locX + 1, locY) == c && data.get(locX, locY - 1) == c)  {
                 result.x += 2;
                 result.y -= 1;
             }
@@ -308,15 +340,15 @@ class Map extends Rect {
         return itemData.gfx == null;
     }
 
-    function addPersistentItem(c : Color, x : Int, y : Int) : Void {
-        if(!persistentItemMapping.has(c.toString()))  {
-            if(c.toString() != "#ffffff")  {
-                Util.log("Color without data: " + c.toString());
+    function addPersistentItem(c: String, x : Int, y : Int) : Void {
+        if(!persistentItemMapping.has(c))  {
+            if(c != "#ffffff")  {
+                Util.log("Color without data: " + c);
             }
             return;
         }
 
-        var itemData: ItemDetail = persistentItemMapping.get(c.toString());
+        var itemData: ItemDetail = persistentItemMapping.get(c);
 
         // If the provided graphics are BitmapData, this is a static object.
         // We won't treat it specially in that case.
@@ -357,7 +389,7 @@ class Map extends Rect {
             itemsLeftToLoad = widthInTiles * heightInTiles;
             for (x in 0...widthInTiles) {
                 for (y in 0...heightInTiles) {
-                    var dataColor : Color = data.get(Std.int(topLeftCorner.x + x), Std.int(topLeftCorner.y + y));
+                    var dataColor: String = data.get(Std.int(topLeftCorner.x + x), Std.int(topLeftCorner.y + y));
                     addPersistentItem(dataColor, x, y);
                 }
             }
