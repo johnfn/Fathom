@@ -58,7 +58,7 @@ class Entity extends Graphic {
         return _currentlyInFathom = v;
     }
 
-    public function new(x : Float, y : Float, width : Float, height : Float) {
+    public function new(x : Float, y : Float) {
         if(!Fathom.initialized)  {
             throw "Fathom.initialize() has not been called. Failing.";
         }
@@ -73,8 +73,6 @@ class Entity extends Graphic {
         super();
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.height = height;
 
         // All Entities are added to the stage, except the stage itself, which
         // is bootstrapped onto the flash.display.Stage in Fathom. If Fathom.stage == null,

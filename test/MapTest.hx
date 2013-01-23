@@ -12,7 +12,7 @@ using Lambda;
 
 class SpecialThing extends Entity {
   public function new() {
-    super(0, 0, 2, 2);
+    super(0, 0);
 
     MapTest.constructedCount++;
   }

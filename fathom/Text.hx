@@ -39,7 +39,7 @@ class Text extends Entity {
         typewriting = false;
         pairs = [];
 
-        super(0, 0, width, height);
+        super(0, 0);
 
 #if flash
         textField = new TextField(width, height, "");

@@ -14,7 +14,7 @@ import flash.geom.Matrix;
 
 class Block extends Entity {
   public function new(x: Int, y: Int) {
-    super(x, y, 25, 25);
+    super(x, y);
     loadSpritesheet(AllTests.testAnimation, new Vec(25, 25), new Vec(1, 1));
   }
 
@@ -25,7 +25,7 @@ class Block extends Entity {
 
 class FallingBlock extends MovingEntity {
   public function new() {
-    super(x, y, 25, 25);
+    super(x, y);
     loadSpritesheet(AllTests.testAnimation, new Vec(25, 25), new Vec(1, 1));
 
     this.vel = new Vec(0, 2);

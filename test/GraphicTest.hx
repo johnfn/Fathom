@@ -9,7 +9,7 @@ class GraphicTest extends haxe.unit.TestCase {
   var g:Entity;
 
   public override function globalSetup() {
-    g = new Entity(0, 0, 100, 100);
+    g = new Entity(0, 0);
     g.loadSpritesheet(AllTests.testSprite, new Vec(2, 2));
     g.setTile(0, 0);
   }

@@ -15,11 +15,11 @@ class SpatialHashTest extends haxe.unit.TestCase {
   public function testBasic() {
     var sh:SpatialHash = new SpatialHash([]);
 
-    var e1: Entity = new Entity(0, 0, 25, 25)
+    var e1: Entity = new Entity(0, 0)
         .loadSpritesheet(AllTests.testAnimation, d, w);
-    var e2: Entity = new Entity(25, 0, 25, 25)
+    var e2: Entity = new Entity(25, 0)
         .loadSpritesheet(AllTests.testAnimation, d, w);
-    var e3: Entity = new Entity(12, 0, 25, 25)
+    var e3: Entity = new Entity(12, 0)
         .loadSpritesheet(AllTests.testAnimation, d, w);
 
     sh.add(e1);
@@ -41,16 +41,16 @@ class SpatialHashTest extends haxe.unit.TestCase {
   public function testBig() {
     var sh:SpatialHash = new SpatialHash([]);
 
-    var e1: Entity = new Entity(0, 0, 25, 25)
+    var e1: Entity = new Entity(0, 0)
         .loadSpritesheet(AllTests.testAnimation, new Vec(50, 50), w);
 
-    var e2: Entity = new Entity(0, 0, 25, 25)
+    var e2: Entity = new Entity(0, 0)
         .loadSpritesheet(AllTests.testAnimation, d, w);
-    var e3: Entity = new Entity(25, 0, 25, 25)
+    var e3: Entity = new Entity(25, 0)
         .loadSpritesheet(AllTests.testAnimation, d, w);
-    var e4: Entity = new Entity(0, 25, 25, 25)
+    var e4: Entity = new Entity(0, 25)
         .loadSpritesheet(AllTests.testAnimation, d, w);
-    var e5: Entity = new Entity(25, 25, 25, 25)
+    var e5: Entity = new Entity(25, 25)
         .loadSpritesheet(AllTests.testAnimation, d, w);
 
     sh.add(e1);

@@ -11,7 +11,7 @@ class AnimationTest extends haxe.unit.TestCase {
   // The animation test graphic looks like this:
   // RED BLACK GREEN WHITE
   public override function globalSetup() {
-    g = new Entity(0, 0, 16, 16);
+    g = new Entity(0, 0);
     g.loadSpritesheet(AllTests.testAnimation, new Vec(16, 16), new Vec(0, 0));
     g.animations.ticksPerFrame = 1;
   }

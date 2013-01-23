@@ -363,7 +363,7 @@ class Map extends Rect {
         if (isSpecial(itemData)) {
             e = Type.createInstance(itemData.spc, []).setPos(x * tileSize, y * tileSize);
         } else {
-            e = new Entity(x * tileSize, y * tileSize, tileSize, tileSize);
+            e = new Entity(x * tileSize, y * tileSize);
             e.loadSpritesheet(itemData.gfx, new Vec(tileSize, tileSize));
             e.setTile(Std.int(ssLoc.x), Std.int(ssLoc.y));
             e.addGroup("non-blocking");

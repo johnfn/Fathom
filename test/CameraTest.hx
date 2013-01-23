@@ -14,7 +14,7 @@ class CameraTest extends haxe.unit.TestCase {
   public override function globalSetup() {
     Util.assert(Fathom.entities.length == 0, "there's an entity!");
 
-    g = new Entity(-8, -8, 100, 100); // Centered at the origin
+    g = new Entity(-8, -8); // Centered at the origin
     g.loadSpritesheet(AllTests.testAnimation, new Vec(16, 16), new Vec(0, 0));
     g.setTile(0, 0);
   }

@@ -79,7 +79,7 @@ class Fathom {
 #else
         Fathom.actualStage = nme.Lib.current.stage;
 #end
-        Fathom.stage = new Entity(0, 0, Fathom.actualStage.stageWidth, Fathom.actualStage.stageHeight);
+        Fathom.stage = new Entity(0, 0);
         Fathom.actualStage.addChild(Fathom.stage);
 
         MagicKeyObject._initializeKeyInput();
