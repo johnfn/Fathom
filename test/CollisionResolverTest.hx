@@ -56,8 +56,8 @@ class CollisionResolverTest extends haxe.unit.TestCase {
         , "....."
         , "XXXXX"
         ]
-      , [ { color: ".", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
-        , { color: "X", spc: Block, spritesheet: new Vec(1, 1) }
+      , [ { key: ".", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
+        , { key: "X", spc: Block, spritesheet: new Vec(1, 1) }
         ]
       );
 
@@ -78,9 +78,9 @@ class CollisionResolverTest extends haxe.unit.TestCase {
         , "....."
         , "XXXXX"
         ]
-      , [ { color: ".", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
-        , { color: "X", spc: Block, spritesheet: new Vec(1, 1) }
-        , { color: "O", spc: FallingBlock, spritesheet: new Vec(1, 1) }
+      , [ { key: ".", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
+        , { key: "X", spc: Block, spritesheet: new Vec(1, 1) }
+        , { key: "O", spc: FallingBlock, spritesheet: new Vec(1, 1) }
         ]
       );
 
@@ -104,9 +104,9 @@ class CollisionResolverTest extends haxe.unit.TestCase {
         , "..O.."
         , "XXXXX"
         ]
-      , [ { color: ".", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
-        , { color: "X", spc: Block, spritesheet: new Vec(1, 1) }
-        , { color: "O", spc: FallingBlock, spritesheet: new Vec(1, 1) }
+      , [ { key: ".", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
+        , { key: "X", spc: Block, spritesheet: new Vec(1, 1) }
+        , { key: "O", spc: FallingBlock, spritesheet: new Vec(1, 1) }
         ]
       );
 
@@ -132,9 +132,9 @@ class CollisionResolverTest extends haxe.unit.TestCase {
         , "..O.."
         , "XXXXX"
         ]
-      , [ { color: ".", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
-        , { color: "X", spc: Block, spritesheet: new Vec(1, 1) }
-        , { color: "O", spc: FallingBlock, spritesheet: new Vec(1, 1) }
+      , [ { key: ".", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
+        , { key: "X", spc: Block, spritesheet: new Vec(1, 1) }
+        , { key: "O", spc: FallingBlock, spritesheet: new Vec(1, 1) }
         ]
       );
 
@@ -162,9 +162,9 @@ class CollisionResolverTest extends haxe.unit.TestCase {
         , ".X.X."
         , "XXXXX"
         ]
-      , [ { color: ".", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
-        , { color: "X", spc: Block, spritesheet: new Vec(1, 1) }
-        , { color: "O", spc: FallingBlock, spritesheet: new Vec(1, 1) }
+      , [ { key: ".", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
+        , { key: "X", spc: Block, spritesheet: new Vec(1, 1) }
+        , { key: "O", spc: FallingBlock, spritesheet: new Vec(1, 1) }
         ]
       );
 

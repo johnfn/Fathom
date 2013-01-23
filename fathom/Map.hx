@@ -7,8 +7,7 @@ import nme.display.BitmapData;
 using Lambda;
 
 typedef ItemDetail = {
-    /* The color that this item corresponds to on the image. */
-    var color: String;
+    var key: String;
 
     // One of these two is required.
     // TODO: Fancy magic to require at least one of them in compile time?
@@ -190,7 +189,7 @@ class Map extends Rect {
 
         // Load item mapping
         for (s in mappings) {
-            this.persistentItemMapping.set(s.color, s);
+            this.persistentItemMapping.set(s.key, s);
 
             Util.assert(s.spc != null || s.gfx != null, "Both SPC and GFX are null.");
         }
@@ -207,7 +206,7 @@ class Map extends Rect {
         this.grounds = groundList;
 
         for (s in mappings) {
-            this.persistentItemMapping.set(s.color, s);
+            this.persistentItemMapping.set(s.key, s);
 
             Util.assert(s.spc != null || s.gfx != null, "Both SPC and GFX are null.");
         }
