@@ -36,7 +36,7 @@ class Hooks {
 
     //TODO: Not a Hook.
     static public function hasLeftMap(who : Entity, map : Map) : Bool {
-        if(who.x < 0 || who.y < 0 || who.x > map.width - who.width || who.y > map.height - who.width)  {
+        if(who.x < 0 || who.y < 0 || who.x > map.width - who.width || who.y > map.height - who.height)  {
             return true;
         }
         return false;
@@ -44,7 +44,7 @@ class Hooks {
 
     //TODO: onxxxx methods could be moved into an Events.as file.
     static public function onLeaveMap(who : Entity, map : Map, cb : Entity -> Void) : Void {
-        if(who.x < 0 || who.y < 0 || who.x > map.width - who.width || who.y > map.height - who.width)  {
+        if(who.x < 0 || who.y < 0 || who.x > map.width - who.width || who.y > map.height - who.height)  {
             cb(who);
         }
     }
