@@ -213,6 +213,27 @@ class Graphic extends Sprite {
 #end
     }
 
+    public function debug(width: Int, height: Int, color: Int): Void {
+        var rectangle:nme.display.Shape = new nme.display.Shape();
+        rectangle.graphics.beginFill(color, 1);
+        rectangle.graphics.drawRect(0, 0, width, height);
+        rectangle.graphics.endFill();
+
+#if flash
+        var bd:BitmapData = new BitmapData(width, height);
+        bd.draw(rectangle);
+
+        texturedObject = new Image(Texture.fromBitmapData(bd));
+
+        addChild(texturedObject);
+
+        texturedObject.x = 0;
+        texturedObject.y = 0;
+#else
+        addChild(rectangle);
+#end
+    }
+
     /** This method should only be used for testing.
      *  Don't use it in an actual game!
      */

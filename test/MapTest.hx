@@ -22,12 +22,31 @@ class SpecialThing extends Entity {
   }
 }
 
+class RedThing extends Entity {
+  public function new(x: Int, y: Int) {
+    super(x, y);
+
+    debug(25, 25, 0xff0000);
+  }
+}
+
+class BlueThing extends Entity {
+  public function new(x: Int, y: Int) {
+    super(x, y);
+
+    debug(25, 25, 0xff0000);
+  }
+}
+
 class MapTest extends haxe.unit.TestCase {
   public var m:Map;
 
   public static var constructedCount:Int = 0;
 
   public override function beforeEach() {
+  }
+
+  function constructNormalMap() {
     m = new Map(2, 2, 2);
     m.fromImage(AllTests.testMap, [
       { key: "#ffffff", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
@@ -37,7 +56,28 @@ class MapTest extends haxe.unit.TestCase {
     m.loadNewMap(new Vec(0, 0));
   }
 
-  //TODO TEST: Map collisions with moving entities...
+  function constructBigMap() {
+    m = new Map(2, 2, 25);
+    m.fromImage(AllTests.testMap, [
+      { key: "#ffffff", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
+    , { key: "#0000ff", gfx: AllTests.testSprite, spritesheet: new Vec(1, 0) }
+    , { key: "#ff0000", spc: MapTest.SpecialThing, spritesheet: new Vec(1, 1) } //represented as green
+    ]);
+    m.fromStringArray
+      (
+        [ "....."
+        , "....."
+        , "....."
+        , "....."
+        , "XXXXX"
+        ]
+      , [ { key: ".", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
+        , { key: "X", spc: Block, spritesheet: new Vec(1, 1) }
+        ]
+      );
+
+    m.loadNewMap(new Vec(0, 0));
+  }
 
   override public function afterEach() {
     Fathom.destroyAll();
@@ -52,10 +92,13 @@ class MapTest extends haxe.unit.TestCase {
     Fathom.stage.addChild(b);
     */
 
+    constructNormalMap();
     assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0x0000ff);
   }
 
   public function testMapChangeDiff() {
+    constructNormalMap();
+
     m.loadNewMapAbs(new Vec(0, 0));
 
     m.loadNewMap(new Vec(1, 0));
@@ -68,6 +111,8 @@ class MapTest extends haxe.unit.TestCase {
   }
 
   public function testMapChangeAbs() {
+    constructNormalMap();
+
     m.loadNewMapAbs(new Vec(1, 0));
     assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0xFFFFFF);
     m.loadNewMapAbs(new Vec(0, 1)); // now at map (0, 1)
@@ -77,6 +122,8 @@ class MapTest extends haxe.unit.TestCase {
   }
 
   public function testSpecialItems() {
+    constructNormalMap();
+
     m.loadNewMapAbs(new Vec(0, 0));
 
     m.loadNewMap(new Vec(0, 1));
@@ -90,6 +137,8 @@ class MapTest extends haxe.unit.TestCase {
   }
 
   public function testDontFreakOutForOutOfMapEntities() {
+    constructNormalMap();
+
     var s:Entity;
 
     m.loadNewMapAbs(new Vec(0, 1));
@@ -110,6 +159,8 @@ class MapTest extends haxe.unit.TestCase {
   }
 
   public function testPersistentItem() {
+    constructNormalMap();
+
     var s:Entity;
 
     m.loadNewMapAbs(new Vec(0, 1));
