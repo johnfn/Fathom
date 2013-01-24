@@ -145,11 +145,21 @@ class Vec {
     }
 
     // TODO: I should think about how to mark "ignore this value". Here I do it with -1.
-        public function threshold(cutoffX : Float, cutoffY : Float = -1) : Vec {
+    public function threshold(cutoffX : Float, cutoffY : Float = -1) : Vec {
         if(cutoffX != -1 && Math.abs(x) < Math.abs(cutoffX))
             x = 0;
         if(cutoffY != -1 && Math.abs(y) < Math.abs(cutoffY))
             y = 0;
+        return this;
+    }
+
+    public function clamp(low: Float, high:Float): Vec {
+        if (x < low)  x = low;
+        if (x > high) x = high;
+
+        if (y < low)  y = low;
+        if (y > high) y = high;
+
         return this;
     }
 
