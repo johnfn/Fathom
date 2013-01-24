@@ -27,7 +27,7 @@ class MapTest extends haxe.unit.TestCase {
 
   public static var constructedCount:Int = 0;
 
-  public override function globalSetup() {
+  public override function beforeEach() {
     m = new Map(2, 2, 2);
     m.fromImage(AllTests.testMap, [
       { key: "#ffffff", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
@@ -39,7 +39,7 @@ class MapTest extends haxe.unit.TestCase {
 
   //TODO TEST: Map collisions with moving entities...
 
-  override public function globalTeardown() {
+  override public function afterEach() {
     Fathom.destroyAll();
   }
 
@@ -52,7 +52,6 @@ class MapTest extends haxe.unit.TestCase {
     Fathom.stage.addChild(b);
     */
 
-    m.loadNewMapAbs(new Vec(0, 0));
     assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0x0000ff);
   }
 
