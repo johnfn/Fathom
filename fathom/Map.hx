@@ -381,7 +381,16 @@ class Map extends Rect {
         // Scan the map, adding every object to our list of persistent items for this map.
         if(!seenBefore)  {
             // If we haven't seen it before, load in all the persistent items.
-            persistent.set(topLeftCorner.asKey(), []);
+
+            // We could have pushed something into this room
+            // without seeing it.
+            if (!persistent.exists(topLeftCorner.asKey())) {
+                persistent.set(topLeftCorner.asKey(), []);
+            } else {
+                Lambda.map(persistent.get(topLeftCorner.asKey()), function(e : Entity) : Void {
+                    e.addToFathom();
+                });
+            }
 
             itemsLeftToLoad = widthInTiles * heightInTiles;
             for (x in 0...widthInTiles) {
@@ -459,9 +468,7 @@ class Map extends Rect {
     }
 
     public function update() : Void {
-        if (!data.hasLoaded()) return;
-
-        var items : Array<Entity> = persistent.get(topLeftCorner.asKey());
+        var items: Array<Entity> = persistent.get(topLeftCorner.asKey());
 
         for (it in items) {
             if(Hooks.hasLeftMap(it, this))  {

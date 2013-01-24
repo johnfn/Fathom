@@ -13,8 +13,8 @@ using Lambda;
 class SpecialThing extends Entity {
   public function new() {
     super(0, 0);
-
     MapTest.constructedCount++;
+    debug(2, 2, 0xff0000);
   }
 
   public override function groups():Set<String> {
@@ -34,7 +34,7 @@ class BlueThing extends Entity {
   public function new(x: Int, y: Int) {
     super(x, y);
 
-    debug(25, 25, 0xff0000);
+    debug(25, 25, 0x0000ff);
   }
 }
 
@@ -46,6 +46,7 @@ class MapTest extends haxe.unit.TestCase {
   public override function beforeEach() {
   }
 
+  // A map with small tiles (2x2).
   function constructNormalMap() {
     m = new Map(2, 2, 2);
     m.fromImage(AllTests.testMap, [
@@ -56,23 +57,17 @@ class MapTest extends haxe.unit.TestCase {
     m.loadNewMap(new Vec(0, 0));
   }
 
+  // A map with big tiles (25x25).
   function constructBigMap() {
     m = new Map(2, 2, 25);
-    m.fromImage(AllTests.testMap, [
-      { key: "#ffffff", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
-    , { key: "#0000ff", gfx: AllTests.testSprite, spritesheet: new Vec(1, 0) }
-    , { key: "#ff0000", spc: MapTest.SpecialThing, spritesheet: new Vec(1, 1) } //represented as green
-    ]);
+
     m.fromStringArray
       (
-        [ "....."
-        , "....."
-        , "....."
-        , "....."
-        , "XXXXX"
+        [ "RB"
+        , "BR"
         ]
-      , [ { key: ".", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
-        , { key: "X", spc: Block, spritesheet: new Vec(1, 1) }
+      , [ { key: "R", spc: RedThing }
+        , { key: "B", spc: BlueThing }
         ]
       );
 
@@ -177,13 +172,30 @@ class MapTest extends haxe.unit.TestCase {
     s.setPos(0, 2);
   }
 
-  /*
+  public function testBigTiles() {
+    constructBigMap();
+
+    //  [ "RB"
+    //  , "BR"
+    //  ]
+
+    assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0xFF0000);
+    assertEquals(Graphic.takeScreenshot().getPixel(25, 0), 0x0000FF);
+    assertEquals(Graphic.takeScreenshot().getPixel(0, 25), 0x0000FF);
+    assertEquals(Graphic.takeScreenshot().getPixel(25, 25), 0xFF0000);
+  }
+
   public function testSwitchMaps() {
+    constructNormalMap();
+
     var s:Entity;
 
     m.loadNewMapAbs(new Vec(0, 1));
     s = Fathom.entities.one([Set.hasGroup("test")]);
-    s.setPos(-2, 1);
+
+    // test up and down
+
+    s.setPos(1, -2);
 
     m.update();
     assertTrue(!s.inFathom);
@@ -191,14 +203,29 @@ class MapTest extends haxe.unit.TestCase {
     m.loadNewMapAbs(new Vec(0, 0));
     assertTrue(s.inFathom);
 
-    s.setPos(2, 1);
+    s.setPos(0, 3);
+    m.update();
     assertTrue(!s.inFathom);
 
     m.loadNewMapAbs(new Vec(0, 1));
     assertTrue(s.inFathom);
-    s.setPos(0, 2); //original position
+
+    // test left and right
+
+    s.setPos(3, 0);
+    m.update();
+    assertTrue(!s.inFathom);
+
+    // This is the first time we've been on (1, 1), so we could
+    // run into bugs from how we handle that too.
+    m.loadNewMapAbs(new Vec(1, 1));
+    assertTrue(s.inFathom);
+
+    s.setPos(-3, 0);
+    m.update();
+    assertTrue(!s.inFathom);
+    m.loadNewMapAbs(new Vec(0, 1));
   }
-  */
 
   /*
   public function testReload() {
