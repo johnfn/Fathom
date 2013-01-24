@@ -199,7 +199,7 @@ class Particles {
         var newData : ParticleData =
             { life : l
             , totalLife : l
-            , vel : new Vec(Util.randNum(velXLow, velXHigh), Util.randNum(velYLow, velYHigh))
+            , vel : new Vec(Util.randFloat(velXLow, velXHigh), Util.randNum(velYLow, velYHigh))
             , x : Util.randRange(Std.int(spawnLoc.x), Std.int(spawnLoc.right))
             , y : Util.randRange(Std.int(spawnLoc.y), Std.int(spawnLoc.bottom))
         };

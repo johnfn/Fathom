@@ -47,14 +47,14 @@ class Util {
 		trace(haxe.Stack.toString(haxe.Stack.callStack()));
 	}
 
-	/* The reason for this wrapper method is to separate debugging messages
-       that should eventually be removed from more serious error logs, which
-       should stay. For instance, if you're checking the x value of an Entity, do
-       trace (e.x). If you just failed an assertion, do Util.log("Assertion failed!").
+	/** The reason for this wrapper method is to separate debugging messages
+   *  that should eventually be removed from more serious error logs, which
+   *  should stay. For instance, if you're checking the x value of an Entity, do
+   *  trace (e.x). If you just failed an assertion, do Util.log("Assertion failed!").
 
-       We separate them so that it's easy to search for "trace" with a following "("
-       to find debugging messages you need to remove.
-       */
+   *  We separate them so that it's easy to search for "trace" with a following "("
+   *  to find debugging messages you need to remove.
+   */
   static public function log(s:String) : Void {
   	trace(s);
 	}
@@ -62,11 +62,11 @@ class Util {
 	// Short for print (like in Ruby). Attempts to print a human readable representation
 	// of the given object, for any object type.
 	static public function p(o : Dynamic) : Void {
-		Util.log(Util.pHelper(o));
+		Util.log(Util.anythingToString(o));
 	}
 
 	// Recursive helper method for Util.p.
-	static function pHelper(o : Dynamic) : String {
+	static public function anythingToString(o : Dynamic) : String {
 		var result : String;
 		if(Util.className(o) == "Object")  {
 			result = "{ ";
@@ -111,13 +111,9 @@ class Util {
 				i++;
 			}
 			result += "]";
-		}
-
-		else if(o == null)  {
+		} else if(o == null)  {
 			result = "null";
-		}
-
-		else  {
+		} else  {
 			result = o.toString();
 		}
 
@@ -140,11 +136,7 @@ class Util {
 		return ++uid;
 	}
 
-	// This function is currently broken if val is an object, and there's no
-	// easy way to fix it.
-	//public static function make2DArrayVal(width:int, height:int, val:*):Array {
-	//  return make2DArrayFn(width, height, function():* { return val; });
-	//}
+
 	static public function make2DArrayFn<T>(width : Int, height : Int, fn : Int -> Int -> T) : Array<Array<T>> {
 		var result : Array<Array<T>> = new Array<Array<T>>();
 
@@ -157,15 +149,11 @@ class Util {
 		return result;
 	}
 
-	static public function foreach2D(a : Array<Dynamic>, fn : Int -> Int -> Dynamic -> Void) : Void {
-		var i : Int = 0;
-		while(i < a.length) {
-			var j : Int = 0;
-			while(j < a[0].length) {
+	static public function foreach2D<T>(a : Array<Array<T>>, fn : Int -> Int -> T -> Void) : Void {
+		for (i in 0...a.length) {
+			for (j in 0...a.length) {
 				fn(i, j, a[i][j]);
-				j++;
 			}
-			i++;
 		}
 	}
 
@@ -194,10 +182,9 @@ class Util {
 		return low + Math.floor(Math.random() * (high - low));
 	}
 
-	static public function randNum(low : Float, high : Float) : Float {
+	static public function randFloat(low : Float, high : Float) : Float {
 		return low + (Math.random() * (high - low));
 	}
-
 
 	public function new() {
 
