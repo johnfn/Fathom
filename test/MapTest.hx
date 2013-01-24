@@ -74,6 +74,23 @@ class MapTest extends haxe.unit.TestCase {
     m.loadNewMap(new Vec(0, 0));
   }
 
+  public function constructRectangular() {
+    m = new Map(4, 2, 25);
+
+    m.fromStringArray
+      (
+        [ "RBRR"
+        , "BRRR"
+        ]
+      , [ { key: "R", spc: RedThing }
+        , { key: "B", spc: BlueThing }
+        ]
+      );
+
+    m.loadNewMap(new Vec(0, 0));
+
+  }
+
   override public function afterEach() {
     Fathom.destroyAll();
   }
@@ -228,10 +245,24 @@ class MapTest extends haxe.unit.TestCase {
   }
 
   /*
-  public function testReload() {
-    m.loadNewMapAbs(new Vec(0, 0));
-    // do something surprising
-    m.loadNewMapAbs(new Vec(0, 0));
+  public function testRectangular() {
+    constructRectangular();
+
+    //
+    //[ "RBRR"
+    //, "BRRR"
+    //]
+    //
+
+    assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0xFF0000);
+    assertEquals(Graphic.takeScreenshot().getPixel(25, 0), 0x0000FF);
+    assertEquals(Graphic.takeScreenshot().getPixel(0, 25), 0x0000FF);
+    assertEquals(Graphic.takeScreenshot().getPixel(25, 25), 0xFF0000);
+
+    assertEquals(Graphic.takeScreenshot().getPixel(50, 0), 0xff0000);
+    assertEquals(Graphic.takeScreenshot().getPixel(50, 25), 0xff0000);
+    assertEquals(Graphic.takeScreenshot().getPixel(75, 0), 0xff0000);
+    assertEquals(Graphic.takeScreenshot().getPixel(75, 25), 0xff0000);
   }
   */
 }
