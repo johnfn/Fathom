@@ -71,7 +71,7 @@ class Util {
 		if(Util.className(o) == "Object")  {
 			result = "{ ";
 			for(k in Reflect.fields(o)) {
-				result += k + ": " + pHelper(Reflect.field(o, k)) + ", ";
+				result += k + ": " + anythingToString(Reflect.field(o, k)) + ", ";
 			}
 
 			// result = result.slice(0, -2) + " ";
@@ -107,7 +107,7 @@ class Util {
 			result = "[";
 			var i : Int = 0;
 			while(i < arr.length) {
-				result += pHelper(arr[i]) + (i == arr.length - (1) ? "" : ", ");
+				result += anythingToString(arr[i]) + (i == arr.length - (1) ? "" : ", ");
 				i++;
 			}
 			result += "]";

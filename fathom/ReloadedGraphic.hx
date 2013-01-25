@@ -14,6 +14,12 @@ import Sys;
 import haxe.Timer;
 import haxe.macro.Context;
 
+#if cpp
+import cpp.vm.Thread;
+#elseif neko
+import neko.vm.Thread;
+#end
+
 typedef ReloadedData = {
   var waiters: Array<ReloadedGraphic>;
   var loader: Loader;
@@ -21,7 +27,7 @@ typedef ReloadedData = {
   var loaded: Bool;
 }
 
-/** ReloadedGraphic is essentially a Bitmap that reloads itself every
+/** ReloadedGraphic is essentially a Bitmap that updates itself every
  *  time the file it was loaded from changes.
  *
  *  You should never have to deal with ReloadedGraphics unless you are
@@ -46,8 +52,10 @@ class ReloadedGraphic extends Bitmap {
 
     if (urlData == null) {
       urlData = new SuperObjectHash();
-      timer = new Timer(1000);
-      timer.run = constantlyReload;
+      Thread.create(function(): Void {
+        timer = new Timer(1000);
+        timer.run = constantlyReload;
+      });
     }
 
     if (urlData.exists(url)) {
