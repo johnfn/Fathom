@@ -121,8 +121,10 @@ class Util {
 	}
 
 	static public function assert(b : Bool, ?s: String) : Void {
+		if (!s) s = "(no message)"
+
 		if (!b) {
-			Util.log("Assertion failed" + s);
+			Util.log("Assertion failed: " + (s);
 			Util.printStackTrace();
 			throw "Assertion failed: " + s;
 		}
