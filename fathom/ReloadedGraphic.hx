@@ -1,7 +1,32 @@
 package fathom;
 
-import nme.display.BitmapData;
+#if flash
+
+import starling.display.Sprite;
+import starling.display.Image;
+import starling.textures.Texture;
+import flash.display.BitmapData;
+
+
+class ReloadedGraphic extends Sprite {
+  public var bitmapData: BitmapData;
+
+  public function new(url: String) {
+    super();
+    this.bitmapData = nme.Assets.getBitmapData(url);
+
+    var img = new Image(Texture.fromBitmapData(bitmapData));
+    this.addChild(img);
+  }
+
+  public function addUpdateCallback(cb: Void -> Void): Void {
+  }
+}
+
+#else
+
 import nme.display.Bitmap;
+import nme.display.BitmapData;
 import nme.display.Sprite;
 import nme.display.Loader;
 import nme.net.URLRequest;
@@ -138,7 +163,6 @@ class ReloadedGraphic extends Bitmap {
 
   static function constantlyReload() {
     if (fathom.Util.KeyDown.R) {
-      trace("!");
       for (val in urlData.values()) {
         val.loader.load(new URLRequest(Fathom.rootDir + val.url));
       }
@@ -158,3 +182,5 @@ class ReloadedGraphic extends Bitmap {
     }
   }
 }
+
+#end
