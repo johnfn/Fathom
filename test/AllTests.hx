@@ -50,6 +50,7 @@ class AllTests extends Sprite {
     r.add(new KeyTest());
     r.add(new CollisionResolverTest());
     r.add(new ModeTest());
+    r.add(new MovingEntityTest());
 
 #if FULLTEST
     // This test is really slow :x
