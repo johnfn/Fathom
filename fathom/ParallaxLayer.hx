@@ -9,8 +9,8 @@ class ParallaxLayer extends Entity {
 	var stageWidth: Int;
 	var stageHeight: Int;
 
-	public var dx: Int = -2;
-	public var dy: Int = 0;
+	public var dx: Int = 0;
+	public var dy: Int = -2;
 
   var widthOfTiles: Float = 0;
   var heightOfTiles: Float = 0;
@@ -51,10 +51,14 @@ class ParallaxLayer extends Entity {
 
   		if (dx > 0 && g.x > stageWidth) {
   			g.x -= widthOfTiles;
-  		}
-
-      if (dx < 0 && g.x + g.width < 0) {
+  		} else if (dx < 0 && g.x + g.width < 0) {
         g.x += widthOfTiles;
+      }
+
+      if (dy > 0 && g.y > stageHeight) {
+        g.y -= heightOfTiles;
+      } else if (dy < 0 && g.y + g.height < 0) {
+        g.y += heightOfTiles;
       }
   	}
   }
