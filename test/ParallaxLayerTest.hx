@@ -41,12 +41,12 @@ class ParallaxLayerTest extends haxe.unit.TestCase {
     Fathom.destroyAll();
   }
 
+// These tests are really slow...
+#if FULLTEST
   public function testMoveBig() {
     var pl: ParallaxLayer = new ParallaxLayer(AllTests.testBlack222x222);
     for (x in 0...5) {
-      for (y in 0...20) {
-        pl.update();
-      }
+      pl.update();
       ensureValid();
     }
 
@@ -56,13 +56,29 @@ class ParallaxLayerTest extends haxe.unit.TestCase {
   public function testMoveSmall() {
     var pl: ParallaxLayer = new ParallaxLayer(AllTests.testBlack8x8);
     for (x in 0...8) {
-      for (y in 0...20) {
-        pl.update();
-      }
+      pl.update();
       ensureValid();
     }
 
     Fathom.destroyAll();
+  }
+#end
+
+  public function testdxdy() {
+    var pl: ParallaxLayer = new ParallaxLayer(AllTests.testCheckerboard8x8);
+
+    pl.dx = 2;
+    assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0xffffff);
+    pl.update();
+    assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0x000000);
+    pl.update();
+    assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0xffffff);
+    pl.dx = -1;
+
+    pl.update();
+    assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0xffffff);
+    pl.update();
+    assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0x000000);
   }
 }
 

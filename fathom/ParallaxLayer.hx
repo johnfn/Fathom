@@ -10,7 +10,7 @@ class ParallaxLayer extends Entity {
 	var stageHeight: Int;
 
 	public var dx: Int = 0;
-	public var dy: Int = -2;
+	public var dy: Int = 0;
 
   var widthOfTiles: Float = 0;
   var heightOfTiles: Float = 0;

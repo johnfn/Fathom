@@ -21,6 +21,7 @@ class AllTests extends Sprite {
 
   public static var testBlack222x222:String = "test/black 222x222.png";
   public static var testBlack8x8:String = "test/black 8x8.png";
+  public static var testCheckerboard8x8:String = "test/checkerboard 8x8.png";
 
   public static function main() {
     Fathom.rootDir = "";
