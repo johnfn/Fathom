@@ -1,8 +1,11 @@
 package fathom;
-//TODO...
-#if false
 
-import flash.display.Sprite;
+import nme.Assets;
+import flash.display.BitmapData;
+//TODO...
+
+import fathom.Entity;
+
 
 typedef ParticleData = {life: Int, totalLife: Int, vel: Vec, x: Int, y: Int};
 
@@ -31,13 +34,13 @@ class Particles {
     var stopParticleGen : Int;
     var particleData : SuperObjectHash<Entity, ParticleData>;
     var animated : Bool;
-    var animationFrames : Array<Array<Int>>;
+    var animationFrames : Array<{x: Int, y: Int}>;
 
     // dimensions of the particle. currently only defined if thie particle is animated, TODO.
     var particleDim : Vec;
-    var baseMC : Class<Dynamic>;
+    var baseURL: String;
 
-    public function new(baseMC : Class<Dynamic>, width : Int = -1) {
+    public function new(baseURL: String, width: Int = -1) {
         deadParticles = [];
         spawnRate = 1;
         lifetimeLow = 60;
@@ -56,16 +59,12 @@ class Particles {
         stopParticleGen = -1;
         particleData = new SuperObjectHash();
         animated = false;
-        this.baseMC = baseMC;
+        this.baseURL = baseURL;
         particleEffects.push(this);
     }
 
-    public function setImage(img : Class<Dynamic>) : Void {
-        this.baseMC = img;
-    }
-
     // Chainable methods for ease of constructing particle effects.
-        public function withLifetime(newLow : Int, newHigh : Int) : Particles {
+    public function withLifetime(newLow : Int, newHigh : Int) : Particles {
         this.lifetimeLow = newLow;
         this.lifetimeHigh = newHigh;
         return this;
@@ -76,22 +75,23 @@ class Particles {
         return this;
     }
 
-    // Makes the assumption that the baseMC is a height * numFrames by width spritesheet.
+    // Makes the assumption that the baseURL is a height * numFrames by width spritesheet.
     // Yep, square frames for now. TODO.
     public function animateFromSpritesheet() : Particles {
         var width : Int;
         var height : Int;
-        var asset = Type.createInstance(baseMC, []);
-        var animationFrames : Array<Array<Int>> = [];
+        var asset: BitmapData = nme.Assets.getBitmapData(baseURL);
+        var animationFrames : Array<{x: Int, y: Int}> = [];
+
         animated = true;
-        // Initialize the baseMC just to get its width and height.
+        // Initialize the baseURL just to get its width and height.
         width = asset.width;
         height = asset.height;
         particleDim = new Vec(asset.height, asset.height);
         Util.assert(width % height == 0);
 
         for (i in 0...Std.int(width / height)) {
-            animationFrames.push([i, 0]);
+            animationFrames.push({x: i, y: 0});
         }
         this.animationFrames = animationFrames;
         return this;
@@ -115,7 +115,7 @@ class Particles {
     }
 
     // TODO: Not fully implemented.
-        public function andFollow(e : Entity) : Particles {
+    public function andFollow(e : Entity) : Particles {
         following = true;
         followTarget = e;
         Util.assert(false);
@@ -183,14 +183,15 @@ class Particles {
 
         if(deadParticles.length > 0)  {
             newParticle = deadParticles.pop();
+            newParticle.visible = true;
         } else {
-            newParticle = new Entity();
+            newParticle = new Entity(0, 0);
             if(animated)  {
-                newParticle.loadSpritesheet(baseMC, particleDim, new Vec(animationFrames[0][0], animationFrames[0][1]));
+                newParticle.loadSpritesheet(baseURL, particleDim, new Vec(animationFrames[0].x, animationFrames[0].y));
                 newParticle.animations.addAnimationXY("particle", animationFrames);
                 newParticle.animations.playWithOffset("particle", Util.randRange(0, 12));
             } else  {
-                newParticle.loadImage(baseMC);
+                newParticle.loadImage(baseURL);
             }
         }
 
@@ -199,14 +200,13 @@ class Particles {
         var newData : ParticleData =
             { life : l
             , totalLife : l
-            , vel : new Vec(Util.randFloat(velXLow, velXHigh), Util.randNum(velYLow, velYHigh))
+            , vel : new Vec(Util.randFloat(velXLow, velXHigh), Util.randFloat(velYLow, velYHigh))
             , x : Util.randRange(Std.int(spawnLoc.x), Std.int(spawnLoc.right))
             , y : Util.randRange(Std.int(spawnLoc.y), Std.int(spawnLoc.bottom))
         };
         particleData.set(newParticle, newData);
         newParticle.scaleX = scaleX;
         newParticle.scaleY = scaleY;
-        Fathom.container.addChild(newParticle);
         return this;
     }
 
@@ -246,6 +246,7 @@ class Particles {
             if(lifeLeft == 0 || (animated && pObj.animations.lastFrame()))  {
                 particleData.delete(pObj);
                 deadParticles.push(pObj);
+                pObj.visible = false;
                 if(animated)  {
                     pObj.animations.stop();
                 }
@@ -267,14 +268,3 @@ class Particles {
     }
 
 }
-#else
-
-//TODO
-
-class Particles {
-
-    public static function updateAll():Void {
-
-    }
-}
-#end
