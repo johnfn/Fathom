@@ -1,6 +1,6 @@
 # Fathom
 
-Hi. Fathom is a game development library, currently being developed for Haxe. It compiles to Flash and NME.
+Hi. Fathom is a game development library, currently being developed for Haxe. It compiles to Flash and C++.
 
 **Fathom is under heavy development. Expect brokenness until this message goes away. Of course, if you want to help, just let me know. There's lots to do.**
 
