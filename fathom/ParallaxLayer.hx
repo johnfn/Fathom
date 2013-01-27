@@ -45,4 +45,8 @@ class ParallaxLayer extends Entity {
   		}
   	}
   }
+
+  public override function groups():Set<String> {
+    return super.groups().add("non-blocking");
+  }
 }

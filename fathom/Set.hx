@@ -35,12 +35,14 @@ class Set<T> {
         return true;
     }
 
-    public function add(item : T) : Void {
+    public function add(item : T) : Set<T> {
         if (!exists(item)) {
           _length++;
         }
 
         contents.set(item, true);
+
+        return this;
     }
 
     public function remove(item : T) : Void {
