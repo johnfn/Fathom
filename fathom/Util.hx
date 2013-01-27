@@ -16,10 +16,12 @@ class Util {
 		return x;
 	}
 
-	// Divide a by b, always rounding up unless a % b == 0.
-  // Looks simple, doesn't it? But see: http://stackoverflow.com/questions/921180/how-can-i-ensure-that-a-division-of-integers-is-always-rounded-up
-  static public function divRoundUp(a : Float, b : Float) : Float {
-		return (a + b - 1) / b;
+	/**
+	 * Divide a by b, always rounding up unless a % b == 0.
+	 */
+  static public function divRoundUp(a: Float, b: Float): Int {
+	  // Looks simple, doesn't it? But see: http://stackoverflow.com/questions/921180/how-can-i-ensure-that-a-division-of-integers-is-always-rounded-up !
+		return Std.int((a + b - 1) / b);
 	}
 
 	static public function sign(x: Float): Float {
@@ -195,11 +197,14 @@ class Util {
 		return new Vec(x, y);
 	}
 
-	static public function randRange(low : Int, high : Int) : Int {
+	/**
+	 * Generates a random number between `low` inclusive and `high` exclusive.
+	 */
+	static public function randRange(low: Int, high: Int) : Int {
 		return low + Math.floor(Math.random() * (high - low));
 	}
 
-	static public function randFloat(low : Float, high : Float) : Float {
+	static public function randFloat(low: Float, high: Float) : Float {
 		return low + (Math.random() * (high - low));
 	}
 
