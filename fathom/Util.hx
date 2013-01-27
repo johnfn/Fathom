@@ -23,27 +23,23 @@ class Util {
 		return (a + b - 1) / b;
 	}
 
-	static public function sign(x : Float) : Float {
-		if(x > 0)
-			return 1;
-		if(x < 0)
-			return -1;
+	static public function sign(x: Float): Float {
+		if(x > 0) return 1;
+		if(x < 0) return -1;
 		return 0;
 	}
 
-	static public function clamp(x : Float, low : Float, high : Float) : Float {
-		if(x < low)
-			return low;
-		if(x > high)
-			return high;
+	static public function clamp(x: Float, low: Float, high: Float): Float {
+		if(x < low)  return low;
+		if(x > high) return high;
 		return x;
 	}
 
-	static public function className<T>(c : T) : String {
+	static public function className<T>(c: T): String {
 		return Type.getClassName(Type.getClass(c));
 	}
 
-	static public function printStackTrace() : Void {
+	static public function printStackTrace(): Void {
 		trace(haxe.Stack.toString(haxe.Stack.callStack()));
 	}
 
@@ -160,7 +156,7 @@ class Util {
 	}
 
 	// With thanks to http://kirill-poletaev.blogspot.com/2010/07/rotate-object-to-mouse-using-as3.html
-	static public function rotateToFace(pointer : Vec, target : Vec) : Float {
+	static public function rotateToFace(pointer: Vec, target: Vec): Float {
 		var cx : Float = target.x - pointer.x;
 		var cy : Float = target.y - pointer.y;
 		var radians : Float = Math.atan2(cy, cx);
@@ -189,7 +185,7 @@ class Util {
 	}
 
 	public function new() {
-
+		throw "Don't instantiate Util! Just use its static methods.";
 	}
 }
 

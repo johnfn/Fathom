@@ -11,11 +11,9 @@ typedef ParticleData = {life: Int, totalLife: Int, vel: Vec, x: Int, y: Int};
 
 class Particles {
 
-    static var particleEffects : Array<Dynamic> = [];
-    // Recycling particles within ALL particle effects.
-    static var recycledParticles : Array<Dynamic> = [];
+    static var particleEffects : Array<Particles> = [];
     // Recycling particles within this particle effect.
-    var deadParticles : Array<Dynamic>;
+    var deadParticles : Array<Entity>;
     // Number from 0 to 1 - % chance of spawning the particle on a single frame.
     var spawnRate : Float;
     var lifetimeLow : Int;
@@ -141,10 +139,8 @@ class Particles {
     }
 
     public function spawnParticles(num : Int) : Particles {
-        var i : Int = 0;
-        while(i < num) {
+        for (i in 0...num) {
             spawnParticle();
-            i++;
         }
         return this;
     }
@@ -170,10 +166,8 @@ class Particles {
     }
 
     static public function updateAll() : Void {
-        var i : Int = 0;
-        while(i < Particles.particleEffects.length) {
-            Particles.particleEffects[i].update();
-            i++;
+        for (effect in Particles.particleEffects) {
+            effect.update();
         }
     }
 
@@ -232,7 +226,7 @@ class Particles {
 
         // Update each particle.
         for(pObj in particleData) {
-            var data : Dynamic = particleData.get(pObj);
+            var data: ParticleData = particleData.get(pObj);
             particlesLeft = true;
             data.x += data.vel.x;
             data.y += data.vel.y;
