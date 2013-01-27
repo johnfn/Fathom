@@ -73,6 +73,4 @@ class MovingEntity extends Entity {
 
         vel.map(cutoffFn);
     }
-
-
 }

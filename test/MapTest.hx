@@ -4,6 +4,7 @@ import fathom.Vec;
 import fathom.Graphic;
 import fathom.Entity;
 import fathom.Set;
+import fathom.MovingEntity;
 
 import flash.display.BitmapData;
 import flash.display.Bitmap;
@@ -38,6 +39,16 @@ class BlueThing extends Entity {
   }
 }
 
+class BlackThing extends Entity {
+  public function new(x: Int, y: Int) {
+    super(x, y);
+
+    debug(25, 25, 0x000000);
+  }
+}
+
+
+
 class MapTest extends haxe.unit.TestCase {
   public var m:Map;
 
@@ -54,7 +65,7 @@ class MapTest extends haxe.unit.TestCase {
     , { key: "#0000ff", gfx: AllTests.testSprite, spritesheet: new Vec(1, 0) }
     , { key: "#ff0000", spc: MapTest.SpecialThing, spritesheet: new Vec(1, 1) } //represented as green
     ]);
-    m.loadNewMap(new Vec(0, 0));
+    m.loadNewMap(0, 0);
   }
 
   // A map with big tiles (25x25).
@@ -71,7 +82,27 @@ class MapTest extends haxe.unit.TestCase {
         ]
       );
 
-    m.loadNewMap(new Vec(0, 0));
+    m.loadNewMap(0, 0);
+  }
+
+  // A map with four rooms
+  function constructFourRoomMap() {
+    m = new Map(2, 2, 25);
+
+    m.fromStringArray
+      (
+        [ "RRBB"
+        , "RRBB"
+        , "bbRR"
+        , "bbRR"
+        ]
+      , [ { key: "R", spc: RedThing }
+        , { key: "B", spc: BlueThing }
+        , { key: "b", spc: BlackThing }
+        ]
+      );
+
+    m.loadNewMap(0, 0);
   }
 
   public function constructRectangular() {
@@ -87,7 +118,7 @@ class MapTest extends haxe.unit.TestCase {
         ]
       );
 
-    m.loadNewMap(new Vec(0, 0));
+    m.loadNewMap(0, 0);
 
   }
 
@@ -111,39 +142,39 @@ class MapTest extends haxe.unit.TestCase {
   public function testMapChangeDiff() {
     constructNormalMap();
 
-    m.loadNewMapAbs(new Vec(0, 0));
+    m.loadNewMapAbs(0, 0);
 
-    m.loadNewMap(new Vec(1, 0));
+    m.loadNewMap(1, 0);
     assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0xFFFFFF);
-    m.loadNewMap(new Vec(-1, 0));
-    m.loadNewMap(new Vec(0, 1)); // now at map (0, 1)
+    m.loadNewMap(-1, 0);
+    m.loadNewMap(0, 1); // now at map (0, 1)
     assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0xFFFFFF);
-    m.loadNewMap(new Vec(1, 0)); // now at map (1, 1)
+    m.loadNewMap(1, 0); // now at map (1, 1)
     assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0x0000FF);
   }
 
   public function testMapChangeAbs() {
     constructNormalMap();
 
-    m.loadNewMapAbs(new Vec(1, 0));
+    m.loadNewMapAbs(1, 0);
     assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0xFFFFFF);
-    m.loadNewMapAbs(new Vec(0, 1)); // now at map (0, 1)
+    m.loadNewMapAbs(0, 1); // now at map (0, 1)
     assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0xFFFFFF);
-    m.loadNewMapAbs(new Vec(1, 1)); // now at map (1, 1)
+    m.loadNewMapAbs(1, 1); // now at map (1, 1)
     assertEquals(Graphic.takeScreenshot().getPixel(0, 0), 0x0000FF);
   }
 
   public function testSpecialItems() {
     constructNormalMap();
 
-    m.loadNewMapAbs(new Vec(0, 0));
+    m.loadNewMapAbs(0, 0);
 
-    m.loadNewMap(new Vec(0, 1));
+    m.loadNewMap(0, 1);
 
     assertEquals(Fathom.entities.get([Set.hasGroup("test")]).length, 1);
     var s:Entity = Fathom.entities.one([Set.hasGroup("test")]);
 
-    m.loadNewMapAbs(new Vec(0, 0));
+    m.loadNewMapAbs(0, 0);
 
     assertEquals(Fathom.entities.get([Set.hasGroup("test")]).length, 0);
   }
@@ -153,7 +184,7 @@ class MapTest extends haxe.unit.TestCase {
 
     var s:Entity;
 
-    m.loadNewMapAbs(new Vec(0, 1));
+    m.loadNewMapAbs(0, 1);
     s = Fathom.entities.one([Set.hasGroup("test")]);
 
     assertEquals(s.x, 0);
@@ -161,8 +192,8 @@ class MapTest extends haxe.unit.TestCase {
 
     s.setPos(7, 7);
 
-    m.loadNewMapAbs(new Vec(0, 0));
-    m.loadNewMapAbs(new Vec(0, 1));
+    m.loadNewMapAbs(0, 0);
+    m.loadNewMapAbs(0, 1);
 
     s = Fathom.entities.one([Set.hasGroup("test")]);
 
@@ -175,13 +206,13 @@ class MapTest extends haxe.unit.TestCase {
 
     var s:Entity;
 
-    m.loadNewMapAbs(new Vec(0, 1));
+    m.loadNewMapAbs(0, 1);
     s = Fathom.entities.one([Set.hasGroup("test")]);
 
     s.setPos(1, 1);
 
-    m.loadNewMapAbs(new Vec(0, 0));
-    m.loadNewMapAbs(new Vec(0, 1));
+    m.loadNewMapAbs(0, 0);
+    m.loadNewMapAbs(0, 1);
 
     s = Fathom.entities.one([Set.hasGroup("test")]);
 
@@ -207,7 +238,7 @@ class MapTest extends haxe.unit.TestCase {
 
     var s:Entity;
 
-    m.loadNewMapAbs(new Vec(0, 1));
+    m.loadNewMapAbs(0, 1);
     s = Fathom.entities.one([Set.hasGroup("test")]);
 
     // test up and down
@@ -217,14 +248,14 @@ class MapTest extends haxe.unit.TestCase {
     m.update();
     assertTrue(!s.inFathom);
 
-    m.loadNewMapAbs(new Vec(0, 0));
+    m.loadNewMapAbs(0, 0);
     assertTrue(s.inFathom);
 
     s.setPos(0, 3);
     m.update();
     assertTrue(!s.inFathom);
 
-    m.loadNewMapAbs(new Vec(0, 1));
+    m.loadNewMapAbs(0, 1);
     assertTrue(s.inFathom);
 
     // test left and right
@@ -235,14 +266,23 @@ class MapTest extends haxe.unit.TestCase {
 
     // This is the first time we've been on (1, 1), so we could
     // run into bugs from how we handle that too.
-    m.loadNewMapAbs(new Vec(1, 1));
+    m.loadNewMapAbs(1, 1);
     assertTrue(s.inFathom);
 
     s.setPos(-3, 0);
     m.update();
     assertTrue(!s.inFathom);
-    m.loadNewMapAbs(new Vec(0, 1));
+    m.loadNewMapAbs(0, 1);
   }
+
+  /*
+  public function testLoadWithCharacter() {
+    var me: MovingEntity;
+
+    constructFourRoomMap();
+    m.loadNewMapAbs(0, 0);
+  }
+  */
 
   /*
   public function testRectangular() {

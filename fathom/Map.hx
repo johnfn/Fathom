@@ -181,7 +181,7 @@ class Map extends Rect {
         data = MapData.fromImage(mapFilepath);
         data.setReloadCallback(function() {
             that.exploredMaps = new SuperObjectHash();
-            that.loadNewMap(new Vec(0, 0));
+            that.loadNewMap(0, 0);
         });
 
         // Load ground list
@@ -194,7 +194,7 @@ class Map extends Rect {
             Util.assert(s.spc != null || s.gfx != null, "Both SPC and GFX are null.");
         }
 
-        this.loadNewMap(new Vec(0, 0));
+        this.loadNewMap(0, 0);
 
         return this;
     }
@@ -211,7 +211,7 @@ class Map extends Rect {
             Util.assert(s.spc != null || s.gfx != null, "Both SPC and GFX are null.");
         }
 
-        this.loadNewMap(new Vec(0, 0));
+        this.loadNewMap(0, 0);
         return this;
     }
 
@@ -449,29 +449,11 @@ class Map extends Rect {
         return 0 <= x && x < widthInTiles && 0 <= y && y < heightInTiles;
     }
 
-    public function collidesRect(other : Rect) : Bool {
-        var xStart : Int = Math.floor(other.x / this.tileSize);
-        var xStop : Int = Math.floor((other.x + other.width) / this.tileSize) + 1;
-        var yStart : Int = Math.floor(other.y / this.tileSize);
-        var yStop : Int = Math.floor((other.y + other.height) / this.tileSize) + 1;
-
-        for (x in xStart...xStop) {
-            for (y in yStart...yStop) {
-                if(0 <= x && x < widthInTiles && 0 <= y && y < heightInTiles)  {
-                    if(tiles[x][y] != null)  {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
     public function update() : Void {
         var items: Array<Entity> = persistent.get(topLeftCorner.asKey());
 
         for (it in items) {
-            if(hasLeftMap(it, this))  {
+            if(hasLeftMap(it))  {
                 Util.assert(!it.groups().has("Character"));
                 this.itemSwitchedMaps(it);
             }
@@ -486,15 +468,17 @@ class Map extends Rect {
         return [0];
     }
 
-    public function loadNewMapAbs(abs : Vec) : Map {
-        var diff : Vec = abs.subtract(getTopLeftCorner().clone().divide(_tileSize));
-        loadNewMap(diff);
+    public function loadNewMapAbs(x: Int, y: Int) : Map {
+        var diff: Vec = new Vec(x, y).subtract(getTopLeftCorner().clone().divide(_tileSize));
+        loadNewMap(Std.int(diff.x), Std.int(diff.y));
         return this;
     }
 
     static var cachedAssets : SuperObjectHash<String, Dynamic> = new SuperObjectHash();
 
-    public function loadNewMap(diff : Vec) : Map {
+    public function loadNewMap(dx: Int, dy: Int) : Map {
+        var diff: Vec = new Vec(dx, dy);
+
         collisionInfo = Util.make2DArray(widthInTiles, heightInTiles, false);
         diff.multiply(new Vec(widthInTiles, heightInTiles));
         updatePersistentItems(diff);
@@ -507,32 +491,30 @@ class Map extends Rect {
         return this.topLeftCorner.clone();
     }
 
-    static public function hasLeftMap(who : Entity, map : Map) : Bool {
-        if(who.x < 0 || who.y < 0 || who.x > map.width - who.width || who.y > map.height - who.height)  {
+    public function hasLeftMap(who : Entity) : Bool {
+        if(who.x < 0 || who.y < 0 || who.x > this.width - who.width || who.y > this.height - who.height)  {
             return true;
         }
         return false;
     }
 
-    static public function loadNewMapWithCharacter(leftScreen : MovingEntity, map : Map) : Void -> Void {
+    public function loadNewMapWithCharacter(leftScreen: MovingEntity): Void {
         //TODO: This code is pretty obscure.
         //TODO: This will only work if leftScreen.width is less than the tileSize.
-        //TODO: This should obviously be in Map, not Hooks.
-        return function() : Void {
-            Util.assert(leftScreen.width < map.tileSize);
-            var smallerSize : Vec = map.sizeVector.clone().subtract(leftScreen.width);
-            var dir : Vec = leftScreen.vec().divide(smallerSize).map(Math.floor);
-            var toOtherSide : Vec = dir.clone().multiply(smallerSize);
-            if(toOtherSide.x > 0)
-                leftScreen.x = 1;
-            if(toOtherSide.x < 0)
-                leftScreen.x = map.sizeVector.x - map.tileSize + 1;
-            if(toOtherSide.y > 0)
-                leftScreen.y = 1;
-            if(toOtherSide.y < 0)
-                leftScreen.y = map.sizeVector.y - map.tileSize + 1;
-            map.loadNewMap(dir);
-        }
+
+        Util.assert(leftScreen.width < this.tileSize);
+        Util.assert(hasLeftMap(leftScreen));
+
+        var smallerSize : Vec = this.sizeVector.clone().subtract(leftScreen.width);
+        var dir : Vec = leftScreen.vec().divide(smallerSize).map(Math.floor);
+        var toOtherSide : Vec = dir.clone().multiply(smallerSize);
+
+        if(toOtherSide.x > 0) leftScreen.x = 1;
+        if(toOtherSide.x < 0) leftScreen.x = this.sizeVector.x - this.tileSize + 1;
+        if(toOtherSide.y > 0) leftScreen.y = 1;
+        if(toOtherSide.y < 0) leftScreen.y = this.sizeVector.y - this.tileSize + 1;
+
+        this.loadNewMap(Std.int(dir.x), Std.int(dir.y));
     }
 
 }

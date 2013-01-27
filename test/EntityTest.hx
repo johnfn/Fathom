@@ -116,5 +116,30 @@ class EntityTest extends haxe.unit.TestCase {
     e2.destroy();
     assertTrue(e2.destroyed);
   }
+
+  public function testFlicker() {
+    var wasCalled: Bool = false;
+
+    var timesVisible: Int = 0;
+    var timesInvisible: Int = 0;
+
+    e1.flicker(50, function() {
+      wasCalled = true;
+    });
+
+    for (x in 0...80) {
+      e1.update();
+
+      if (e1.visible) timesVisible++;
+      if (!e1.visible) timesInvisible++;
+    }
+
+    // Not exactly the most scientific test but I wanted to give implementations
+    // some latitude for how they decide to implement this function.
+    assertTrue(timesVisible > 10);
+    assertTrue(timesInvisible > 10);
+
+    assertTrue(wasCalled);
+  }
 }
 

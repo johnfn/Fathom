@@ -104,7 +104,7 @@ class Entity extends Graphic {
     }
 
     public function unlisten(f) : Entity {
-        Util.assert(events.remove(f), "In Entity#unlisten, event not found!");
+        events.remove(f);
         return this;
     }
 
@@ -315,25 +315,26 @@ class Entity extends Graphic {
         parent.setChildIndex(this, this.parent.numChildren - 1);
     }
 
-
-    public function flicker(duration : Int = 20, cb : Void -> Void = null) : Void -> Void {
+    public function flicker(duration: Int = 20, cb: Void -> Void = null): Void {
         var counter : Int = 0;
         var fn: Void -> Void = null;
         var that: Entity = this;
 
         this.isFlickering = true;
-        fn = function() : Void {
+
+        var fn = function() : Void {
             counter++;
             that.visible = (Math.floor(counter / 3) % 2 == 0);
-            if (counter > duration)  {
+            if (counter >= duration)  {
                 that.isFlickering = false;
                 that.visible = true;
                 that.unlisten(fn);
 
                 if(cb != null) cb();
             }
-        }
-        return fn;
+        };
+
+        listen(fn);
     }
 }
 
