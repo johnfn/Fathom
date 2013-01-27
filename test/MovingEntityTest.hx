@@ -123,5 +123,18 @@ class MovingEntityTest extends haxe.unit.TestCase {
     Fathom.destroyAll();
   }
 
-  // test velocities > 25
+  public function testTouchingMultipleFast(): Void {
+    makeDebugMap();
+
+    var block: GenericBlock = cast(Fathom.entities.get([Set.hasGroup("moving")]).first(), GenericBlock);
+    block.vel.x = 50;
+    block.vel.y = 50;
+
+    CollisionResolver.moveEverything(Fathom.movingEntities());
+
+    assertTrue(block.touchingRight);
+    assertTrue(block.touchingBottom);
+
+    Fathom.destroyAll();
+  }
 }
