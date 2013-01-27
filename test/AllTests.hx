@@ -19,6 +19,9 @@ class AllTests extends Sprite {
   public static var testMap:String = "test/testmap.png";
   public static var testAnimation:String = "test/testanimation.png";
 
+  public static var testBlack222x222:String = "test/black 222x222.png";
+  public static var testBlack8x8:String = "test/black 8x8.png";
+
   public static function main() {
     Fathom.rootDir = "";
     Fathom.initialize(test);
@@ -45,6 +48,7 @@ class AllTests extends Sprite {
     r.add(new ColorTest());
     r.add(new KeyTest());
     r.add(new CollisionResolverTest());
+    r.add(new ParallaxLayerTest());
 
     r.run();
   }

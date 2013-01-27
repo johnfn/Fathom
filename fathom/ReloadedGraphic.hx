@@ -11,11 +11,20 @@ import flash.display.BitmapData;
 class ReloadedGraphic extends Sprite {
   public var bitmapData: BitmapData;
 
+  // Rudimentary cacheing TODO
+  public static var lastUrl: String;
+  public static var lastTexture: Texture;
+
   public function new(url: String) {
     super();
     this.bitmapData = nme.Assets.getBitmapData(url);
 
-    var img = new Image(Texture.fromBitmapData(bitmapData));
+    if (lastUrl != url) {
+      lastUrl = url;
+      lastTexture = Texture.fromBitmapData(bitmapData);
+    }
+
+    var img = new Image(ReloadedGraphic.lastTexture);
     this.addChild(img);
   }
 
