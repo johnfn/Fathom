@@ -118,10 +118,12 @@ class Fathom {
         });
     }
 
-    static function update(event : Event) : Void {
+    public static function update(event: Event = null) : Void {
         // We copy the entity list so that it doesn't change while we're
         // iterating through it.
         var list : Set<Entity> = entities.clone();
+        trace(list);
+
         // Similarly, if something changes the current mode, that shouldn't
         // be reflected until the next update cycle.
         var cachedMode : Int = mode.currentMode;
