@@ -314,5 +314,26 @@ class Entity extends Graphic {
         Util.assert(this.parent != null, "raiseToTop called with no parent.");
         parent.setChildIndex(this, this.parent.numChildren - 1);
     }
+
+
+    public function flicker(duration : Int = 20, cb : Void -> Void = null) : Void -> Void {
+        var counter : Int = 0;
+        var fn: Void -> Void = null;
+        var that: Entity = this;
+
+        this.isFlickering = true;
+        fn = function() : Void {
+            counter++;
+            that.visible = (Math.floor(counter / 3) % 2 == 0);
+            if (counter > duration)  {
+                that.isFlickering = false;
+                that.visible = true;
+                that.unlisten(fn);
+
+                if(cb != null) cb();
+            }
+        }
+        return fn;
+    }
 }
 

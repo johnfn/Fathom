@@ -41,8 +41,6 @@ class ParallaxLayerTest extends haxe.unit.TestCase {
     Fathom.destroyAll();
   }
 
-// These tests are really slow...
-#if FULLTEST
   public function testMoveBig() {
     var pl: ParallaxLayer = new ParallaxLayer(AllTests.testBlack222x222);
     for (x in 0...5) {
@@ -62,7 +60,6 @@ class ParallaxLayerTest extends haxe.unit.TestCase {
 
     Fathom.destroyAll();
   }
-#end
 
   public function testdxdy() {
     var pl: ParallaxLayer = new ParallaxLayer(AllTests.testCheckerboard8x8);

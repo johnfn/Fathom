@@ -46,4 +46,33 @@ class MovingEntity extends Entity {
     public function isBlocked() : Bool {
         return isTouching([Set.doesntHaveGroup("non-blocking")]);
     }
+
+    /** Decelerate the velocity of this entity by a given amount. */
+    function decel(e: MovingEntity, decel: Float = 2.0) : Void {
+        var truncate: Float -> Float = function(val: Float): Float {
+            if(Math.abs(val) <= decel)
+                return 0;
+            return val;
+        };
+
+        e.vel.map(truncate).addAwayFromZero(-decel, -decel);
+    }
+
+    function truncate(): Void {
+        var cutoff : Float = 0.4;
+        var lowCutoff : Float = 20;
+        var cutoffFn : Float -> Float = function(val : Float) : Float {
+            if(Math.abs(val) < cutoff)  {
+                return 0;
+            }
+            if(Math.abs(val) > lowCutoff)
+                return Util.sign(val) * lowCutoff;
+            //TODO: This hides a problem where falling velocity gets too large.
+            return val;
+        };
+
+        vel.map(cutoffFn);
+    }
+
+
 }
