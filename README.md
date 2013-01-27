@@ -6,7 +6,7 @@ Hi. Fathom is a game development library, currently being developed for Haxe. It
 
 On the Flash side of things, you get a game engine backed by [Starling](https://github.com/PrimaryFeather/Starling-Framework), an awesome graphics library that uses Stage3D. That means we have blazing fast graphics. I'm not being superlative, it's pretty ridiculous. The GPU acceleration means that you need to have tens of thousands of Sprites to see the framerate even dip below 60FPS.
 
-On the NME side, we take advantage of the desktop environment. Here, we reload data automatically when it is changed. You can change images or map data files without having to restart the game. Saving in Photoshop will make the game instantly reload any changes, without restarting. If you're wondering if that is as awesome as it sounds, it is. I'll gradually be pushing for more assets to be developed outside of Haxe (think cinematic files, backgrounds etc.) so that designing and testing can happen in tandem.
+On the NME side, we take advantage of the desktop environment. Here, we reload data automatically when it is changed. You can change images or map data files without having to restart the game - all you have to do is press `r`. Saving in Photoshop will make the game instantly reload any changes, without restarting. If you're wondering if that is as awesome as it sounds, it is. I'll gradually be pushing for more assets to be developed outside of Haxe (think cinematic files, backgrounds etc.) so that designing and testing can happen in tandem.
 
 Fathom compiles to AS3 (via .swc), so you can use AS3 too. But you don't get that awesome hotswapping stuff. 
 

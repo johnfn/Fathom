@@ -52,10 +52,8 @@ class ReloadedGraphic extends Bitmap {
 
     if (urlData == null) {
       urlData = new SuperObjectHash();
-      Thread.create(function(): Void {
-        timer = new Timer(1000);
-        timer.run = constantlyReload;
-      });
+      timer = new Timer(1000);
+      timer.run = constantlyReload;
     }
 
     if (urlData.exists(url)) {
@@ -139,8 +137,11 @@ class ReloadedGraphic extends Bitmap {
   }
 
   static function constantlyReload() {
-    for (val in urlData.values()) {
-      val.loader.load(new URLRequest(Fathom.rootDir + val.url));
+    if (fathom.Util.KeyDown.R) {
+      trace("!");
+      for (val in urlData.values()) {
+        val.loader.load(new URLRequest(Fathom.rootDir + val.url));
+      }
     }
   }
 

@@ -81,6 +81,7 @@ class MagicKeyObject {
         // Add A - Z.
         for (k in 65...(65 + 26 + 1)) {
             res.set(k, String.fromCharCode(k));
+            res.set(k + 32, String.fromCharCode(k));
         }
 
         return res;
