@@ -288,7 +288,7 @@ class MapTest extends haxe.unit.TestCase {
 
     assertTrue(me.inFathom);
     assertFalse(m.hasLeftMap(me));
-    assertTrue(m.getTopLeftCorner().equals(new Vec(2, 0)));
+    assertTrue(m.getTopLeftCorner().equals(new Vec(1, 0)));
     assertEquals(me.y, 20);
 
     me.x = -5;
@@ -308,7 +308,7 @@ class MapTest extends haxe.unit.TestCase {
 
     assertTrue(me.inFathom);
     assertFalse(m.hasLeftMap(me));
-    assertTrue(m.getTopLeftCorner().equals(new Vec(0, 2)));
+    assertTrue(m.getTopLeftCorner().equals(new Vec(0, 1)));
     assertEquals(me.x, 4);
 
     me.x = 7;

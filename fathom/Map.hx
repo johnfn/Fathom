@@ -469,7 +469,7 @@ class Map extends Rect {
     }
 
     public function loadNewMapAbs(x: Int, y: Int) : Map {
-        var diff: Vec = new Vec(x, y).subtract(getTopLeftCorner().clone().divide(_tileSize));
+        var diff: Vec = new Vec(x, y).subtract(getTopLeftCorner());
         loadNewMap(Std.int(diff.x), Std.int(diff.y));
         return this;
     }
@@ -488,7 +488,7 @@ class Map extends Rect {
     }
 
     public function getTopLeftCorner(): Vec {
-        return this.topLeftCorner.clone();
+        return this.topLeftCorner.clone().divide(new Vec(widthInTiles, heightInTiles));
     }
 
     /**
