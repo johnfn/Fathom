@@ -20,7 +20,6 @@ class OneThing extends Entity {
   }
 
   public override function update(): Void {
-    trace("1 update");
     didUpdate = true;
 
     super.update();
@@ -41,7 +40,6 @@ class ZeroThing extends Entity {
 
   public override function update(): Void {
     didUpdate = true;
-    trace("0 update");
 
     super.update();
   }

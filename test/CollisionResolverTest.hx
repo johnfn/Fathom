@@ -36,6 +36,17 @@ class FallingBlock extends MovingEntity {
   }
 }
 
+class MovingBlock extends MovingEntity {
+  public function new() {
+    super(x, y);
+    loadSpritesheet(AllTests.testAnimation, new Vec(25, 25), new Vec(1, 1));
+  }
+
+  public override function groups():Set<String> {
+    return groupSet.concat("moving");
+  }
+}
+
 class CollisionResolverTest extends haxe.unit.TestCase {
   var m: Map;
 

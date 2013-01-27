@@ -12,6 +12,17 @@ import nme.display.BitmapData;
 import nme.geom.Point;
 import flash.geom.Matrix;
 
+class GenericBlock extends MovingEntity {
+  public function new() {
+    super(x, y);
+    loadSpritesheet(AllTests.testAnimation, new Vec(25, 25), new Vec(1, 1));
+  }
+
+  public override function groups():Set<String> {
+    return groupSet.concat("moving");
+  }
+}
+
 class MovingEntityTest extends haxe.unit.TestCase {
 	var m: Map;
 
@@ -23,23 +34,27 @@ class MovingEntityTest extends haxe.unit.TestCase {
     Fathom.destroyAll();
   }
 
-  public function testSimpleFallingBlock(): Void {
-
+  public function makeDebugMap() {
     m.fromStringArray
       (
         [ "....."
         , "....."
-        , "....."
-        , "..O.."
-        , "XXXXX"
+        , "..X.."
+        , ".XOX."
+        , "..X.."
         ]
       , [ { key: ".", gfx: AllTests.testSprite, spritesheet: new Vec(0, 0) }
         , { key: "X", spc: CollisionResolverTest.Block, spritesheet: new Vec(1, 1) }
-        , { key: "O", spc: CollisionResolverTest.FallingBlock, spritesheet: new Vec(1, 1) }
+        , { key: "O", spc: GenericBlock, spritesheet: new Vec(1, 1) }
         ]
       );
+  }
 
-    var block: CollisionResolverTest.FallingBlock = cast(Fathom.entities.get([Set.hasGroup("falling")]).first(), CollisionResolverTest.FallingBlock);
+  public function testTouchingBottom(): Void {
+    makeDebugMap();
+
+    var block: GenericBlock = cast(Fathom.entities.get([Set.hasGroup("moving")]).first(), GenericBlock);
+    block.vel.y = 2;
 
     CollisionResolver.moveEverything(Fathom.movingEntities());
 
@@ -50,4 +65,63 @@ class MovingEntityTest extends haxe.unit.TestCase {
 
     Fathom.destroyAll();
   }
+
+  public function testTouchingUp(): Void {
+    makeDebugMap();
+
+    var block: GenericBlock = cast(Fathom.entities.get([Set.hasGroup("moving")]).first(), GenericBlock);
+    block.vel.y = -2;
+
+    CollisionResolver.moveEverything(Fathom.movingEntities());
+
+    assertFalse(block.touchingBottom);
+    assertTrue(block.touchingTop);
+    assertFalse(block.touchingLeft);
+    assertFalse(block.touchingRight);
+
+    Fathom.destroyAll();
+  }
+
+  public function testTouchingLeft(): Void {
+    makeDebugMap();
+
+    var block: GenericBlock = cast(Fathom.entities.get([Set.hasGroup("moving")]).first(), GenericBlock);
+    block.vel.x = -2;
+
+    CollisionResolver.moveEverything(Fathom.movingEntities());
+
+    assertTrue(block.touchingLeft);
+
+    Fathom.destroyAll();
+  }
+
+  public function testTouchingRight(): Void {
+    makeDebugMap();
+
+    var block: GenericBlock = cast(Fathom.entities.get([Set.hasGroup("moving")]).first(), GenericBlock);
+    block.vel.x = 2;
+
+    CollisionResolver.moveEverything(Fathom.movingEntities());
+
+    assertTrue(block.touchingRight);
+
+    Fathom.destroyAll();
+  }
+
+  public function testTouchingMultiple(): Void {
+    makeDebugMap();
+
+    var block: GenericBlock = cast(Fathom.entities.get([Set.hasGroup("moving")]).first(), GenericBlock);
+    block.vel.x = 2;
+    block.vel.y = 2;
+
+    CollisionResolver.moveEverything(Fathom.movingEntities());
+
+    assertTrue(block.touchingRight);
+    assertTrue(block.touchingBottom);
+
+    Fathom.destroyAll();
+  }
+
+  // test velocities > 25
 }
