@@ -487,23 +487,23 @@ class Map extends Rect {
         return this;
     }
 
-    public function getTopLeftCorner() : Vec {
+    public function getTopLeftCorner(): Vec {
         return this.topLeftCorner.clone();
     }
 
-    public function hasLeftMap(who : Entity) : Bool {
-        if(who.x < 0 || who.y < 0 || who.x > this.width - who.width || who.y > this.height - who.height)  {
-            return true;
-        }
-        return false;
+    /**
+     * Returns true if the provided entity is outside of this Map, false otherwise.
+     */
+    public function hasLeftMap(who: Entity): Bool {
+        return who.x < 0 || who.y < 0 || who.x > this.width - who.width || who.y > this.height - who.height;
     }
 
     public function loadNewMapWithCharacter(leftScreen: MovingEntity): Void {
         //TODO: This code is pretty obscure.
         //TODO: This will only work if leftScreen.width is less than the tileSize.
 
-        Util.assert(leftScreen.width < this.tileSize);
-        Util.assert(hasLeftMap(leftScreen));
+        Util.assert(leftScreen.width < this.tileSize, "loadNewMapWithCharacter: bad character size");
+        Util.assert(hasLeftMap(leftScreen), "loadNewMapWithCharacter was called with an entity that hasn't left the Map.");
 
         var smallerSize : Vec = this.sizeVector.clone().subtract(leftScreen.width);
         var dir : Vec = leftScreen.vec().divide(smallerSize).map(Math.floor);

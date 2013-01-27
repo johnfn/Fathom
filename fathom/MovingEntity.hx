@@ -21,7 +21,7 @@ class MovingEntity extends Entity {
     /* List of all entities that this entity collided with in this time step. */
     var collisionList : Set<Entity>;
 
-    function new(x : Float = 0, y : Float = 0) {
+    public function new(x : Float = 0, y : Float = 0) {
         vel = new Vec(0, 0);
         xColl = new Set<Entity>();
         yColl = new Set<Entity>();

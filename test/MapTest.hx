@@ -275,14 +275,52 @@ class MapTest extends haxe.unit.TestCase {
     m.loadNewMapAbs(0, 1);
   }
 
-  /*
   public function testLoadWithCharacter() {
-    var me: MovingEntity;
+    var me: MovingEntity = new MovingEntity();
 
     constructFourRoomMap();
     m.loadNewMapAbs(0, 0);
+
+    me.x = 51;
+    me.y = 20;
+
+    m.loadNewMapWithCharacter(me);
+
+    assertTrue(me.inFathom);
+    assertFalse(m.hasLeftMap(me));
+    assertTrue(m.getTopLeftCorner().equals(new Vec(2, 0)));
+    assertEquals(me.y, 20);
+
+    me.x = -5;
+    me.y = 10;
+
+    m.loadNewMapWithCharacter(me);
+
+    assertTrue(me.inFathom);
+    assertFalse(m.hasLeftMap(me));
+    assertTrue(m.getTopLeftCorner().equals(new Vec(0, 0)));
+    assertEquals(me.y, 10);
+
+    me.x = 4;
+    me.y = 51;
+
+    m.loadNewMapWithCharacter(me);
+
+    assertTrue(me.inFathom);
+    assertFalse(m.hasLeftMap(me));
+    assertTrue(m.getTopLeftCorner().equals(new Vec(0, 2)));
+    assertEquals(me.x, 4);
+
+    me.x = 7;
+    me.y = -3;
+
+    m.loadNewMapWithCharacter(me);
+
+    assertTrue(me.inFathom);
+    assertFalse(m.hasLeftMap(me));
+    assertTrue(m.getTopLeftCorner().equals(new Vec(0, 0)));
+    assertEquals(me.x, 7);
   }
-  */
 
   /*
   public function testRectangular() {
