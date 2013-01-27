@@ -322,6 +322,38 @@ class MapTest extends haxe.unit.TestCase {
     assertEquals(me.x, 7);
   }
 
+  public function testHasLeftMap() {
+    constructFourRoomMap();
+
+    var e: RedThing = new RedThing(0, 0);
+
+    e.x = -1;
+    assertTrue(m.hasLeftMap(e));
+
+    e.x = 0;
+    assertFalse(m.hasLeftMap(e));
+
+    e.x = m.width - e.width;
+    assertFalse(m.hasLeftMap(e));
+
+    e.x = m.width - e.width + 1;
+    assertTrue(m.hasLeftMap(e));
+
+    e.x = 4;
+
+    e.y = -1;
+    assertTrue(m.hasLeftMap(e));
+
+    e.y = 0;
+    assertFalse(m.hasLeftMap(e));
+
+    e.y = m.height - e.height;
+    assertFalse(m.hasLeftMap(e));
+
+    e.y = m.height - e.height + 1;
+    assertTrue(m.hasLeftMap(e));
+  }
+
   /*
   public function testRectangular() {
     constructRectangular();
