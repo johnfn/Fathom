@@ -112,4 +112,27 @@ class ModeTest extends haxe.unit.TestCase {
     assertFalse(one.didUpdate);
     assertTrue(onezero.didUpdate);
   }
+
+  public function testReplace() {
+    Fathom.mode.push(1);
+    Fathom.update();
+
+    assertFalse(zero.didUpdate);
+    assertTrue(one.didUpdate);
+    assertTrue(onezero.didUpdate);
+
+    Fathom.mode.replace(0);
+
+    zero.didUpdate = false;
+    one.didUpdate = false;
+    onezero.didUpdate = false;
+
+    Fathom.update();
+
+    assertTrue(zero.didUpdate);
+    assertFalse(one.didUpdate);
+    assertTrue(onezero.didUpdate);
+
+    Fathom.mode.pop();
+  }
 }
