@@ -7,7 +7,6 @@ import fathom.SuperObjectHash;
 import haxe.Stack;
 
 class Util {
-	static public var uid : Float = 0;
 	static public var KeyDown : MagicKeyObject;
 	static public var KeyJustDown : MagicKeyObject;
 	static public var KeyUp : MagicKeyObject;
@@ -43,11 +42,12 @@ class Util {
 		trace(haxe.Stack.toString(haxe.Stack.callStack()));
 	}
 
-	/** The reason for this wrapper method is to separate debugging messages
+	/**
+	 *  The this wrapper is used to separate debugging messages
    *  that should eventually be removed from more serious error logs, which
    *  should stay. For instance, if you're checking the x value of an Entity, do
    *  trace (e.x). If you just failed an assertion, do Util.log("Assertion failed!").
-
+	 *
    *  We separate them so that it's easy to search for "trace" with a following "("
    *  to find debugging messages you need to remove.
    */
@@ -64,12 +64,33 @@ class Util {
 	// Recursive helper method for Util.p.
 	static public function anythingToString(o : Dynamic) : String {
 		var result : String;
-		if(Util.className(o) == "Object")  {
+
+		if (o == null)  {
+			result = "null";
+		} else if (Util.className(o) == null) {
+			var fields: Array<String> = Reflect.fields(o);
+
+			if (fields.length == 0) {
+				// happens if o == 1 for instance
+				return o;
+			} else {
+				result = "{ ";
+
+				// o might be an anonymous object like {x: 5, y: 7}.
+				for (f in Reflect.fields(o)) {
+					result += f + " => " + anythingToString(Reflect.field(o, f)) + ",";
+				}
+
+				result = result.substr(0, -1);
+				result += "}";
+			}
+		} else if(Util.className(o) == "Object")  {
 			result = "{ ";
 			for(k in Reflect.fields(o)) {
 				result += k + ": " + anythingToString(Reflect.field(o, k)) + ", ";
 			}
 
+			result = result.substr(0, -1);
 			// result = result.slice(0, -2) + " ";
 			result += "}";
 		} else if (Util.className(o) == "flash.utils.TypedDictionary") {
@@ -79,37 +100,40 @@ class Util {
 
 			untyped {
 				for (k in td) {
-					result += k + ": " + td.get(k) + ",";
+					result += anythingToString(k) + "=> " + anythingToString(td.get(k)) + ",";
 				}
 			}
 
+			result = result.substr(0, -1);
 			result += "}";
 #else
 			result = "WHAT IN GODS NAME HAPPENED HERE.";
 #end
-		} else if (Util.className(o) == "SuperObjectHash") {
+		} else if (Util.className(o).indexOf("SuperObjectHash") != -1) {
 			var soh:SuperObjectHash<Dynamic, Dynamic> = cast(o, SuperObjectHash<Dynamic, Dynamic>);
 			result = "{ ";
 
 			untyped {
 				for (k in soh) {
-					result += k + ": " + soh.get(k) + ",";
+					result += anythingToString(k) + "=> " + anythingToString(soh.get(k)) + ",";
 				}
 			}
+
+			result = result.substr(0, -1);
 
 			result += "}";
 		} else if(Util.className(o) == "Array")  {
 			var arr : Array<Dynamic> = try cast(o, Array<Dynamic>) catch(e:Dynamic) null;
 			result = "[";
-			var i : Int = 0;
-			while(i < arr.length) {
-				result += anythingToString(arr[i]) + (i == arr.length - (1) ? "" : ", ");
-				i++;
+
+			for (i in 0...arr.length) {
+				result += anythingToString(arr[i]) + (i == arr.length - 1 ? "" : ", ");
 			}
 			result += "]";
-		} else if(o == null)  {
-			result = "null";
-		} else  {
+		} else if (Util.className(o) == "String") {
+			result = '"' + o + '"';
+		} else {
+			trace("idk what this is " + Util.className(o));
 			result = o.toString();
 		}
 
@@ -129,11 +153,6 @@ class Util {
 	static public function epsilonEq(a : Float, b : Float, threshold : Float) : Bool {
 		return Math.abs(a - b) < threshold;
 	}
-
-	static public function getUniqueID() : Float {
-		return ++uid;
-	}
-
 
 	static public function make2DArrayFn<T>(width : Int, height : Int, fn : Int -> Int -> T) : Array<Array<T>> {
 		var result : Array<Array<T>> = new Array<Array<T>>();

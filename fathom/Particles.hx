@@ -7,7 +7,7 @@ import flash.display.BitmapData;
 import fathom.Entity;
 
 
-typedef ParticleData = {life: Int, totalLife: Int, vel: Vec, x: Int, y: Int};
+typedef ParticleData = {life: Int, totalLife: Int, vel: Vec, x: Float, y: Float};
 
 class Particles {
 
@@ -234,10 +234,9 @@ class Particles {
             pObj.y = data.y;
             // TODO: Graphics should just update themselves.
             pObj.update();
-            data.set("life", data.get("life") - 1);
-            var lifeLeft : Int = data.get("life");
+            data.life -= 1;
             // Kill the particle, if necessary.
-            if(lifeLeft == 0 || (animated && pObj.animations.lastFrame()))  {
+            if(data.life == 0 || (animated && pObj.animations.lastFrame()))  {
                 particleData.delete(pObj);
                 deadParticles.push(pObj);
                 pObj.visible = false;
@@ -247,12 +246,12 @@ class Particles {
             }
 
             // Flicker if necessary
-            if(flickerOnDeath && lifeLeft < 10)  {
-                pObj.visible = (lifeLeft / 3) % 2 == 0;
+            if(flickerOnDeath && data.life < 10)  {
+                pObj.visible = (data.life / 3) % 2 == 0;
             }
 
             if(fadeOut)  {
-                pObj.alpha = lifeLeft / data.totalLife;
+                pObj.alpha = data.life / data.totalLife;
             }
         }
 
