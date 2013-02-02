@@ -39,6 +39,20 @@ class MovingEntity extends Entity {
         return xColl.any(args) || yColl.any(args);
     }
 
+    public function removeUnnecessaryVelocities() {
+      if (vel.x > 0 && touchingRight) vel.x = 0;
+      if (vel.x < 0 && touchingLeft)  vel.x = 0;
+
+      if (vel.y > 0 && touchingBottom) vel.y = 0;
+      if (vel.y < 0 && touchingTop)    vel.y = 0;
+    }
+
+	public override function update(): Void {
+      removeUnnecessaryVelocities();
+
+      super.update();
+    }
+
     public function touchingSet(criteria: Array<Entity -> Bool>) : Set<Entity> {
         return new Set<Entity>(xColl.clone().extend(yColl).toArray()).get(criteria);
     }
